@@ -292,13 +292,15 @@
                             <h3 class="text-lg font-bold text-slate-800">Matriz General de Casos de Prueba</h3>
                         </div>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                            <select id="filtroFolderCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">📁 Todos los Folders</option></select>
                             <select id="filtroTesterCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">👤 Todos los Testers</option></select>
+                            <select id="filtroRiesgoCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">⚠️ Todos los Riesgos</option><option value="High">High</option><option value="Med">Med</option><option value="Low">Low</option></select>
                             <select id="filtroEstatusCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">🔍 Todos los Estatus</option><option value="NOT_EXECUTED">⏳ NOT EXECUTED</option><option value="IN_PROCESS">🔄 IN PROCESS</option><option value="PASS">✅ PASS</option><option value="FAIL">❌ FAIL</option><option value="HELP">🆘 HELP</option><option value="KIM">⭐ KIM</option><option value="N/A">🚫 N/A</option></select>
                             
                             <button onclick="eliminarCasosSeleccionados()" class="ocultar-tester bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
                                 <i class="fa-solid fa-trash"></i> Eliminar Seleccionados
                             </button>
-                            <button onclick="abrirModalCargaMasiva()" class="ocultar-tester bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-file-excel"></i> Cargar Excel (Masivo)</button>
+                            <button onclick="abrirModalCargaMasiva()" class="ocultar-tester bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-file-import"></i> Carga de Test Cases Masivos</button>
                             <button onclick="abrirModalNuevoCaso()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-plus"></i> Nuevo Test Case</button>
                         </div>
                     </div>
@@ -330,7 +332,11 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <h3 class="text-lg font-bold text-slate-800">Bitácora Detallada de Defectos y Desviaciones (1:N)</h3>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                            <select id="filtroTipoHallazgo" onchange="renderizarHallazgos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">🔍 Todos los Hallazgos</option><option value="DEFECTO">🐞 Solo Defectos</option><option value="DESVIACION">⚠️ Solo Desviaciones</option></select>
+                            <!-- NUEVO BUSCADOR PREDICTIVO POR ID DE TC -->
+                            <input type="text" id="filtroTcHallazgo" list="listaFiltroTc" oninput="renderizarHallazgos()" placeholder="🔍 Filtrar ID TC..." class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500 w-36 uppercase">
+                            <datalist id="listaFiltroTc"></datalist>
+
+                            <select id="filtroTipoHallazgo" onchange="renderizarHallazgos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">🔍 Todos los Tipos</option><option value="DEFECTO">🐞 Solo Defectos</option><option value="DESVIACION">⚠️ Solo Desviaciones</option></select>
                             <button onclick="abrirModalNuevoHallazgo()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-bug"></i> Registrar Defecto / Desviación</button>
                         </div>
                     </div>
@@ -338,6 +344,7 @@
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
                                 <tr>
+                                    <th class="p-3 w-10 text-center">#</th>
                                     <th class="p-3 w-28">ID Manual</th>
                                     <th class="p-3 w-24">ID TC</th>
                                     <th class="p-3 w-28">Tipo</th>
@@ -411,11 +418,11 @@
             <h3 class="text-lg font-bold text-slate-800">Agregar Nuevo Caso de Prueba</h3>
             <div class="grid grid-cols-2 gap-3">
                 <div><label class="block text-xs font-bold text-slate-600 mb-1">ID (Autogenerado):</label><input type="text" id="insTcId" class="w-full border rounded-lg p-2 text-sm font-mono bg-amber-50" readonly></div>
-                <div><label class="block text-xs font-bold text-slate-600 mb-1">Folder:</label><input type="text" id="insTcFolder" placeholder="Ej: 08-DOCUMENTS" class="w-full border rounded-lg p-2 text-sm"></div>
+                <div><label class="block text-xs font-bold text-slate-600 mb-1">Folder:</label><input type="text" id="insTcFolder" placeholder="Ej: 01-LOGIN" class="w-full border rounded-lg p-2 text-sm"></div>
             </div>
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1">Nombre / Descripción:</label>
-                <input type="text" id="insTcNombre" placeholder="Ej: TC01 Validar guardado de folletería" class="w-full border rounded-lg p-2 text-sm">
+                <input type="text" id="insTcNombre" placeholder="Ej: Validar inicio de sesión exitoso" class="w-full border rounded-lg p-2 text-sm">
             </div>
             <div class="grid grid-cols-3 gap-2">
                 <div><label class="block text-xs font-bold text-slate-600 mb-1">Riesgo:</label><select id="insTcRiesgo" class="w-full border rounded-lg p-2 text-sm"><option value="High">High</option><option value="Med" selected>Med</option><option value="Low">Low</option></select></div>
@@ -429,13 +436,13 @@
         </div>
     </div>
 
-    <!-- CARGA MASIVA MEJORADA CERO COMAS -->
+    <!-- CARGA MASIVA DE TEST CASES -->
     <div id="modalCargaMasiva" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-file-excel text-emerald-600"></i> Carga Masiva desde Excel</h3>
+            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-file-import text-emerald-600"></i> Carga de Test Cases Masivos</h3>
             <p class="text-xs text-slate-500">Selecciona en tu Excel las columnas <strong>Nombre, Folder y Riesgo</strong>, cópialas (<kbd>Ctrl+C</kbd>) y pégalas aquí abajo.<br><br><em>Nota: El sistema detectará automáticamente tu Folder si empieza con número, tu Riesgo si dice High/Med/Low, extraerá tu "TC" para el ID y dejará los pasos en 1.</em></p>
             <div>
-                <textarea id="txtAreaCargaMasiva" rows="8" placeholder="TC01 Validar Login     08-DOCUMENTS     High&#10;TC02 Cerrar Sesion     08-DOCUMENTS     Med" class="w-full border rounded-lg p-2.5 text-xs font-mono focus:ring-2 focus:ring-emerald-500 bg-emerald-50 whitespace-pre"></textarea>
+                <textarea id="txtAreaCargaMasiva" rows="8" placeholder="TC01 Validar acceso    01-LOGIN     High&#10;TC02 Validar logout    01-LOGIN     Med" class="w-full border rounded-lg p-2.5 text-xs font-mono focus:ring-2 focus:ring-emerald-500 bg-emerald-50 whitespace-pre"></textarea>
             </div>
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1">Asignar por defecto a Tester:</label>
@@ -443,16 +450,56 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="cerrarModal('modalCargaMasiva')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
-                <button onclick="procesarCargaMasiva()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">Procesar Excel y Cargar</button>
+                <button onclick="procesarCargaMasiva()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">Procesar y Cargar</button>
             </div>
         </div>
     </div>
 
     <div id="modalMinuta" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-amber-600"></i> Registrar Minuta de Sesión</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha de la Reunión (Alta):</label><input type="date" id="insMinutaFecha" class="w-full border rounded-lg p-2 text-sm text-slate-700 font-bold"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Título / Tema General (Opcional):</label><input type="text" id="insMinutaObjetivo" placeholder="Ej. Daily de seguimiento" class="w-full border rounded-lg p-2 text-sm"></div></div><div><div class="flex justify-between items-center mb-2"><label class="block text-xs font-bold text-slate-700 uppercase">Puntos Discutidos & Tareas:</label><button onclick="agregarPuntoMinutaInput('', false, '', '')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded border border-slate-300"><i class="fa-solid fa-plus text-amber-600"></i> Agregar Punto</button></div><div id="contenedorPuntosMinutaModal" class="space-y-3 max-h-60 overflow-y-auto p-2 border rounded-lg bg-slate-50"></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalMinuta')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevaMinuta()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold">Guardar Minuta y Tareas</button></div></div></div>
     
-    <div id="modalTarea" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-tasks text-indigo-600"></i> Registrar Nueva Tarea</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">ID Tarea (Autogenerado):</label><input type="text" id="insTareaId" readonly class="w-full border rounded-lg p-2 text-sm font-mono font-bold bg-slate-100 text-slate-500"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Descripción de la Tarea:</label><textarea id="insTareaDesc" rows="3" placeholder="Ej. Validar con desarrollo el fix..." class="w-full border rounded-lg p-2 text-sm"></textarea></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Responsable Asignado:</label><select id="insTareaResp" class="w-full border rounded-lg p-2 text-sm font-bold"></select></div><div class="grid grid-cols-3 gap-2"><div><label class="block text-xs font-bold text-slate-600 mb-1">Prioridad:</label><select id="insTareaPrio" class="w-full border rounded-lg p-2 text-sm"><option value="ALTA">Alta</option><option value="MEDIA" selected>Media</option><option value="BAJA">Baja</option></select></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha Alta:</label><input type="date" id="insTareaFechaAlta" class="w-full border rounded-lg p-1.5 text-xs text-slate-700"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha Compromiso:</label><input type="date" id="insTareaFecha" class="w-full border rounded-lg p-1.5 text-xs text-slate-700"></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalTarea')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevaTarea()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold">Crear Tarea</button></div></div></div>
+    <div id="modalTarea" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-tasks text-indigo-600"></i> Registrar Nueva Tarea</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">ID Tarea (Autogenerado):</label><input type="text" id="insTareaId" readonly class="w-full border rounded-lg p-2 text-sm font-mono font-bold bg-slate-100 text-slate-500"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Descripción de la Tarea:</label><textarea id="insTareaDesc" rows="3" placeholder="Ej. Validar con desarrollo el fix del error 500" class="w-full border rounded-lg p-2 text-sm"></textarea></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Responsable Asignado:</label><select id="insTareaResp" class="w-full border rounded-lg p-2 text-sm font-bold"></select></div><div class="grid grid-cols-3 gap-2"><div><label class="block text-xs font-bold text-slate-600 mb-1">Prioridad:</label><select id="insTareaPrio" class="w-full border rounded-lg p-2 text-sm"><option value="ALTA">Alta</option><option value="MEDIA" selected>Media</option><option value="BAJA">Baja</option></select></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha Alta:</label><input type="date" id="insTareaFechaAlta" class="w-full border rounded-lg p-1.5 text-xs text-slate-700"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha Compromiso:</label><input type="date" id="insTareaFecha" class="w-full border rounded-lg p-1.5 text-xs text-slate-700"></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalTarea')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevaTarea()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold">Crear Tarea</button></div></div></div>
 
-    <div id="modalHallazgo" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800">Asociar Defecto o Desviación</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">ID / Clave del Defecto/Desviación (Manual):</label><input type="text" id="insHalIdManual" placeholder="Ej: DEF-1029 / BUG_GMM_05" class="w-full border rounded-lg p-2 text-sm font-mono font-bold"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Seleccionar Test Case:</label><select id="insHalTc" class="w-full border rounded-lg p-2 text-sm"></select></div><div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Tipo de Hallazgo:</label><select id="insHalTipo" class="w-full border rounded-lg p-2 text-sm"><option value="DEFECTO">Defecto (Bug)</option><option value="DESVIACION">Desviación</option></select></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Etapa Afectada:</label><select id="insHalEtapa" class="w-full border rounded-lg p-2 text-sm"><option value="Ejecución" selected>Ejecución</option><option value="Objetivo / Alcance">Objetivo / Alcance</option><option value="Prerrequisitos">Prerrequisitos</option><option value="No Aplica">No Aplica</option></select></div></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha de Registro:</label><input type="date" id="insHalFecha" class="w-full border rounded-lg p-2 text-sm"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Descripción del Incidente:</label><textarea id="insHalDesc" rows="3" placeholder="Detalle del fallo..." class="w-full border rounded-lg p-2 text-sm"></textarea></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Severidad:</label><select id="insHalSeveridad" class="w-full border rounded-lg p-2 text-sm"><option value="CRITICA">Crítica / Bloqueante</option><option value="ALTA">Alta</option><option value="MEDIA" selected>Media</option><option value="BAJA">Baja</option></select></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalHallazgo')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoHallazgo()" class="px-4 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold">Registrar Hallazgo</button></div></div></div>
+    <!-- NUEVO FORMULARIO PREDICTIVO PARA HALLAZGOS -->
+    <div id="modalHallazgo" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
+            <h3 class="text-lg font-bold text-slate-800">Asociar Defecto o Desviación</h3>
+            <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">ID / Clave del Defecto/Desviación (Manual):</label>
+                <input type="text" id="insHalIdManual" placeholder="Ej: BUG-001" class="w-full border rounded-lg p-2 text-sm font-mono font-bold uppercase">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">ID del Test Case Afectado:</label>
+                <input type="text" id="insHalTc" list="listaTcsGlobal" placeholder="Ej: TC01" class="w-full border rounded-lg p-2 text-sm uppercase font-mono font-bold">
+                <datalist id="listaTcsGlobal"></datalist>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Tipo de Hallazgo:</label>
+                    <select id="insHalTipo" class="w-full border rounded-lg p-2 text-sm"><option value="DEFECTO">Defecto (Bug)</option><option value="DESVIACION">Desviación</option></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Etapa Afectada:</label>
+                    <select id="insHalEtapa" class="w-full border rounded-lg p-2 text-sm"><option value="Ejecución" selected>Ejecución</option><option value="Objetivo / Alcance">Objetivo / Alcance</option><option value="Prerrequisitos">Prerrequisitos</option><option value="No Aplica">No Aplica</option></select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Fecha de Registro:</label>
+                <input type="date" id="insHalFecha" class="w-full border rounded-lg p-2 text-sm">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Descripción del Incidente:</label>
+                <textarea id="insHalDesc" rows="3" placeholder="Ej. El sistema arroja error 500 al guardar..." class="w-full border rounded-lg p-2 text-sm"></textarea>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Severidad:</label>
+                <select id="insHalSeveridad" class="w-full border rounded-lg p-2 text-sm"><option value="CRITICA">Crítica / Bloqueante</option><option value="ALTA">Alta</option><option value="MEDIA" selected>Media</option><option value="BAJA">Baja</option></select>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="cerrarModal('modalHallazgo')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
+                <button onclick="guardarNuevoHallazgo()" class="px-4 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold">Registrar Hallazgo</button>
+            </div>
+        </div>
+    </div>
 
     <!-- JAVASCRIPT -->
     <script>
@@ -532,8 +579,39 @@
 
         function cambiarPestana(idPestana) { document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById('btn-' + idPestana).classList.add('active'); document.getElementById('pestana-testers').classList.add('hidden'); document.getElementById('pestana-casos').classList.add('hidden'); document.getElementById('pestana-hallazgos').classList.add('hidden'); document.getElementById('pestana-minutas').classList.add('hidden'); document.getElementById('pestana-tareas').classList.add('hidden'); document.getElementById(idPestana).classList.remove('hidden'); actualizarTodo(); }
 
-        function actualizarTodo() { document.getElementById("inpFechaDev").value = fechaEntregaDev; document.getElementById("inpFechaInicio").value = fechaInicioPruebas; document.getElementById("inpFechaFin").value = fechaFinPruebas; document.getElementById("tituloProyectoInput").value = tituloProyecto; poblarFiltroTesters(); poblarFiltrosTareas(); calcularKPIs(); renderizarTesters(); renderizarCasos(); renderizarHallazgos(); renderizarMinutas(); renderizarTareas(); }
+        function actualizarTodo() { 
+            document.getElementById("inpFechaDev").value = fechaEntregaDev; document.getElementById("inpFechaInicio").value = fechaInicioPruebas; document.getElementById("inpFechaFin").value = fechaFinPruebas; document.getElementById("tituloProyectoInput").value = tituloProyecto; 
+            poblarFiltroFolders(); poblarFiltroTesters(); poblarFiltrosTareas(); poblarFiltroTcHallazgos(); poblarListaTcsGlobal(); calcularKPIs(); 
+            renderizarTesters(); renderizarCasos(); renderizarHallazgos(); renderizarMinutas(); renderizarTareas(); 
+        }
+
         function forzarRefreshTablaTesters() { actualizarTodo(); }
+        
+        function poblarFiltroFolders() {
+            const sel = document.getElementById("filtroFolderCaso");
+            if(!sel) return;
+            const valPrevio = sel.value;
+            sel.innerHTML = '<option value="TODOS">📁 Todos los Folders</option>';
+            const foldersUnicos = [...new Set(casosPrueba.map(c => c.folder || '00-GENERAL'))].sort();
+            foldersUnicos.forEach(f => { sel.innerHTML += `<option value="${f}">${f}</option>`; });
+            if (foldersUnicos.includes(valPrevio)) sel.value = valPrevio;
+        }
+
+        function poblarFiltroTcHallazgos() {
+            const dl = document.getElementById("listaFiltroTc");
+            if(!dl) return;
+            dl.innerHTML = "";
+            const tcsUnicos = [...new Set(hallazgos.map(h => h.tcId))].sort();
+            tcsUnicos.forEach(tc => { dl.innerHTML += `<option value="${tc}">`; });
+        }
+
+        function poblarListaTcsGlobal() {
+            const dl = document.getElementById("listaTcsGlobal");
+            if(!dl) return;
+            dl.innerHTML = "";
+            casosPrueba.forEach(c => { dl.innerHTML += `<option value="${c.id}">${c.nombre}</option>`; });
+        }
+
         function poblarFiltroTesters() { const sel = document.getElementById("filtroTesterCaso"); const valPrevio = sel.value; sel.innerHTML = '<option value="TODOS">👤 Todos los Testers</option>'; testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); if (testers.includes(valPrevio)) sel.value = valPrevio; }
         function poblarFiltrosTareas() { const sel = document.getElementById("filtroTareaResponsable"); const valPrevio = sel.value; sel.innerHTML = '<option value="TODOS">👤 Todos los Responsables</option>'; involucradosGlobales.forEach(r => { if(r && r.nombre && r.nombre !== "undefined") { const tag = r.nombre === "TODOS" ? "TODOS (Todo el equipo)" : `${r.nombre} (${r.rol || 'Integrante'})`; sel.innerHTML += `<option value="${tag}">${tag}</option>`; } }); if (valPrevio) sel.value = valPrevio; }
 
@@ -639,7 +717,6 @@
             });
         }
 
-        // ELIMINACIÓN MASIVA
         function toggleAllCasos(source) {
             const checkboxes = document.querySelectorAll('.chk-caso');
             checkboxes.forEach(chk => { if(!chk.disabled) chk.checked = source.checked; });
@@ -660,9 +737,16 @@
             const tbody = document.getElementById("tablaCasosBody"); tbody.innerHTML = "";
             const filtroTester = document.getElementById("filtroTesterCaso") ? document.getElementById("filtroTesterCaso").value : "TODOS";
             const filtroEstatus = document.getElementById("filtroEstatusCaso") ? document.getElementById("filtroEstatusCaso").value : "TODOS";
+            const filtroFolder = document.getElementById("filtroFolderCaso") ? document.getElementById("filtroFolderCaso").value : "TODOS";
+            const filtroRiesgo = document.getElementById("filtroRiesgoCaso") ? document.getElementById("filtroRiesgoCaso").value : "TODOS";
 
             casosPrueba.forEach((c) => {
-                if ((filtroTester === "TODOS" || c.tester === filtroTester) && (filtroEstatus === "TODOS" || c.estatus === filtroEstatus)) {
+                let pasaTester = (filtroTester === "TODOS" || c.tester === filtroTester);
+                let pasaEstatus = (filtroEstatus === "TODOS" || c.estatus === filtroEstatus);
+                let pasaFolder = (filtroFolder === "TODOS" || (c.folder || '00-GENERAL') === filtroFolder);
+                let pasaRiesgo = (filtroRiesgo === "TODOS" || (c.riesgo || 'Med') === filtroRiesgo);
+
+                if (pasaTester && pasaEstatus && pasaFolder && pasaRiesgo) {
                     const isOwnerOrAdmin = (usuarioSesion.rol === 'Admin' || normalizarTexto(c.tester).includes(normalizarTexto(usuarioSesion.nombre)));
                     const disabledStr = isOwnerOrAdmin ? '' : 'disabled title="No tienes permiso"';
                     const disabledClass = isOwnerOrAdmin ? 'bg-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed';
@@ -710,9 +794,14 @@
         function renderizarHallazgos() {
             const tbody = document.getElementById("tablaHallazgosBody"); tbody.innerHTML = "";
             const filtro = document.getElementById("filtroTipoHallazgo") ? document.getElementById("filtroTipoHallazgo").value : "TODOS";
+            const filtroTc = document.getElementById("filtroTcHallazgo") ? document.getElementById("filtroTcHallazgo").value.trim().toUpperCase() : "";
             const esAdmin = usuarioSesion.rol === 'Admin';
+            
             hallazgos.forEach((h) => {
-                if (filtro === "TODOS" || h.tipo === filtro) {
+                let pasaTipo = (filtro === "TODOS" || h.tipo === filtro);
+                let pasaTc = (filtroTc === "" || h.tcId.toUpperCase().includes(filtroTc));
+                
+                if (pasaTipo && pasaTc) {
                     const tr = document.createElement("tr");
                     tr.innerHTML = `<td class="p-3 font-mono font-bold text-slate-800 text-[11px]">${h.id}</td><td class="p-3 font-mono text-blue-600 font-bold text-[11px]">${h.tcId}</td><td class="p-3 font-bold text-xs"><span class="px-2 py-0.5 rounded ${h.tipo === 'DEFECTO' ? 'bg-rose-100 text-rose-800' : 'bg-purple-100 text-purple-800'}">${h.tipo}</span></td><td class="p-3 text-[11px] font-bold text-slate-700">${h.etapa || 'Ejecución'}</td><td class="p-3 text-[11px] text-slate-700">${h.desc}</td><td class="p-3 text-center text-[10px] font-medium text-slate-600">${h.fecha || 'N/A'}</td><td class="p-3 text-center text-[11px] font-bold">${h.severidad}</td><td class="p-3 text-center text-[11px] font-bold text-amber-600">${h.estatus}</td><td class="p-3 text-center">${esAdmin ? `<button onclick="eliminarHallazgo('${h.id}')" class="text-rose-600 hover:text-rose-800 text-xs"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}</td>`;
                     tbody.appendChild(tr);
@@ -793,7 +882,6 @@
 
         function abrirModalCargaMasiva() { const sel = document.getElementById("insCargaMasivaTester"); sel.innerHTML = ""; testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); document.getElementById("modalCargaMasiva").classList.remove("hidden"); }
         
-        // EXCEL MÁGICO: AUTO DETECTA CARPETA, RIESGO, NOMBRE E ID SIN IMPORTAR EL ORDEN EN QUE LO PEGUEN
         function procesarCargaMasiva() { 
             const texto = document.getElementById("txtAreaCargaMasiva").value.trim(); 
             const testerDefecto = document.getElementById("insCargaMasivaTester").value; 
@@ -804,8 +892,9 @@
             
             lineas.forEach(linea => { 
                 if (linea.trim()) { 
-                    let partes = linea.split('\t'); 
-                    if(partes.length === 1) partes = linea.split(/\s{2,}/); // Soporte si copian de otro lado
+                    const separador = linea.includes("\t") ? "\t" : ",";
+                    let partes = linea.split(separador); 
+                    if(partes.length === 1) partes = linea.split(/\s{2,}/); 
                     
                     let nombreFinal = ""; let folderFinal = "00-GENERAL"; let riesgoFinal = "Med"; let idFinal = "";
 
@@ -842,8 +931,44 @@
             document.getElementById("txtAreaCargaMasiva").value = ""; cerrarModal("modalCargaMasiva"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
         }
 
-        function abrirModalNuevoHallazgo() { const sel = document.getElementById("insHalTc"); sel.innerHTML = ""; casosPrueba.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.id} - ${c.nombre}</option>`; }); document.getElementById("insHalFecha").value = new Date().toISOString().split('T')[0]; document.getElementById("modalHallazgo").classList.remove("hidden"); }
-        function guardarNuevoHallazgo() { const idManual = document.getElementById("insHalIdManual").value.trim(); const tcId = document.getElementById("insHalTc").value; const tipo = document.getElementById("insHalTipo").value; const etapa = document.getElementById("insHalEtapa").value; const fecha = document.getElementById("insHalFecha").value; const desc = document.getElementById("insHalDesc").value.trim(); const severidad = document.getElementById("insHalSeveridad").value; if (!idManual || !desc) { alert("Completa el ID Manual y la Descripción."); return; } if (hallazgos.some(h => h.id.toLowerCase() === idManual.toLowerCase())) { alert(`Error: El ID "${idManual}" ya está registrado.`); return; } hallazgos.push({ id: idManual, tcId, tipo, etapa, desc, fecha, severidad, estatus: "ABIERTO" }); const tc = casosPrueba.find(c => c.id === tcId); if (tc && tipo === "DEFECTO" && tc.estatus !== "KIM" && tc.estatus !== "N/A") { tc.estatus = "FAIL"; } document.getElementById("insHalIdManual").value = ""; document.getElementById("insHalDesc").value = ""; cerrarModal("modalHallazgo"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
+        function abrirModalNuevoHallazgo() { 
+            document.getElementById("insHalIdManual").value = "";
+            document.getElementById("insHalTc").value = "";
+            document.getElementById("insHalDesc").value = "";
+            document.getElementById("insHalFecha").value = new Date().toISOString().split('T')[0]; 
+            document.getElementById("modalHallazgo").classList.remove("hidden"); 
+        }
+
+        function guardarNuevoHallazgo() { 
+            const idManual = document.getElementById("insHalIdManual").value.trim(); 
+            const tcId = document.getElementById("insHalTc").value.trim().toUpperCase(); 
+            const tipo = document.getElementById("insHalTipo").value; 
+            const etapa = document.getElementById("insHalEtapa").value; 
+            const fecha = document.getElementById("insHalFecha").value; 
+            const desc = document.getElementById("insHalDesc").value.trim(); 
+            const severidad = document.getElementById("insHalSeveridad").value; 
+            
+            if (!idManual || !desc || !tcId) { alert("Completa el ID Manual, el ID del Test Case y la Descripción."); return; } 
+            
+            if (!casosPrueba.some(c => c.id === tcId)) {
+                alert(`Error: El Test Case "${tcId}" no existe en la matriz. Verifica el ID.`);
+                return;
+            }
+
+            if (hallazgos.some(h => h.id.toLowerCase() === idManual.toLowerCase())) {
+                alert(`Error: El ID "${idManual}" ya está registrado como Defecto o Desviación. Usa un ID único.`);
+                return;
+            }
+
+            hallazgos.push({ id: idManual, tcId, tipo, etapa, desc, fecha, severidad, estatus: "ABIERTO" }); 
+            const tc = casosPrueba.find(c => c.id === tcId); 
+            if (tc && tipo === "DEFECTO" && tc.estatus !== "KIM" && tc.estatus !== "N/A") { tc.estatus = "FAIL"; } 
+            
+            document.getElementById("insHalIdManual").value = ""; 
+            document.getElementById("insHalDesc").value = ""; 
+            document.getElementById("insHalTc").value = ""; 
+            cerrarModal("modalHallazgo"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
+        }
 
         function cerrarModal(id) { document.getElementById(id).classList.add("hidden"); }
 
