@@ -556,16 +556,25 @@
             });
         }
 
-        function iniciarSesion() {
+       function iniciarSesion() {
             const email = document.getElementById('inEmail').value.trim();
             const pass = document.getElementById('inPass').value;
             const msjError = document.getElementById('loginError');
             
-            if(!firebaseActivo) return;
+            if(!firebaseActivo) {
+                msjError.innerText = "Firebase no está conectado.";
+                msjError.classList.remove('hidden');
+                return;
+            }
+
+            msjError.innerText = "Cargando...";
+            msjError.classList.remove('hidden');
 
             firebase.auth().signInWithEmailAndPassword(email, pass)
                 .catch(error => {
-                    msjError.innerText = "Credenciales incorrectas o usuario inexistente.";
+                    // AQUÍ LE PEDIMOS A FIREBASE SU ERROR REAL
+                    console.error("Error completo de Firebase:", error);
+                    msjError.innerText = "Error: " + error.code + " - " + error.message;
                     msjError.classList.remove('hidden');
                 });
         }
