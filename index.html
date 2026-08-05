@@ -15,7 +15,6 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .tab-btn.active { border-bottom: 4px solid #3b82f6; color: #1e40af; font-weight: bold; background-color: #eff6ff; }
-        /* Clases para manejar permisos */
         .bloqueado { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
     </style>
 </head>
@@ -51,7 +50,7 @@
         </div>
     </div>
 
-    <!-- ================== APP PRINCIPAL (DISEÑO ORIGINAL INTACTO) ================== -->
+    <!-- ================== APP PRINCIPAL ================== -->
     <div id="appPrincipal" class="hidden p-4 md:p-6">
         <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
             
@@ -97,7 +96,6 @@
                     <div class="flex flex-wrap items-center gap-5 text-center border-t md:border-t-0 md:border-l border-slate-200 pt-3 md:pt-0 md:pl-5">
                         <div>
                             <span class="text-[10px] text-slate-500 font-bold block mb-0.5">ENTREGA DESARROLLO</span>
-                            <!-- Se usa 'bloquear-tester' para que los QA lo vean pero no lo editen -->
                             <input type="date" id="inpFechaDev" onchange="actualizarFechasProyecto()" class="bloquear-tester text-xs font-bold text-indigo-700 bg-slate-50 border border-slate-200 rounded p-1 focus:outline-none focus:ring-1 focus:ring-indigo-400">
                         </div>
                         <div>
@@ -108,8 +106,8 @@
                             <span class="text-[10px] text-slate-500 font-bold block mb-0.5">FIN DE PRUEBAS</span>
                             <input type="date" id="inpFechaFin" onchange="actualizarFechasProyecto()" class="bloquear-tester text-xs font-bold text-rose-600 bg-slate-50 border border-slate-200 rounded p-1 focus:outline-none focus:ring-1 focus:ring-rose-400">
                         </div>
-                        <div class="pl-2 border-l border-slate-200">
-                            <span class="text-[10px] text-slate-500 font-bold block">AVANCE REAL</span>
+                        <div class="pl-2 border-l border-slate-200 bg-emerald-50 rounded-lg py-1 px-3">
+                            <span class="text-[10px] text-emerald-800 font-bold block">AVANCE REAL (PASS)</span>
                             <span id="txtAvanceReal" class="text-xl font-black text-emerald-600">0.0%</span>
                         </div>
                     </div>
@@ -193,7 +191,7 @@
                     <div class="bg-indigo-50/80 p-2 rounded-lg border border-indigo-200 shadow-sm">
                         <span class="text-[10px] font-bold text-indigo-700 uppercase block">Ejecutados</span>
                         <span id="kpiEjecutados" class="text-base font-bold text-indigo-800">0</span>
-                        <span id="pctEjecutados" class="text-[9px] text-indigo-600 block font-semibold">0%</span>
+                        <span id="pctEjecutados" class="text-[9px] text-indigo-600 block font-semibold">0% Ejecución</span>
                     </div>
                 </div>
 
@@ -203,7 +201,6 @@
                         <div>
                             <span class="text-[10px] font-bold text-rose-700 uppercase block">Total Defectos (1:N)</span>
                             <span id="txtTotalDefectosCount" class="text-2xl font-black text-rose-600">0</span>
-                            <span class="text-[10px] text-slate-400 block">Acumulado total de fallas técnicas</span>
                         </div>
                         <div class="text-rose-200 text-3xl"><i class="fa-solid fa-bug"></i></div>
                     </div>
@@ -211,7 +208,6 @@
                         <div>
                             <span class="text-[10px] font-bold text-rose-700 uppercase block">TCs con Defecto</span>
                             <span id="txtTcsConDefectoCount" class="text-2xl font-black text-rose-700">0</span>
-                            <span class="text-[10px] text-rose-500 block font-semibold">Casos afectados por fallo</span>
                         </div>
                         <div class="text-rose-100 text-3xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
                     </div>
@@ -219,7 +215,6 @@
                         <div>
                             <span class="text-[10px] font-bold text-purple-700 uppercase block">Total Desviaciones (1:N)</span>
                             <span id="txtTotalDesviacionesCount" class="text-2xl font-black text-purple-600">0</span>
-                            <span class="text-[10px] text-slate-400 block">Acumulado vs requerimiento</span>
                         </div>
                         <div class="text-purple-200 text-3xl"><i class="fa-solid fa-code-compare"></i></div>
                     </div>
@@ -227,7 +222,6 @@
                         <div>
                             <span class="text-[10px] font-bold text-purple-700 uppercase block">TCs con Desviación</span>
                             <span id="txtTcsConDesviacionCount" class="text-2xl font-black text-purple-700">0</span>
-                            <span class="text-[10px] text-purple-500 block font-semibold">Casos con discrepancia</span>
                         </div>
                         <div class="text-purple-100 text-3xl"><i class="fa-solid fa-file-circle-xmark"></i></div>
                     </div>
@@ -253,21 +247,11 @@
 
             <!-- BARRA DE NAVEGACIÓN -->
             <div class="bg-slate-200 border-b border-slate-300 flex overflow-x-auto text-sm font-medium">
-                <button onclick="cambiarPestana('pestana-testers')" id="btn-pestana-testers" class="tab-btn active px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-users"></i> 1. Control por Tester & Equipo
-                </button>
-                <button onclick="cambiarPestana('pestana-casos')" id="btn-pestana-casos" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-list-check"></i> 2. Matriz de Casos de Prueba
-                </button>
-                <button onclick="cambiarPestana('pestana-hallazgos')" id="btn-pestana-hallazgos" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-bug"></i> 3. Registro de Defectos y Desviaciones (1:N)
-                </button>
-                <button onclick="cambiarPestana('pestana-minutas')" id="btn-pestana-minutas" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-book-bookmark text-amber-600"></i> 4. Minutas de Daily / Sesiones
-                </button>
-                <button onclick="cambiarPestana('pestana-tareas')" id="btn-pestana-tareas" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-tasks text-indigo-600"></i> 5. Tablero de Tareas Jira/Azure
-                </button>
+                <button onclick="cambiarPestana('pestana-testers')" id="btn-pestana-testers" class="tab-btn active px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-users"></i> 1. Control por Tester & Equipo</button>
+                <button onclick="cambiarPestana('pestana-casos')" id="btn-pestana-casos" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-list-check"></i> 2. Matriz de Casos de Prueba</button>
+                <button onclick="cambiarPestana('pestana-hallazgos')" id="btn-pestana-hallazgos" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-bug"></i> 3. Registro de Defectos y Desviaciones</button>
+                <button onclick="cambiarPestana('pestana-minutas')" id="btn-pestana-minutas" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-book-bookmark text-amber-600"></i> 4. Minutas de Daily / Sesiones</button>
+                <button onclick="cambiarPestana('pestana-tareas')" id="btn-pestana-tareas" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-tasks text-indigo-600"></i> 5. Tablero de Tareas</button>
             </div>
 
             <!-- CONTENIDO DE PESTAÑAS -->
@@ -278,37 +262,19 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <div>
                             <h3 class="text-lg font-bold text-slate-800">Carga de Trabajo y Avance por QA Tester</h3>
-                            <p class="text-xs text-slate-500">Métricas de ejecución operativas (No incluye Liderazgo).</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <button onclick="forzarRefreshTablaTesters()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1.5 shadow transition">
-                                <i class="fa-solid fa-rotate text-xs"></i> Recargar Tabla
-                            </button>
-                            <button onclick="abrirModalAgregarIntegrante()" class="ocultar-tester bg-slate-800 hover:bg-slate-900 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow transition">
-                                <i class="fa-solid fa-user-plus text-xs"></i> Registrar Integrante
-                            </button>
+                            <button onclick="forzarRefreshTablaTesters()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1.5 shadow transition"><i class="fa-solid fa-rotate text-xs"></i> Recargar Tabla</button>
+                            <button onclick="abrirModalAgregarIntegrante()" class="ocultar-tester bg-slate-800 hover:bg-slate-900 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow transition"><i class="fa-solid fa-user-plus text-xs"></i> Registrar Integrante</button>
                         </div>
                     </div>
                     
                     <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
-                                <tr>
-                                    <th class="p-3">Tester Asignado</th>
-                                    <th class="p-3 text-center">Asignados</th>
-                                    <th class="p-3 text-center text-amber-300">Not Executed</th>
-                                    <th class="p-3 text-center text-blue-300">In Process</th>
-                                    <th class="p-3 text-center text-emerald-300">Pass</th>
-                                    <th class="p-3 text-center text-rose-300">Fail</th>
-                                    <th class="p-3 text-center text-orange-300">Help</th>
-                                    <th class="p-3 text-center text-purple-300">KIM</th>
-                                    <th class="p-3 text-center">% Avance Real</th>
-                                    <th class="p-3 text-center">Acciones</th>
-                                </tr>
+                                <tr><th class="p-3">Tester Asignado</th><th class="p-3 text-center">Asignados</th><th class="p-3 text-center text-amber-300">Not Executed</th><th class="p-3 text-center text-blue-300">In Process</th><th class="p-3 text-center text-emerald-300">Pass</th><th class="p-3 text-center text-rose-300">Fail</th><th class="p-3 text-center text-orange-300">Help</th><th class="p-3 text-center text-purple-300">KIM</th><th class="p-3 text-center">% Avance Real</th><th class="p-3 text-center">Acciones</th></tr>
                             </thead>
-                            <tbody id="tablaTestersBody" class="divide-y divide-slate-200 bg-white">
-                                <!-- Filas dinámicas -->
-                            </tbody>
+                            <tbody id="tablaTestersBody" class="divide-y divide-slate-200 bg-white"></tbody>
                         </table>
                     </div>
                 </div>
@@ -318,29 +284,13 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <div>
                             <h3 class="text-lg font-bold text-slate-800">Matriz General de Casos de Prueba</h3>
-                            <p class="text-xs text-slate-500">Administra la ejecución diaria de los casos de prueba.</p>
                         </div>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                            <select id="filtroTesterCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500">
-                                <option value="TODOS">👤 Todos los Testers</option>
-                            </select>
-
-                            <select id="filtroEstatusCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500">
-                                <option value="TODOS">🔍 Todos los Estatus</option>
-                                <option value="NOT_EXECUTED">⏳ NOT EXECUTED</option>
-                                <option value="IN_PROCESS">🔄 IN PROCESS</option>
-                                <option value="PASS">✅ PASS</option>
-                                <option value="FAIL">❌ FAIL</option>
-                                <option value="HELP">🆘 HELP</option>
-                                <option value="KIM">⭐ KIM</option>
-                            </select>
+                            <select id="filtroTesterCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">👤 Todos los Testers</option></select>
+                            <select id="filtroEstatusCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">🔍 Todos los Estatus</option><option value="NOT_EXECUTED">⏳ NOT EXECUTED</option><option value="IN_PROCESS">🔄 IN PROCESS</option><option value="PASS">✅ PASS</option><option value="FAIL">❌ FAIL</option><option value="HELP">🆘 HELP</option><option value="KIM">⭐ KIM</option></select>
                             
-                            <button onclick="abrirModalCargaMasiva()" class="ocultar-tester bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
-                                <i class="fa-solid fa-file-csv"></i> Cargar Matriz (Masivo)
-                            </button>
-                            <button onclick="abrirModalNuevoCaso()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
-                                <i class="fa-solid fa-plus"></i> Nuevo Test Case
-                            </button>
+                            <button onclick="abrirModalCargaMasiva()" class="ocultar-tester bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-file-excel"></i> Cargar Excel (Masivo)</button>
+                            <button onclick="abrirModalNuevoCaso()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-plus"></i> Nuevo Test Case</button>
                         </div>
                     </div>
 
@@ -354,14 +304,13 @@
                                     <th class="p-3 text-center">Pasos TC</th>
                                     <th class="p-3">Tester Asignado</th>
                                     <th class="p-3 text-center">Estatus</th>
-                                    <th class="p-3 text-center">Fecha Ejecución Tester</th>
-                                    <th class="p-3 text-center">Fecha Aprobación KIM</th>
-                                    <th class="p-3 text-center">Hallazgos Registrados</th>
+                                    <th class="p-3 text-center">Fecha Ejecución</th>
+                                    <th class="p-3 text-center">Fecha KIM</th>
+                                    <th class="p-3 text-center">Hallazgos</th>
+                                    <th class="p-3 text-center text-rose-300">Acción</th>
                                 </tr>
                             </thead>
-                            <tbody id="tablaCasosBody" class="divide-y divide-slate-200 bg-white">
-                                <!-- Filas dinámicas -->
-                            </tbody>
+                            <tbody id="tablaCasosBody" class="divide-y divide-slate-200 bg-white"></tbody>
                         </table>
                     </div>
                 </div>
@@ -371,36 +320,16 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <h3 class="text-lg font-bold text-slate-800">Bitácora Detallada de Defectos y Desviaciones (1:N)</h3>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                            <select id="filtroTipoHallazgo" onchange="renderizarHallazgos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500">
-                                <option value="TODOS">🔍 Todos los Hallazgos</option>
-                                <option value="DEFECTO">🐞 Solo Defectos</option>
-                                <option value="DESVIACION">⚠️ Solo Desviaciones</option>
-                            </select>
-                            <button onclick="abrirModalNuevoHallazgo()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
-                                <i class="fa-solid fa-bug"></i> Registrar Defecto / Desviación
-                            </button>
+                            <select id="filtroTipoHallazgo" onchange="renderizarHallazgos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">🔍 Todos los Hallazgos</option><option value="DEFECTO">🐞 Solo Defectos</option><option value="DESVIACION">⚠️ Solo Desviaciones</option></select>
+                            <button onclick="abrirModalNuevoHallazgo()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-bug"></i> Registrar Defecto / Desviación</button>
                         </div>
                     </div>
-
                     <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
-                                <tr>
-                                    <th class="p-3 w-10 text-center">#</th>
-                                    <th class="p-3">ID Hallazgo (Manual)</th>
-                                    <th class="p-3">ID Caso de Prueba</th>
-                                    <th class="p-3">Tipo</th>
-                                    <th class="p-3">Etapa Afectada</th>
-                                    <th class="p-3">Descripción / Detalle del Problema</th>
-                                    <th class="p-3 text-center">Fecha Registro</th>
-                                    <th class="p-3 text-center">Severidad</th>
-                                    <th class="p-3 text-center">Estatus Hallazgo</th>
-                                    <th class="p-3 text-center">Acción</th>
-                                </tr>
+                                <tr><th class="p-3 w-10 text-center">#</th><th class="p-3">ID Hallazgo (Manual)</th><th class="p-3">ID Caso de Prueba</th><th class="p-3">Tipo</th><th class="p-3">Etapa Afectada</th><th class="p-3">Descripción / Detalle del Problema</th><th class="p-3 text-center">Fecha Registro</th><th class="p-3 text-center">Severidad</th><th class="p-3 text-center">Estatus Hallazgo</th><th class="p-3 text-center">Acción</th></tr>
                             </thead>
-                            <tbody id="tablaHallazgosBody" class="divide-y divide-slate-200 bg-white">
-                                <!-- Filas dinámicas -->
-                            </tbody>
+                            <tbody id="tablaHallazgosBody" class="divide-y divide-slate-200 bg-white"></tbody>
                         </table>
                     </div>
                 </div>
@@ -408,361 +337,59 @@
                 <!-- PESTAÑA 4: MINUTAS -->
                 <div id="pestana-minutas" class="hidden space-y-6">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-book-bookmark text-amber-600"></i> Bitácora e Histórico de Minutas
-                            </h3>
-                            <p class="text-xs text-slate-500">Asigna tareas a un responsable específico o a la opción de **TODOS** los integrantes.</p>
-                        </div>
-                        
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-amber-600"></i> Bitácora e Histórico de Minutas</h3>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                            <div class="relative flex-1 md:w-64">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                                <input type="text" id="buscarMinutaInput" onkeyup="renderizarMinutas()" placeholder="Buscar por palabra clave..." class="w-full bg-white border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500">
-                            </div>
-                            <button onclick="abrirModalNuevaMinuta()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
-                                <i class="fa-solid fa-plus"></i> Nueva Minuta
-                            </button>
+                            <div class="relative flex-1 md:w-64"><i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i><input type="text" id="buscarMinutaInput" onkeyup="renderizarMinutas()" placeholder="Buscar por palabra clave..." class="w-full bg-white border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"></div>
+                            <button onclick="abrirModalNuevaMinuta()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-plus"></i> Nueva Minuta</button>
                         </div>
                     </div>
-
-                    <div id="contenedorMinutasHistorial" class="space-y-4">
-                        <!-- Tarjetas de minutas -->
-                    </div>
+                    <div id="contenedorMinutasHistorial" class="space-y-4"></div>
                 </div>
 
                 <!-- PESTAÑA 5: TABLERO DE TAREAS -->
                 <div id="pestana-tareas" class="hidden space-y-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                        <div>
-                            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-tasks text-indigo-600"></i> Tablero de Control de Pendientes & Tareas
-                            </h3>
-                            <p class="text-xs text-slate-500">Consolida tareas con estatus simplificados (Not Started, In Process, Realizado).</p>
-                        </div>
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-tasks text-indigo-600"></i> Tablero de Control de Pendientes & Tareas</h3>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                            <select id="filtroTareaResponsable" onchange="renderizarTareas()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm">
-                                <option value="TODOS">👤 Todos los Responsables</option>
-                            </select>
-                            <select id="filtroTareaEstatus" onchange="renderizarTareas()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm">
-                                <option value="TODOS">🔍 Todos los Estatus</option>
-                                <option value="NOT_STARTED">⏳ NOT STARTED</option>
-                                <option value="IN_PROCESS">🔄 IN PROCESS</option>
-                                <option value="REALIZADO">✅ REALIZADO</option>
-                            </select>
-                            <button onclick="abrirModalNuevaTarea()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
-                                <i class="fa-solid fa-plus"></i> Nueva Tarea Manual
-                            </button>
+                            <select id="filtroTareaResponsable" onchange="renderizarTareas()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm"><option value="TODOS">👤 Todos los Responsables</option></select>
+                            <select id="filtroTareaEstatus" onchange="renderizarTareas()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm"><option value="TODOS">🔍 Todos los Estatus</option><option value="NOT_STARTED">⏳ NOT STARTED</option><option value="IN_PROCESS">🔄 IN PROCESS</option><option value="REALIZADO">✅ REALIZADO</option></select>
+                            <button onclick="abrirModalNuevaTarea()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-plus"></i> Nueva Tarea Manual</button>
                         </div>
                     </div>
-
                     <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
-                                <tr>
-                                    <th class="p-3 w-10 text-center">#</th>
-                                    <th class="p-3 w-28">ID Tarea</th>
-                                    <th class="p-3">Tarea / Pendiente Asignado</th>
-                                    <th class="p-3">Responsable</th>
-                                    <th class="p-3 text-center">Origen</th>
-                                    <th class="p-3 text-center">Prioridad</th>
-                                    <th class="p-3 text-center">Fecha Alta</th>
-                                    <th class="p-3 text-center">Fecha Compromiso</th>
-                                    <th class="p-3 text-center">Estatus Tarea</th>
-                                    <th class="p-3 text-center">Acción</th>
-                                </tr>
+                                <tr><th class="p-3 w-10 text-center">#</th><th class="p-3 w-28">ID Tarea</th><th class="p-3">Tarea / Pendiente Asignado</th><th class="p-3">Responsable</th><th class="p-3 text-center">Origen</th><th class="p-3 text-center">Prioridad</th><th class="p-3 text-center">Fecha Alta</th><th class="p-3 text-center">Fecha Compromiso</th><th class="p-3 text-center">Estatus Tarea</th><th class="p-3 text-center">Acción</th></tr>
                             </thead>
-                            <tbody id="tablaTareasBody" class="divide-y divide-slate-200 bg-white">
-                                <!-- Filas dinámicas -->
-                            </tbody>
+                            <tbody id="tablaTareasBody" class="divide-y divide-slate-200 bg-white"></tbody>
                         </table>
                     </div>
                 </div>
 
             </div>
-
         </div>
     </div>
 
-    <!-- MODALES Y FORMULARIOS -->
-    <div id="modalHistoricoEjecucion" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Histórico General de Avance por Fecha
-                </h3>
-                <button onclick="cerrarModal('modalHistoricoEjecucion')" class="text-slate-400 hover:text-slate-600 text-sm"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div class="overflow-y-auto max-h-72 border rounded-lg">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-800 text-white uppercase sticky top-0">
-                        <tr>
-                            <th class="p-2.5">Fecha</th>
-                            <th class="p-2.5 text-center text-blue-300">Ejecutados</th>
-                            <th class="p-2.5 text-center text-amber-300">Faltantes Totales</th>
-                            <th class="p-2.5 text-center text-emerald-300">PASS</th>
-                            <th class="p-2.5 text-center text-rose-300">Pendientes KIM</th>
-                            <th class="p-2.5 text-center text-purple-300">Aprobados KIM</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaHistoricoEjecucionBody" class="divide-y divide-slate-200 bg-white font-medium">
-                        <!-- Filas dinámicas -->
-                    </tbody>
-                </table>
-            </div>
+    <!-- ================== MODALES Y FORMULARIOS ================== -->
+    <div id="modalHistoricoEjecucion" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4"><div class="flex justify-between items-center border-b pb-2"><h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Histórico General de Avance</h3><button onclick="cerrarModal('modalHistoricoEjecucion')" class="text-slate-400 hover:text-slate-600 text-sm"><i class="fa-solid fa-xmark"></i></button></div><div class="overflow-y-auto max-h-72 border rounded-lg"><table class="w-full text-left text-xs"><thead class="bg-slate-800 text-white uppercase sticky top-0"><tr><th class="p-2.5">Fecha</th><th class="p-2.5 text-center text-blue-300">Ejecutados</th><th class="p-2.5 text-center text-amber-300">Faltantes Totales</th><th class="p-2.5 text-center text-emerald-300">PASS</th><th class="p-2.5 text-center text-rose-300">Pendientes KIM</th><th class="p-2.5 text-center text-purple-300">Aprobados KIM</th></tr></thead><tbody id="tablaHistoricoEjecucionBody" class="divide-y divide-slate-200 bg-white font-medium"></tbody></table></div><div class="flex justify-end pt-2"><button onclick="cerrarModal('modalHistoricoEjecucion')" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Cerrar Ventana</button></div></div></div>
+    
+    <div id="modalAgregarIntegrante" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-user-plus text-slate-800"></i> Registrar Nuevo Integrante</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">Nombre Completo:</label><input type="text" id="insIntNombre" placeholder="Ej. Juan Pérez" class="w-full border rounded-lg p-2 text-sm"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Rol / Cargo:</label><select id="insIntRol" class="w-full border rounded-lg p-2 text-sm font-bold text-slate-700"><option value="Tester">Tester / QA</option><option value="Líder">Líder de Proyecto</option><option value="Analista">Analista QA / Negocio</option><option value="Desarrollador">Desarrollador (Dev)</option></select></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalAgregarIntegrante')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoIntegrante()" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Guardar Integrante</button></div></div></div>
+    <div id="modalEditarIntegrante" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-user-pen text-blue-600"></i> Editar Integrante del Equipo</h3><input type="hidden" id="editIntIndex"><div><label class="block text-xs font-bold text-slate-600 mb-1">Nombre Completo:</label><input type="text" id="editIntNombre" class="w-full border rounded-lg p-2 text-sm"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Rol / Cargo:</label><select id="editIntRol" class="w-full border rounded-lg p-2 text-sm font-bold text-slate-700"><option value="Tester">Tester / QA</option><option value="Líder">Líder de Proyecto</option><option value="Analista">Analista QA / Negocio</option><option value="Desarrollador">Desarrollador (Dev)</option></select></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalEditarIntegrante')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarEdicionIntegrante()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Actualizar Datos</button></div></div></div>
 
-            <div class="flex justify-end pt-2">
-                <button onclick="cerrarModal('modalHistoricoEjecucion')" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Cerrar Ventana</button>
-            </div>
-        </div>
-    </div>
+    <div id="modalCaso" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800">Agregar Nuevo Caso de Prueba</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">ID / Número del Test Case (Generado auto):</label><input type="text" id="insTcId" placeholder="Ej: TC-001" class="w-full border rounded-lg p-2 text-sm font-mono bg-amber-50"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Nombre / Descripción:</label><input type="text" id="insTcNombre" placeholder="Ej: Validar guardado de folletería" class="w-full border rounded-lg p-2 text-sm"></div><div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Total de Pasos del TC:</label><input type="number" id="insTcPasos" value="1" min="1" class="w-full border rounded-lg p-2 text-sm font-bold"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Tester Asignado:</label><select id="insTcTester" class="w-full border rounded-lg p-2 text-sm"></select></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalCaso')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoCaso()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Guardar TC</button></div></div></div>
 
-    <div id="modalAgregarIntegrante" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-user-plus text-slate-800"></i> Registrar Nuevo Integrante
-            </h3>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Nombre Completo:</label>
-                <input type="text" id="insIntNombre" placeholder="Ej. Juan Pérez" class="w-full border rounded-lg p-2 text-sm">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Rol / Cargo:</label>
-                <select id="insIntRol" class="w-full border rounded-lg p-2 text-sm font-bold text-slate-700">
-                    <option value="Tester">Tester / QA</option>
-                    <option value="Líder">Líder de Proyecto</option>
-                    <option value="Analista">Analista QA / Negocio</option>
-                    <option value="Desarrollador">Desarrollador (Dev)</option>
-                </select>
-            </div>
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="cerrarModal('modalAgregarIntegrante')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
-                <button onclick="guardarNuevoIntegrante()" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Guardar Integrante</button>
-            </div>
-        </div>
-    </div>
+    <div id="modalCargaMasiva" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-file-excel text-emerald-600"></i> Carga Masiva desde Excel</h3><p class="text-xs text-slate-500">Selecciona en tu Excel las columnas <strong>ID, Nombre y Pasos</strong>, cópialas (<kbd>Ctrl+C</kbd>) y pégalas directamente en el cuadro de abajo (<kbd>Ctrl+V</kbd>):</p><div><textarea id="txtAreaCargaMasiva" rows="8" placeholder="TC-01    Validar Login    5&#10;TC-02    Cerrar Sesion    2" class="w-full border rounded-lg p-2.5 text-xs font-mono focus:ring-2 focus:ring-emerald-500 bg-emerald-50"></textarea></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Asignar por defecto a Tester:</label><select id="insCargaMasivaTester" class="w-full border rounded-lg p-2 text-sm"></select></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalCargaMasiva')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="procesarCargaMasiva()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">Procesar Excel y Cargar</button></div></div></div>
 
-    <div id="modalEditarIntegrante" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-user-pen text-blue-600"></i> Editar Integrante del Equipo
-            </h3>
-            <input type="hidden" id="editIntIndex">
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Nombre Completo:</label>
-                <input type="text" id="editIntNombre" class="w-full border rounded-lg p-2 text-sm">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Rol / Cargo:</label>
-                <select id="editIntRol" class="w-full border rounded-lg p-2 text-sm font-bold text-slate-700">
-                    <option value="Tester">Tester / QA</option>
-                    <option value="Líder">Líder de Proyecto</option>
-                    <option value="Analista">Analista QA / Negocio</option>
-                    <option value="Desarrollador">Desarrollador (Dev)</option>
-                </select>
-            </div>
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="cerrarModal('modalEditarIntegrante')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
-                <button onclick="guardarEdicionIntegrante()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Actualizar Datos</button>
-            </div>
-        </div>
-    </div>
+    <div id="modalMinuta" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-amber-600"></i> Registrar Minuta de Sesión</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha de la Reunión (Alta):</label><input type="date" id="insMinutaFecha" class="w-full border rounded-lg p-2 text-sm text-slate-700 font-bold"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Título / Tema General (Opcional):</label><input type="text" id="insMinutaObjetivo" placeholder="Ej. Daily de seguimiento" class="w-full border rounded-lg p-2 text-sm"></div></div><div><div class="flex justify-between items-center mb-2"><label class="block text-xs font-bold text-slate-700 uppercase">Puntos Discutidos & Tareas:</label><button onclick="agregarPuntoMinutaInput('', false, '', '')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded border border-slate-300"><i class="fa-solid fa-plus text-amber-600"></i> Agregar Punto</button></div><div id="contenedorPuntosMinutaModal" class="space-y-3 max-h-60 overflow-y-auto p-2 border rounded-lg bg-slate-50"></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalMinuta')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevaMinuta()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold">Guardar Minuta y Tareas</button></div></div></div>
+    
+    <div id="modalTarea" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-tasks text-indigo-600"></i> Registrar Nueva Tarea</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">ID Tarea (Autogenerado):</label><input type="text" id="insTareaId" readonly class="w-full border rounded-lg p-2 text-sm font-mono font-bold bg-slate-100 text-slate-500"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Descripción de la Tarea:</label><textarea id="insTareaDesc" rows="3" placeholder="Ej. Validar con desarrollo el fix..." class="w-full border rounded-lg p-2 text-sm"></textarea></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Responsable Asignado:</label><select id="insTareaResp" class="w-full border rounded-lg p-2 text-sm font-bold"></select></div><div class="grid grid-cols-3 gap-2"><div><label class="block text-xs font-bold text-slate-600 mb-1">Prioridad:</label><select id="insTareaPrio" class="w-full border rounded-lg p-2 text-sm"><option value="ALTA">Alta</option><option value="MEDIA" selected>Media</option><option value="BAJA">Baja</option></select></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha Alta:</label><input type="date" id="insTareaFechaAlta" class="w-full border rounded-lg p-1.5 text-xs text-slate-700"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha Compromiso:</label><input type="date" id="insTareaFecha" class="w-full border rounded-lg p-1.5 text-xs text-slate-700"></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalTarea')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevaTarea()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold">Crear Tarea</button></div></div></div>
 
-    <div id="modalCaso" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-slate-800">Agregar Nuevo Caso de Prueba</h3>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">ID / Número del Test Case:</label>
-                <input type="text" id="insTcId" placeholder="Ej: TC_GMM_001" class="w-full border rounded-lg p-2 text-sm">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Nombre / Descripción:</label>
-                <input type="text" id="insTcNombre" placeholder="Ej: Validar guardado de folletería" class="w-full border rounded-lg p-2 text-sm">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Total de Pasos del TC:</label>
-                    <input type="number" id="insTcPasos" value="1" min="1" class="w-full border rounded-lg p-2 text-sm font-bold">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Tester Asignado:</label>
-                    <select id="insTcTester" class="w-full border rounded-lg p-2 text-sm">
-                        <!-- Dinámico -->
-                    </select>
-                </div>
-            </div>
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="cerrarModal('modalCaso')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
-                <button onclick="guardarNuevoCaso()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Guardar TC</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalCargaMasiva" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-file-import text-purple-600"></i> Carga Masiva de Matriz de TCs
-            </h3>
-            <p class="text-xs text-slate-500">
-                Pega la lista. Formato recomendado por línea: <br>
-                <code class="bg-slate-100 p-1 font-mono font-bold text-purple-700">NUMERO_TC, NOMBRE DEL TEST CASE, PASOS_TOTALES</code>
-            </p>
-            <div>
-                <textarea id="txtAreaCargaMasiva" rows="8" placeholder="TC_GMM_001, Validar alta de producto, 12&#10;TC_GMM_002, Verificar catálogo de folletería, 8&#10;TC_GMM_003, Probar bitácora de aperturas, 5" class="w-full border rounded-lg p-2.5 text-xs font-mono focus:ring-2 focus:ring-purple-500"></textarea>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Asignar por defecto a Tester:</label>
-                <select id="insCargaMasivaTester" class="w-full border rounded-lg p-2 text-sm">
-                    <!-- Dinámico -->
-                </select>
-            </div>
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="cerrarModal('modalCargaMasiva')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
-                <button onclick="procesarCargaMasiva()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold">Procesar y Cargar TCs</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalMinuta" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-book-bookmark text-amber-600"></i> Registrar Minuta de Sesión / Daily
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Fecha de la Reunión (Alta):</label>
-                    <input type="date" id="insMinutaFecha" class="w-full border rounded-lg p-2 text-sm text-slate-700 font-bold">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Título / Tema General (Opcional):</label>
-                    <input type="text" id="insMinutaObjetivo" placeholder="Ej. Daily de seguimiento (Opcional)" class="w-full border rounded-lg p-2 text-sm">
-                </div>
-            </div>
-
-            <div>
-                <div class="flex justify-between items-center mb-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase">Puntos Discutidos & Tareas Asignables:</label>
-                    <button onclick="agregarPuntoMinutaInput('', false, '', '')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded border border-slate-300">
-                        <i class="fa-solid fa-plus text-amber-600"></i> Agregar Punto
-                    </button>
-                </div>
-                <div id="contenedorPuntosMinutaModal" class="space-y-3 max-h-60 overflow-y-auto p-2 border rounded-lg bg-slate-50">
-                    <!-- Dinámico -->
-                </div>
-            </div>
-
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="cerrarModal('modalMinuta')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
-                <button onclick="guardarNuevaMinuta()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold">Guardar Minuta y Sincronizar Tareas</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalTarea" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-tasks text-indigo-600"></i> Registrar Nueva Tarea / Compromiso
-            </h3>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">ID Tarea (Autogenerado):</label>
-                <input type="text" id="insTareaId" readonly class="w-full border rounded-lg p-2 text-sm font-mono font-bold bg-slate-100 text-slate-500">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Descripción de la Tarea / Compromiso:</label>
-                <textarea id="insTareaDesc" rows="3" placeholder="Ej. Validar con equipo de desarrollo el fix del error 500" class="w-full border rounded-lg p-2 text-sm"></textarea>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Responsable Asignado:</label>
-                <select id="insTareaResp" class="w-full border rounded-lg p-2 text-sm font-bold">
-                    <!-- Dinámico -->
-                </select>
-            </div>
-            <div class="grid grid-cols-3 gap-2">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Prioridad:</label>
-                    <select id="insTareaPrio" class="w-full border rounded-lg p-2 text-sm">
-                        <option value="ALTA">Alta</option>
-                        <option value="MEDIA" selected>Media</option>
-                        <option value="BAJA">Baja</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Fecha Alta:</label>
-                    <input type="date" id="insTareaFechaAlta" class="w-full border rounded-lg p-1.5 text-xs text-slate-700">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Fecha Compromiso:</label>
-                    <input type="date" id="insTareaFecha" class="w-full border rounded-lg p-1.5 text-xs text-slate-700">
-                </div>
-            </div>
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="cerrarModal('modalTarea')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
-                <button onclick="guardarNuevaTarea()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold">Crear Tarea</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalHallazgo" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-slate-800">Asociar Defecto o Desviación</h3>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">ID / Clave del Defecto/Desviación (Manual):</label>
-                <input type="text" id="insHalIdManual" placeholder="Ej: DEF-1029 / BUG_GMM_05" class="w-full border rounded-lg p-2 text-sm font-mono font-bold">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Seleccionar Test Case:</label>
-                <select id="insHalTc" class="w-full border rounded-lg p-2 text-sm">
-                    <!-- Dinámico -->
-                </select>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Tipo de Hallazgo:</label>
-                    <select id="insHalTipo" class="w-full border rounded-lg p-2 text-sm">
-                        <option value="DEFECTO">Defecto (Bug)</option>
-                        <option value="DESVIACION">Desviación</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Etapa Afectada:</label>
-                    <select id="insHalEtapa" class="w-full border rounded-lg p-2 text-sm">
-                        <option value="Ejecución" selected>Ejecución</option>
-                        <option value="Objetivo / Alcance">Objetivo / Alcance</option>
-                        <option value="Prerrequisitos">Prerrequisitos</option>
-                        <option value="No Aplica">No Aplica</option>
-                    </select>
-                </div>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Fecha de Registro:</label>
-                <input type="date" id="insHalFecha" class="w-full border rounded-lg p-2 text-sm">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Descripción del Incidente:</label>
-                <textarea id="insHalDesc" rows="3" placeholder="Detalle del fallo o discrepancia..." class="w-full border rounded-lg p-2 text-sm"></textarea>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Severidad:</label>
-                <select id="insHalSeveridad" class="w-full border rounded-lg p-2 text-sm">
-                    <option value="CRITICA">Crítica / Bloqueante</option>
-                    <option value="ALTA">Alta</option>
-                    <option value="MEDIA" selected>Media</option>
-                    <option value="BAJA">Baja</option>
-                </select>
-            </div>
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="cerrarModal('modalHallazgo')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
-                <button onclick="guardarNuevoHallazgo()" class="px-4 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold">Registrar Hallazgo</button>
-            </div>
-        </div>
-    </div>
+    <div id="modalHallazgo" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800">Asociar Defecto o Desviación</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">ID / Clave del Defecto/Desviación (Manual):</label><input type="text" id="insHalIdManual" placeholder="Ej: DEF-1029 / BUG_GMM_05" class="w-full border rounded-lg p-2 text-sm font-mono font-bold"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Seleccionar Test Case:</label><select id="insHalTc" class="w-full border rounded-lg p-2 text-sm"></select></div><div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Tipo de Hallazgo:</label><select id="insHalTipo" class="w-full border rounded-lg p-2 text-sm"><option value="DEFECTO">Defecto (Bug)</option><option value="DESVIACION">Desviación</option></select></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Etapa Afectada:</label><select id="insHalEtapa" class="w-full border rounded-lg p-2 text-sm"><option value="Ejecución" selected>Ejecución</option><option value="Objetivo / Alcance">Objetivo / Alcance</option><option value="Prerrequisitos">Prerrequisitos</option><option value="No Aplica">No Aplica</option></select></div></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha de Registro:</label><input type="date" id="insHalFecha" class="w-full border rounded-lg p-2 text-sm"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Descripción del Incidente:</label><textarea id="insHalDesc" rows="3" placeholder="Detalle del fallo..." class="w-full border rounded-lg p-2 text-sm"></textarea></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Severidad:</label><select id="insHalSeveridad" class="w-full border rounded-lg p-2 text-sm"><option value="CRITICA">Crítica / Bloqueante</option><option value="ALTA">Alta</option><option value="MEDIA" selected>Media</option><option value="BAJA">Baja</option></select></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalHallazgo')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoHallazgo()" class="px-4 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold">Registrar Hallazgo</button></div></div></div>
 
     <!-- JAVASCRIPT -->
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyB-_1nc3wZ0zve2g4ZWczojFwU-b_8ugPM",
+            apiKey: "AIzaSyB-_lnc3wZ0zve2g4ZWczojFwU-b_8ugPM",
             authDomain: "qa-tracker-cc2ca.firebaseapp.com",
             databaseURL: "https://qa-tracker-cc2ca-default-rtdb.firebaseio.com",
             projectId: "qa-tracker-cc2ca",
@@ -772,10 +399,8 @@
             measurementId: "G-DEFJ5XV0YJ"
         };
 
-        let db = null;
-        let firebaseActivo = false;
+        let db = null; let firebaseActivo = false;
 
-        // SE AGREGARON LOS CORREOS NUEVOS COMO ADMINS
         const directorioUsuarios = {
             "kimberly.meza@avance.com": { nombre: "Kimberly Meza", rol: "Admin" },
             "nata.vega@avance.com": { nombre: "Natanael Vega", rol: "Admin" },
@@ -786,15 +411,8 @@
 
         let usuarioSesion = { nombre: "Desconocido", rol: "Tester", email: "" };
 
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            firebaseActivo = true;
-        } catch (e) {
-            console.log("Error de conexión:", e);
-        }
+        try { firebase.initializeApp(firebaseConfig); db = firebase.database(); firebaseActivo = true; } catch (e) { console.log(e); }
 
-        // LÓGICA DE LOGIN Y ROLES
         if (firebaseActivo) {
             firebase.auth().onAuthStateChanged(user => {
                 if (user) {
@@ -806,7 +424,6 @@
                     document.getElementById('txtUserLogged').innerText = usuarioSesion.nombre;
                     document.getElementById('txtUserRole').innerText = `Rol: ${usuarioSesion.rol}`;
 
-                    // LÓGICA DE PERMISOS (OCULTAR O BLOQUEAR SI NO ERES ADMIN)
                     if (usuarioSesion.rol !== 'Admin') {
                         document.querySelectorAll('.ocultar-tester').forEach(el => el.classList.add('hidden'));
                         document.querySelectorAll('.bloquear-tester').forEach(el => el.classList.add('bloqueado'));
@@ -817,7 +434,6 @@
 
                     document.getElementById('modalLogin').classList.add('hidden');
                     document.getElementById('appPrincipal').classList.remove('hidden');
-
                     cargarDatosDesdeFirebase();
                 } else {
                     document.getElementById('appPrincipal').classList.add('hidden');
@@ -827,411 +443,137 @@
         }
 
         function iniciarSesion() {
-            const email = document.getElementById('inEmail').value.trim();
-            const pass = document.getElementById('inPass').value;
-            const msjError = document.getElementById('loginError');
-            const recordar = document.getElementById('chkRecordar').checked;
-            
-            if(!firebaseActivo) return;
-            msjError.innerText = "Cargando..."; msjError.classList.remove('hidden');
+            const email = document.getElementById('inEmail').value.trim(); const pass = document.getElementById('inPass').value; const msjError = document.getElementById('loginError'); const recordar = document.getElementById('chkRecordar').checked;
+            if(!firebaseActivo) return; msjError.innerText = "Cargando..."; msjError.classList.remove('hidden');
             const persistencia = recordar ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
-            firebase.auth().setPersistence(persistencia)
-                .then(() => { return firebase.auth().signInWithEmailAndPassword(email, pass); })
-                .catch(error => {
-                    let msj = "Error de sesión.";
-                    if(error.code === 'auth/invalid-credential') msj = "Correo o contraseña incorrectos.";
-                    msjError.innerText = msj;
-                });
+            firebase.auth().setPersistence(persistencia).then(() => { return firebase.auth().signInWithEmailAndPassword(email, pass); }).catch(error => { let msj = "Error de sesión."; if(error.code === 'auth/invalid-credential') msj = "Correo o contraseña incorrectos."; msjError.innerText = msj; });
         }
 
         function cerrarSesion() { if (firebaseActivo) firebase.auth().signOut(); }
+        function togglePassword() { const input = document.getElementById('inPass'); const icono = document.getElementById('iconoOjo'); if (input.type === 'password') { input.type = 'text'; icono.classList.remove('fa-eye'); icono.classList.add('fa-eye-slash'); } else { input.type = 'password'; icono.classList.remove('fa-eye-slash'); icono.classList.add('fa-eye'); } }
 
-        function togglePassword() {
-            const input = document.getElementById('inPass');
-            const icono = document.getElementById('iconoOjo');
-            if (input.type === 'password') { input.type = 'text'; icono.classList.remove('fa-eye'); icono.classList.add('fa-eye-slash'); } 
-            else { input.type = 'password'; icono.classList.remove('fa-eye-slash'); icono.classList.add('fa-eye'); }
-        }
-
-        // VARIABLES GLOBALES
-        let tituloProyecto = "QA Testing Executive Tracker";
-        let fechaEntregaDev = "";
-        let fechaInicioPruebas = "";
-        let fechaFinPruebas = "";
+        let tituloProyecto = "QA Testing Executive Tracker"; let fechaEntregaDev = ""; let fechaInicioPruebas = ""; let fechaFinPruebas = "";
         let testers = ["Iván Hernández", "Irvin Samperio", "Natanael Vega", "Kimberly Meza"];
-        let involucradosGlobales = [
-            { nombre: "TODOS", rol: "Todo el equipo" },
-            { nombre: "Iván Hernández", rol: "Tester" },
-            { nombre: "Irvin Samperio", rol: "Tester" },
-            { nombre: "Natanael Vega", rol: "Tester" },
-            { nombre: "Kimberly Meza", rol: "Líder" },
-            { nombre: "Néstor Castillo", rol: "Analista" }
-        ];
-        let casosPrueba = [];
-        let hallazgos = [];
-        let minutasLista = [];
-        let tareasDaily = [];
+        let involucradosGlobales = [ { nombre: "TODOS", rol: "Todo el equipo" }, { nombre: "Iván Hernández", rol: "Tester" }, { nombre: "Irvin Samperio", rol: "Tester" }, { nombre: "Natanael Vega", rol: "Tester" }, { nombre: "Kimberly Meza", rol: "Líder" }, { nombre: "Néstor Castillo", rol: "Analista" } ];
+        let casosPrueba = []; let hallazgos = []; let minutasLista = []; let tareasDaily = [];
 
-        function normalizarTexto(txt) {
-            if (!txt) return "";
-            return txt.toLowerCase()
-                      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                      .replace(/\s*\([^)]*\)/g, "")
-                      .trim();
-        }
+        function normalizarTexto(txt) { if (!txt) return ""; return txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s*\([^)]*\)/g, "").trim(); }
 
-        function actualizarTituloProyecto(val) {
-            if(usuarioSesion.rol !== 'Admin') return;
-            tituloProyecto = val.trim() || "QA Testing Executive Tracker";
-            guardarDatosEnNubeOEnLocal();
-        }
+        function actualizarTituloProyecto(val) { if(usuarioSesion.rol !== 'Admin') return; tituloProyecto = val.trim() || "QA Testing Executive Tracker"; guardarDatosEnNubeOEnLocal(); }
+        function actualizarFechasProyecto() { if(usuarioSesion.rol !== 'Admin') return; fechaEntregaDev = document.getElementById("inpFechaDev").value; fechaInicioPruebas = document.getElementById("inpFechaInicio").value; fechaFinPruebas = document.getElementById("inpFechaFin").value; guardarDatosEnNubeOEnLocal(); calcularKPIs(); }
 
-        function actualizarFechasProyecto() {
-            if(usuarioSesion.rol !== 'Admin') return;
-            fechaEntregaDev = document.getElementById("inpFechaDev").value;
-            fechaInicioPruebas = document.getElementById("inpFechaInicio").value;
-            fechaFinPruebas = document.getElementById("inpFechaFin").value;
-            guardarDatosEnNubeOEnLocal();
-            calcularKPIs();
-        }
+        function cambiarPestana(idPestana) { document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById('btn-' + idPestana).classList.add('active'); document.getElementById('pestana-testers').classList.add('hidden'); document.getElementById('pestana-casos').classList.add('hidden'); document.getElementById('pestana-hallazgos').classList.add('hidden'); document.getElementById('pestana-minutas').classList.add('hidden'); document.getElementById('pestana-tareas').classList.add('hidden'); document.getElementById(idPestana).classList.remove('hidden'); actualizarTodo(); }
 
-        function cambiarPestana(idPestana) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-' + idPestana).classList.add('active');
-            document.getElementById('pestana-testers').classList.add('hidden');
-            document.getElementById('pestana-casos').classList.add('hidden');
-            document.getElementById('pestana-hallazgos').classList.add('hidden');
-            document.getElementById('pestana-minutas').classList.add('hidden');
-            document.getElementById('pestana-tareas').classList.add('hidden');
-            document.getElementById(idPestana).classList.remove('hidden');
-            actualizarTodo();
-        }
-
-        function actualizarTodo() {
-            document.getElementById("inpFechaDev").value = fechaEntregaDev;
-            document.getElementById("inpFechaInicio").value = fechaInicioPruebas;
-            document.getElementById("inpFechaFin").value = fechaFinPruebas;
-            document.getElementById("tituloProyectoInput").value = tituloProyecto;
-
-            poblarFiltroTesters();
-            poblarFiltrosTareas();
-            calcularKPIs();
-            renderizarTesters();
-            renderizarCasos();
-            renderizarHallazgos();
-            renderizarMinutas();
-            renderizarTareas();
-        }
-
+        function actualizarTodo() { document.getElementById("inpFechaDev").value = fechaEntregaDev; document.getElementById("inpFechaInicio").value = fechaInicioPruebas; document.getElementById("inpFechaFin").value = fechaFinPruebas; document.getElementById("tituloProyectoInput").value = tituloProyecto; poblarFiltroTesters(); poblarFiltrosTareas(); calcularKPIs(); renderizarTesters(); renderizarCasos(); renderizarHallazgos(); renderizarMinutas(); renderizarTareas(); }
         function forzarRefreshTablaTesters() { actualizarTodo(); }
+        function poblarFiltroTesters() { const sel = document.getElementById("filtroTesterCaso"); const valPrevio = sel.value; sel.innerHTML = '<option value="TODOS">👤 Todos los Testers</option>'; testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); if (testers.includes(valPrevio)) sel.value = valPrevio; }
+        function poblarFiltrosTareas() { const sel = document.getElementById("filtroTareaResponsable"); const valPrevio = sel.value; sel.innerHTML = '<option value="TODOS">👤 Todos los Responsables</option>'; involucradosGlobales.forEach(r => { if(r && r.nombre && r.nombre !== "undefined") { const tag = r.nombre === "TODOS" ? "TODOS (Todo el equipo)" : `${r.nombre} (${r.rol || 'Integrante'})`; sel.innerHTML += `<option value="${tag}">${tag}</option>`; } }); if (valPrevio) sel.value = valPrevio; }
 
-        function poblarFiltroTesters() {
-            const sel = document.getElementById("filtroTesterCaso");
-            const valPrevio = sel.value;
-            sel.innerHTML = '<option value="TODOS">👤 Todos los Testers</option>';
-            testers.forEach(t => {
-                if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`;
-            });
-            if (testers.includes(valPrevio)) sel.value = valPrevio;
-        }
-
-        function poblarFiltrosTareas() {
-            const sel = document.getElementById("filtroTareaResponsable");
-            const valPrevio = sel.value;
-            sel.innerHTML = '<option value="TODOS">👤 Todos los Responsables</option>';
-            
-            involucradosGlobales.forEach(r => {
-                if(r && r.nombre && r.nombre !== "undefined") {
-                    const tag = r.nombre === "TODOS" ? "TODOS (Todo el equipo)" : `${r.nombre} (${r.rol || 'Integrante'})`;
-                    sel.innerHTML += `<option value="${tag}">${tag}</option>`;
-                }
-            });
-            if (valPrevio) sel.value = valPrevio;
-        }
-
-        function abrirModalAgregarIntegrante() {
-            document.getElementById("insIntNombre").value = "";
-            document.getElementById("modalAgregarIntegrante").classList.remove("hidden");
-        }
-
-        function guardarNuevoIntegrante() {
-            const nombre = document.getElementById("insIntNombre").value.trim();
-            const rol = document.getElementById("insIntRol").value;
-
-            if (nombre) {
-                if (!involucradosGlobales.some(i => i.nombre.toLowerCase() === nombre.toLowerCase())) {
-                    involucradosGlobales.push({ nombre, rol });
-                }
-                if (!testers.includes(nombre)) {
-                    testers.push(nombre);
-                }
-                cerrarModal("modalAgregarIntegrante");
-                guardarDatosEnNubeOEnLocal();
-                actualizarTodo();
-            } else {
-                alert("Por favor ingresa el nombre del integrante.");
-            }
-        }
-
-        function abrirModalEditarIntegrante(idx) {
-            const soloTesters = involucradosGlobales.filter(i => i && i.nombre && i.nombre !== "TODOS" && i.rol === "Tester" && !i.nombre.toLowerCase().includes("kimberly"));
-            const item = soloTesters[idx];
-            
-            if (item) {
-                const realIdx = involucradosGlobales.findIndex(i => i.nombre === item.nombre);
-                document.getElementById("editIntIndex").value = realIdx;
-                document.getElementById("editIntNombre").value = item.nombre || "";
-                document.getElementById("editIntRol").value = item.rol || "Tester";
-                document.getElementById("modalEditarIntegrante").classList.remove("hidden");
-            }
-        }
-
-        function guardarEdicionIntegrante() {
-            const idx = parseInt(document.getElementById("editIntIndex").value);
-            const nombreViejo = involucradosGlobales[idx] ? involucradosGlobales[idx].nombre : "";
-            const nuevoNombre = document.getElementById("editIntNombre").value.trim();
-            const nuevoRol = document.getElementById("editIntRol").value;
-
-            if (nuevoNombre && !isNaN(idx)) {
-                involucradosGlobales[idx] = { nombre: nuevoNombre, rol: nuevoRol };
-                
-                const tIdx = testers.indexOf(nombreViejo);
-                if (tIdx !== -1) testers[tIdx] = nuevoNombre;
-                else testers.push(nuevoNombre);
-
-                casosPrueba.forEach(c => { if(c.tester === nombreViejo) c.tester = nuevoNombre; });
-
-                cerrarModal("modalEditarIntegrante");
-                guardarDatosEnNubeOEnLocal();
-                actualizarTodo();
-            }
-        }
-
-        function eliminarIntegrante(nombre) {
-            if (confirm(`¿Deseas eliminar a ${nombre} de la lista del equipo?`)) {
-                testers = testers.filter(t => t !== nombre);
-                involucradosGlobales = involucradosGlobales.filter(i => i.nombre !== nombre);
-                guardarDatosEnNubeOEnLocal();
-                actualizarTodo();
-            }
-        }
+        function abrirModalAgregarIntegrante() { document.getElementById("insIntNombre").value = ""; document.getElementById("modalAgregarIntegrante").classList.remove("hidden"); }
+        function guardarNuevoIntegrante() { const nombre = document.getElementById("insIntNombre").value.trim(); const rol = document.getElementById("insIntRol").value; if (nombre) { if (!involucradosGlobales.some(i => i.nombre.toLowerCase() === nombre.toLowerCase())) { involucradosGlobales.push({ nombre, rol }); } if (!testers.includes(nombre)) { testers.push(nombre); } cerrarModal("modalAgregarIntegrante"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); } else { alert("Por favor ingresa el nombre."); } }
+        function abrirModalEditarIntegrante(idx) { const soloTesters = involucradosGlobales.filter(i => i && i.nombre && i.nombre !== "TODOS" && i.rol === "Tester" && !i.nombre.toLowerCase().includes("kimberly")); const item = soloTesters[idx]; if (item) { const realIdx = involucradosGlobales.findIndex(i => i.nombre === item.nombre); document.getElementById("editIntIndex").value = realIdx; document.getElementById("editIntNombre").value = item.nombre || ""; document.getElementById("editIntRol").value = item.rol || "Tester"; document.getElementById("modalEditarIntegrante").classList.remove("hidden"); } }
+        function guardarEdicionIntegrante() { const idx = parseInt(document.getElementById("editIntIndex").value); const nombreViejo = involucradosGlobales[idx] ? involucradosGlobales[idx].nombre : ""; const nuevoNombre = document.getElementById("editIntNombre").value.trim(); const nuevoRol = document.getElementById("editIntRol").value; if (nuevoNombre && !isNaN(idx)) { involucradosGlobales[idx] = { nombre: nuevoNombre, rol: nuevoRol }; const tIdx = testers.indexOf(nombreViejo); if (tIdx !== -1) testers[tIdx] = nuevoNombre; else testers.push(nuevoNombre); casosPrueba.forEach(c => { if(c.tester === nombreViejo) c.tester = nuevoNombre; }); cerrarModal("modalEditarIntegrante"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
+        function eliminarIntegrante(nombre) { if (confirm(`¿Eliminar a ${nombre}?`)) { testers = testers.filter(t => t !== nombre); involucradosGlobales = involucradosGlobales.filter(i => i.nombre !== nombre); guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
 
         function calcularKPIs() {
-            const total = casosPrueba.length;
-            const notExec = casosPrueba.filter(c => c.estatus === "NOT_EXECUTED").length;
-            const inProc = casosPrueba.filter(c => c.estatus === "IN_PROCESS").length;
-            const pass = casosPrueba.filter(c => c.estatus === "PASS").length;
-            const fail = casosPrueba.filter(c => c.estatus === "FAIL").length;
-            const help = casosPrueba.filter(c => c.estatus === "HELP").length;
-            const kim = casosPrueba.filter(c => c.estatus === "KIM").length;
+            const total = casosPrueba.length; 
+            const notExec = casosPrueba.filter(c => c.estatus === "NOT_EXECUTED").length; 
+            const inProc = casosPrueba.filter(c => c.estatus === "IN_PROCESS").length; 
+            const pass = casosPrueba.filter(c => c.estatus === "PASS").length; 
+            const fail = casosPrueba.filter(c => c.estatus === "FAIL").length; 
+            const help = casosPrueba.filter(c => c.estatus === "HELP").length; 
+            const kim = casosPrueba.filter(c => c.estatus === "KIM").length; 
 
-            const ejecutados = total - notExec;
-            const pctReal = total > 0 ? ((ejecutados / total) * 100) : 0;
+            // CÁLCULO ESTRICTO: Avance Real es SOLO PASS. Ejecutados es todo lo diferente a NOT_EXECUTED.
+            const ejecutados = total - notExec; 
+            const pctReal = total > 0 ? ((pass / total) * 100) : 0; 
+            const pctEjecucion = total > 0 ? ((ejecutados / total) * 100) : 0; 
 
-            const hoy = new Date().toISOString().split('T')[0];
-
-            const ejecutadosHoyCount = casosPrueba.filter(c => c.estatus !== "NOT_EXECUTED" && c.fechaEjecucion === hoy).length;
-            const faltantesEjecucionCount = notExec + inProc;
-
-            const aprobadosKimCount = casosPrueba.filter(c => c.estatus === "PASS" || (c.estatus === "KIM" && c.fechaKim && c.fechaKim.trim() !== "")).length;
-            const pendientesKimCount = casosPrueba.filter(c => c.estatus === "KIM" && (!c.fechaKim || c.fechaKim.trim() === "")).length;
-
-            const totalDefectosCount = hallazgos.filter(h => h.tipo === "DEFECTO").length;
-            const totalDesviacionesCount = hallazgos.filter(h => h.tipo === "DESVIACION").length;
-
-            const tcsConDefectoSet = new Set(hallazgos.filter(h => h.tipo === "DEFECTO").map(h => h.tcId));
+            const hoy = new Date().toISOString().split('T')[0]; 
+            const ejecutadosHoyCount = casosPrueba.filter(c => c.estatus !== "NOT_EXECUTED" && c.fechaEjecucion === hoy).length; 
+            const faltantesEjecucionCount = notExec + inProc; 
+            const aprobadosKimCount = casosPrueba.filter(c => c.estatus === "PASS" || (c.estatus === "KIM" && c.fechaKim && c.fechaKim.trim() !== "")).length; 
+            const pendientesKimCount = casosPrueba.filter(c => c.estatus === "KIM" && (!c.fechaKim || c.fechaKim.trim() === "")).length; 
+            const totalDefectosCount = hallazgos.filter(h => h.tipo === "DEFECTO").length; 
+            const totalDesviacionesCount = hallazgos.filter(h => h.tipo === "DESVIACION").length; 
+            const tcsConDefectoSet = new Set(hallazgos.filter(h => h.tipo === "DEFECTO").map(h => h.tcId)); 
             const tcsConDesviacionSet = new Set(hallazgos.filter(h => h.tipo === "DESVIACION").map(h => h.tcId));
 
-            document.getElementById("kpiEjecutadosHoy").innerText = ejecutadosHoyCount;
-            document.getElementById("kpiFaltantesEjecucion").innerText = faltantesEjecucionCount;
-            document.getElementById("pctFaltantesEjecucion").innerText = total > 0 ? ((faltantesEjecucionCount / total) * 100).toFixed(1) + "% del total" : "0%";
-            
-            document.getElementById("kpiAprobadosKim").innerText = aprobadosKimCount;
-            document.getElementById("pctAprobadosKim").innerText = total > 0 ? ((aprobadosKimCount / total) * 100).toFixed(1) + "% del total" : "0%";
-            
-            document.getElementById("kpiPendientesKim").innerText = pendientesKimCount;
-            document.getElementById("pctPendientesKim").innerText = kim > 0 ? ((pendientesKimCount / kim) * 100).toFixed(1) + "% de estatus KIM" : "0%";
+            document.getElementById("kpiEjecutadosHoy").innerText = ejecutadosHoyCount; 
+            document.getElementById("kpiFaltantesEjecucion").innerText = faltantesEjecucionCount; 
+            document.getElementById("pctFaltantesEjecucion").innerText = total > 0 ? ((faltantesEjecucionCount / total) * 100).toFixed(1) + "% del total" : "0%"; 
+            document.getElementById("kpiAprobadosKim").innerText = aprobadosKimCount; 
+            document.getElementById("pctAprobadosKim").innerText = total > 0 ? ((aprobadosKimCount / total) * 100).toFixed(1) + "% del total" : "0%"; 
+            document.getElementById("kpiPendientesKim").innerText = pendientesKimCount; 
+            document.getElementById("pctPendientesKim").innerText = kim > 0 ? ((pendientesKimCount / kim) * 100).toFixed(1) + "% de estatus KIM" : "0%"; 
 
-            document.getElementById("kpiTotal").innerText = total;
-            document.getElementById("kpiNotExecuted").innerText = notExec;
-            document.getElementById("kpiInProcess").innerText = inProc;
-            document.getElementById("kpiPass").innerText = pass;
-            document.getElementById("kpiFail").innerText = fail;
-            document.getElementById("kpiHelp").innerText = help;
-            document.getElementById("kpiKim").innerText = kim;
-            document.getElementById("kpiEjecutados").innerText = ejecutados;
+            document.getElementById("kpiTotal").innerText = total; document.getElementById("kpiNotExecuted").innerText = notExec; 
+            document.getElementById("kpiInProcess").innerText = inProc; document.getElementById("kpiPass").innerText = pass; 
+            document.getElementById("kpiFail").innerText = fail; document.getElementById("kpiHelp").innerText = help; 
+            document.getElementById("kpiKim").innerText = kim; document.getElementById("kpiEjecutados").innerText = ejecutados; 
 
-            document.getElementById("pctNotExecuted").innerText = total > 0 ? ((notExec / total) * 100).toFixed(1) + "%" : "0%";
-            document.getElementById("pctInProcess").innerText = total > 0 ? ((inProc / total) * 100).toFixed(1) + "%" : "0%";
-            document.getElementById("pctPass").innerText = total > 0 ? ((pass / total) * 100).toFixed(1) + "%" : "0%";
-            document.getElementById("pctFail").innerText = total > 0 ? ((fail / total) * 100).toFixed(1) + "%" : "0%";
-            document.getElementById("pctHelp").innerText = total > 0 ? ((help / total) * 100).toFixed(1) + "%" : "0%";
-            document.getElementById("pctKim").innerText = total > 0 ? ((kim / total) * 100).toFixed(1) + "%" : "0%";
-            document.getElementById("pctEjecutados").innerText = pctReal.toFixed(1) + "%";
+            document.getElementById("pctNotExecuted").innerText = total > 0 ? ((notExec / total) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctInProcess").innerText = total > 0 ? ((inProc / total) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctPass").innerText = total > 0 ? ((pass / total) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctFail").innerText = total > 0 ? ((fail / total) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctHelp").innerText = total > 0 ? ((help / total) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctKim").innerText = total > 0 ? ((kim / total) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctEjecutados").innerText = pctEjecucion.toFixed(1) + "% Ejecución"; 
 
-            document.getElementById("txtTotalDefectosCount").innerText = totalDefectosCount;
-            document.getElementById("txtTotalDesviacionesCount").innerText = totalDesviacionesCount;
-            document.getElementById("txtTcsConDefectoCount").innerText = tcsConDefectoSet.size;
+            document.getElementById("txtTotalDefectosCount").innerText = totalDefectosCount; 
+            document.getElementById("txtTotalDesviacionesCount").innerText = totalDesviacionesCount; 
+            document.getElementById("txtTcsConDefectoCount").innerText = tcsConDefectoSet.size; 
             document.getElementById("txtTcsConDesviacionCount").innerText = tcsConDesviacionSet.size;
 
-            if (total > 0) {
-                document.getElementById("barPass").style.width = ((pass / total) * 100) + "%";
-                document.getElementById("barInProcess").style.width = ((inProc / total) * 100) + "%";
-                document.getElementById("barFail").style.width = ((fail / total) * 100) + "%";
-                document.getElementById("barHelp").style.width = ((help / total) * 100) + "%";
-                document.getElementById("barKim").style.width = ((kim / total) * 100) + "%";
-                document.getElementById("barNotExecuted").style.width = ((notExec / total) * 100) + "%";
-            }
-
-            document.getElementById("txtAvanceReal").innerText = pctReal.toFixed(1) + "%";
+            if (total > 0) { document.getElementById("barPass").style.width = ((pass / total) * 100) + "%"; document.getElementById("barInProcess").style.width = ((inProc / total) * 100) + "%"; document.getElementById("barFail").style.width = ((fail / total) * 100) + "%"; document.getElementById("barHelp").style.width = ((help / total) * 100) + "%"; document.getElementById("barKim").style.width = ((kim / total) * 100) + "%"; document.getElementById("barNotExecuted").style.width = ((notExec / total) * 100) + "%"; }
+            
+            document.getElementById("txtAvanceReal").innerText = pctReal.toFixed(1) + "%"; 
             document.getElementById("txtProgresoEstatus").innerText = `${ejecutados} / ${total} Casos Procesados`;
 
-            const cardSalud = document.getElementById("cardSaludProyecto");
-            const tituloSalud = document.getElementById("tituloSalud");
-            const descSalud = document.getElementById("descSalud");
-            const iconoSalud = document.getElementById("iconoSalud");
-
-            if (pctReal === 100) {
-                cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-emerald-50 border-emerald-200 text-emerald-900";
-                iconoSalud.className = "text-3xl text-emerald-600";
-                iconoSalud.innerHTML = '<i class="fa-solid fa-flag-checkered"></i>';
-                tituloSalud.innerText = "¡PRUEBAS COMPLETADAS!";
-                descSalud.innerText = `Se ha alcanzado el 100% de ejecución real.`;
-            } else if (fechaFinPruebas && hoy > fechaFinPruebas && pctReal < 100) {
-                cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-rose-50 border-rose-200 text-rose-900";
-                iconoSalud.className = "text-3xl text-rose-600";
-                iconoSalud.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
-                tituloSalud.innerText = "ALERTA: PROYECTO RETRASADO";
-                descSalud.innerText = `Se superó la fecha fin de pruebas (${fechaFinPruebas}) y el avance no está al 100%.`;
-            } else {
-                cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-blue-50 border-blue-200 text-blue-900";
-                iconoSalud.className = "text-3xl text-blue-600";
-                iconoSalud.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-                tituloSalud.innerText = "EN EJECUCIÓN";
-                descSalud.innerText = `El proyecto está en curso de acuerdo a los tiempos establecidos.`;
-            }
+            const cardSalud = document.getElementById("cardSaludProyecto"); const tituloSalud = document.getElementById("tituloSalud"); const descSalud = document.getElementById("descSalud"); const iconoSalud = document.getElementById("iconoSalud");
+            if (pctReal === 100 && total > 0) { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-emerald-50 border-emerald-200 text-emerald-900"; iconoSalud.className = "text-3xl text-emerald-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-flag-checkered"></i>'; tituloSalud.innerText = "¡PRUEBAS COMPLETADAS!"; descSalud.innerText = `Se ha alcanzado el 100% de ejecución real.`; } else if (fechaFinPruebas && hoy > fechaFinPruebas && pctReal < 100) { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-rose-50 border-rose-200 text-rose-900"; iconoSalud.className = "text-3xl text-rose-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>'; tituloSalud.innerText = "ALERTA: PROYECTO RETRASADO"; descSalud.innerText = `Se superó la fecha fin de pruebas (${fechaFinPruebas}) y el avance no está al 100%.`; } else { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-blue-50 border-blue-200 text-blue-900"; iconoSalud.className = "text-3xl text-blue-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; tituloSalud.innerText = "EN EJECUCIÓN"; descSalud.innerText = `El proyecto está en curso de acuerdo a los tiempos establecidos.`; }
         }
 
-        function abrirModalHistoricoEjecucion() {
-            const tbody = document.getElementById("tablaHistoricoEjecucionBody");
-            tbody.innerHTML = "";
-
-            const mapaHistorico = {};
-            casosPrueba.forEach(c => {
-                if (c.fechaEjecucion && c.fechaEjecucion.trim() !== "") {
-                    const f = c.fechaEjecucion;
-                    if (!mapaHistorico[f]) {
-                        mapaHistorico[f] = { ejecutados: 0, pass: 0, pendKim: 0, aprobKim: 0 };
-                    }
-                    if (c.estatus !== "NOT_EXECUTED") mapaHistorico[f].ejecutados += 1;
-                    if (c.estatus === "PASS") mapaHistorico[f].pass += 1;
-                    if (c.estatus === "KIM") {
-                        if (c.fechaKim && c.fechaKim.trim() !== "") mapaHistorico[f].aprobKim += 1;
-                        else mapaHistorico[f].pendKim += 1;
-                    }
-                }
-            });
-
-            const totalFaltantesHoy = casosPrueba.filter(c => c.estatus === "NOT_EXECUTED" || c.estatus === "IN_PROCESS").length;
-            const fechasOrdenadas = Object.keys(mapaHistorico).sort().reverse();
-
-            if (fechasOrdenadas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-semibold">Aún no hay registros de fechas de ejecución.</td></tr>`;
-            } else {
-                fechasOrdenadas.forEach(f => {
-                    const data = mapaHistorico[f];
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td class="p-2.5 font-bold text-slate-700">${f}</td>
-                        <td class="p-2.5 text-center font-bold text-blue-600">${data.ejecutados} TC(s)</td>
-                        <td class="p-2.5 text-center font-bold text-amber-600">${totalFaltantesHoy} TC(s)</td>
-                        <td class="p-2.5 text-center font-bold text-emerald-600">${data.pass} PASS</td>
-                        <td class="p-2.5 text-center font-bold text-rose-600">${data.pendKim} KIM</td>
-                        <td class="p-2.5 text-center font-bold text-purple-600">${data.aprobKim} KIM</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
-
-            document.getElementById("modalHistoricoEjecucion").classList.remove("hidden");
-        }
+        function abrirModalHistoricoEjecucion() { const tbody = document.getElementById("tablaHistoricoEjecucionBody"); tbody.innerHTML = ""; const mapaHistorico = {}; casosPrueba.forEach(c => { if (c.fechaEjecucion && c.fechaEjecucion.trim() !== "") { const f = c.fechaEjecucion; if (!mapaHistorico[f]) { mapaHistorico[f] = { ejecutados: 0, pass: 0, pendKim: 0, aprobKim: 0 }; } if (c.estatus !== "NOT_EXECUTED") mapaHistorico[f].ejecutados += 1; if (c.estatus === "PASS") mapaHistorico[f].pass += 1; if (c.estatus === "KIM") { if (c.fechaKim && c.fechaKim.trim() !== "") mapaHistorico[f].aprobKim += 1; else mapaHistorico[f].pendKim += 1; } } }); const totalFaltantesHoy = casosPrueba.filter(c => c.estatus === "NOT_EXECUTED" || c.estatus === "IN_PROCESS").length; const fechasOrdenadas = Object.keys(mapaHistorico).sort().reverse(); if (fechasOrdenadas.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-semibold">Aún no hay registros de fechas de ejecución.</td></tr>`; } else { fechasOrdenadas.forEach(f => { const data = mapaHistorico[f]; const tr = document.createElement("tr"); tr.innerHTML = `<td class="p-2.5 font-bold text-slate-700">${f}</td><td class="p-2.5 text-center font-bold text-blue-600">${data.ejecutados} TC(s)</td><td class="p-2.5 text-center font-bold text-amber-600">${totalFaltantesHoy} TC(s)</td><td class="p-2.5 text-center font-bold text-emerald-600">${data.pass} PASS</td><td class="p-2.5 text-center font-bold text-rose-600">${data.pendKim} KIM</td><td class="p-2.5 text-center font-bold text-purple-600">${data.aprobKim} KIM</td>`; tbody.appendChild(tr); }); } document.getElementById("modalHistoricoEjecucion").classList.remove("hidden"); }
 
         function renderizarTesters() {
-            const tbody = document.getElementById("tablaTestersBody");
-            tbody.innerHTML = "";
-
+            const tbody = document.getElementById("tablaTestersBody"); tbody.innerHTML = "";
             const soloTesters = involucradosGlobales.filter(i => i && i.nombre && i.nombre !== "TODOS" && i.rol === "Tester" && !i.nombre.toLowerCase().includes("kimberly"));
             const esAdmin = usuarioSesion.rol === 'Admin';
 
             soloTesters.forEach((invInfo, idx) => {
                 const normTarget = normalizarTexto(invInfo.nombre);
-                
                 const asignados = casosPrueba.filter(c => c.tester && normalizarTexto(c.tester).includes(normTarget));
-                const totalT = asignados.length;
-                const notExec = asignados.filter(c => c.estatus === "NOT_EXECUTED").length;
-                const inProc = asignados.filter(c => c.estatus === "IN_PROCESS").length;
-                const pass = asignados.filter(c => c.estatus === "PASS").length;
-                const fail = asignados.filter(c => c.estatus === "FAIL").length;
-                const help = asignados.filter(c => c.estatus === "HELP").length;
-                const kim = asignados.filter(c => c.estatus === "KIM").length;
-
-                const ejec = totalT - notExec;
-                const pct = totalT > 0 ? ((ejec / totalT) * 100).toFixed(1) : "0.0";
-
+                const totalT = asignados.length; const notExec = asignados.filter(c => c.estatus === "NOT_EXECUTED").length; const inProc = asignados.filter(c => c.estatus === "IN_PROCESS").length; const pass = asignados.filter(c => c.estatus === "PASS").length; const fail = asignados.filter(c => c.estatus === "FAIL").length; const help = asignados.filter(c => c.estatus === "HELP").length; const kim = asignados.filter(c => c.estatus === "KIM").length; 
+                const pct = totalT > 0 ? ((pass / totalT) * 100).toFixed(1) : "0.0"; // AHORA SOLO MIDE PASS
+                
                 const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-slate-700">
-                        ${invInfo.nombre} <span class="text-[10px] text-slate-400 font-normal">(${invInfo.rol})</span>
-                    </td>
-                    <td class="p-3 text-center font-bold">${totalT}</td>
-                    <td class="p-3 text-center text-amber-700 font-semibold bg-amber-50/50">${notExec}</td>
-                    <td class="p-3 text-center text-blue-700 font-semibold bg-blue-50/50">${inProc}</td>
-                    <td class="p-3 text-center text-emerald-700 font-semibold bg-emerald-50/50">${pass}</td>
-                    <td class="p-3 text-center text-rose-700 font-semibold bg-rose-50/50">${fail}</td>
-                    <td class="p-3 text-center text-orange-700 font-semibold bg-orange-50/50">${help}</td>
-                    <td class="p-3 text-center text-purple-700 font-semibold bg-purple-50/50">${kim}</td>
-                    <td class="p-3 text-center font-bold text-indigo-700">${pct}%</td>
-                    <td class="p-3 text-center flex justify-center gap-1">
-                        ${esAdmin ? `
-                        <button onclick="abrirModalEditarIntegrante(${idx})" class="text-blue-600 hover:text-blue-800 text-xs font-bold px-2 py-1 bg-blue-50 rounded border border-blue-200" title="Editar Integrante"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="eliminarIntegrante('${invInfo.nombre}')" class="text-rose-600 hover:text-rose-800 text-xs font-bold px-2 py-1 bg-rose-50 rounded border border-rose-200" title="Eliminar Integrante"><i class="fa-solid fa-trash"></i></button>
-                        ` : `<span class="text-xs text-slate-400">Lectura</span>`}
-                    </td>
-                `;
+                tr.innerHTML = `<td class="p-3 font-bold text-slate-700">${invInfo.nombre} <span class="text-[10px] text-slate-400 font-normal">(${invInfo.rol})</span></td><td class="p-3 text-center font-bold">${totalT}</td><td class="p-3 text-center text-amber-700 font-semibold bg-amber-50/50">${notExec}</td><td class="p-3 text-center text-blue-700 font-semibold bg-blue-50/50">${inProc}</td><td class="p-3 text-center text-emerald-700 font-semibold bg-emerald-50/50">${pass}</td><td class="p-3 text-center text-rose-700 font-semibold bg-rose-50/50">${fail}</td><td class="p-3 text-center text-orange-700 font-semibold bg-orange-50/50">${help}</td><td class="p-3 text-center text-purple-700 font-semibold bg-purple-50/50">${kim}</td><td class="p-3 text-center font-bold text-indigo-700">${pct}%</td><td class="p-3 text-center flex justify-center gap-1">${esAdmin ? `<button onclick="abrirModalEditarIntegrante(${idx})" class="text-blue-600 hover:text-blue-800 text-xs font-bold px-2 py-1 bg-blue-50 rounded border border-blue-200" title="Editar"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarIntegrante('${invInfo.nombre}')" class="text-rose-600 hover:text-rose-800 text-xs font-bold px-2 py-1 bg-rose-50 rounded border border-rose-200" title="Eliminar"><i class="fa-solid fa-trash"></i></button>` : `<span class="text-xs text-slate-400">Lectura</span>`}</td>`;
                 tbody.appendChild(tr);
             });
         }
 
         function renderizarCasos() {
-            const tbody = document.getElementById("tablaCasosBody");
-            tbody.innerHTML = "";
-
+            const tbody = document.getElementById("tablaCasosBody"); tbody.innerHTML = "";
             const filtroTester = document.getElementById("filtroTesterCaso") ? document.getElementById("filtroTesterCaso").value : "TODOS";
             const filtroEstatus = document.getElementById("filtroEstatusCaso") ? document.getElementById("filtroEstatusCaso").value : "TODOS";
 
             casosPrueba.forEach((c, index) => {
-                let pasaTester = (filtroTester === "TODOS" || c.tester === filtroTester);
-                let pasaEstatus = (filtroEstatus === "TODOS" || c.estatus === filtroEstatus);
-
-                if (pasaTester && pasaEstatus) {
+                if ((filtroTester === "TODOS" || c.tester === filtroTester) && (filtroEstatus === "TODOS" || c.estatus === filtroEstatus)) {
                     const isOwnerOrAdmin = (usuarioSesion.rol === 'Admin' || normalizarTexto(c.tester).includes(normalizarTexto(usuarioSesion.nombre)));
-                    const disabledStr = isOwnerOrAdmin ? '' : 'disabled title="No tienes permiso para editar"';
+                    const disabledStr = isOwnerOrAdmin ? '' : 'disabled title="No tienes permiso"';
                     const disabledClass = isOwnerOrAdmin ? 'bg-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed';
 
                     const numDef = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DEFECTO").length;
                     const numDesv = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DESVIACION").length;
 
-                    let badgeHallazgo = `<span class="text-slate-400 font-medium text-xs">Ninguno</span>`;
-                    if (numDef > 0 && numDesv > 0) {
-                        badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-[11px]"><i class="fa-solid fa-bug text-rose-600"></i> ${numDef} Def | <i class="fa-solid fa-code-compare text-purple-600"></i> ${numDesv} Desv</span>`;
-                    } else if (numDef > 0) {
-                        badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[11px]"><i class="fa-solid fa-bug"></i> ${numDef} Defecto(s)</span>`;
-                    } else if (numDesv > 0) {
-                        badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold text-[11px]"><i class="fa-solid fa-code-compare"></i> ${numDesv} Desviación(es)</span>`;
-                    }
+                    let badgeHallazgo = `<span class="text-slate-400 font-medium text-xs">-</span>`;
+                    if (numDef > 0 && numDesv > 0) badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-[11px]"><i class="fa-solid fa-bug text-rose-600"></i> ${numDef} | <i class="fa-solid fa-code-compare text-purple-600"></i> ${numDesv}</span>`;
+                    else if (numDef > 0) badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[11px]"><i class="fa-solid fa-bug"></i> ${numDef} Def</span>`;
+                    else if (numDesv > 0) badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold text-[11px]"><i class="fa-solid fa-code-compare"></i> ${numDesv} Desv</span>`;
 
                     const esPass = (c.estatus === 'PASS');
-                    const kimInputAttr = (esPass && isOwnerOrAdmin) ? '' : 'disabled title="Solo se habilita si estatus es PASS"';
+                    const kimInputAttr = (esPass && isOwnerOrAdmin) ? '' : 'disabled title="Solo si es PASS"';
                     const kimInputClass = (esPass && isOwnerOrAdmin) ? 'bg-white text-slate-700 border-slate-300' : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed';
 
                     const tr = document.createElement("tr");
@@ -1239,654 +581,218 @@
                         <td class="p-3 text-center font-mono text-xs text-slate-400 font-bold">${index + 1}</td>
                         <td class="p-3 font-bold font-mono text-slate-700">${c.id}</td>
                         <td class="p-3 text-slate-800 font-medium">${c.nombre}</td>
-                        <td class="p-3 text-center">
-                            <input type="number" value="${c.pasos || 1}" min="1" ${disabledStr} onchange="actualizarPasos('${c.id}', this.value)" class="w-14 text-center border rounded p-1 text-xs font-bold ${disabledClass}">
-                        </td>
-                        <td class="p-3 text-slate-600 font-medium">
-                            <select onchange="actualizarTesterCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border ${disabledClass}">
-                                ${generarOpcionesTestersMatriz(c.tester)}
-                            </select>
-                        </td>
-                        <td class="p-3 text-center">
-                            <select onchange="actualizarEstatusCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border shadow-sm ${disabledClass}">
-                                <option value="NOT_EXECUTED" ${c.estatus === 'NOT_EXECUTED' ? 'selected' : ''}>NOT EXECUTED</option>
-                                <option value="IN_PROCESS" ${c.estatus === 'IN_PROCESS' ? 'selected' : ''}>IN PROCESS</option>
-                                <option value="PASS" ${c.estatus === 'PASS' ? 'selected' : ''}>PASS</option>
-                                <option value="FAIL" ${c.estatus === 'FAIL' ? 'selected' : ''}>FAIL</option>
-                                <option value="HELP" ${c.estatus === 'HELP' ? 'selected' : ''}>HELP</option>
-                                <option value="KIM" ${c.estatus === 'KIM' ? 'selected' : ''}>KIM</option>
-                            </select>
-                        </td>
-                        <td class="p-3 text-center">
-                            <input type="date" value="${c.fechaEjecucion || ''}" ${disabledStr} onchange="actualizarFecha('${c.id}', 'fechaEjecucion', this.value)" class="text-xs border rounded p-1 text-slate-700 ${disabledClass}">
-                        </td>
-                        <td class="p-3 text-center">
-                            <input type="date" value="${c.fechaKim || ''}" ${kimInputAttr} onchange="actualizarFecha('${c.id}', 'fechaKim', this.value)" class="text-xs border rounded p-1 ${kimInputClass}">
-                        </td>
+                        <td class="p-3 text-center"><input type="number" value="${c.pasos || 1}" min="1" ${disabledStr} onchange="actualizarPasos('${c.id}', this.value)" class="w-14 text-center border rounded p-1 text-xs font-bold ${disabledClass}"></td>
+                        <td class="p-3 text-slate-600 font-medium"><select onchange="actualizarTesterCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border ${disabledClass}">${generarOpcionesTestersMatriz(c.tester)}</select></td>
+                        <td class="p-3 text-center"><select onchange="actualizarEstatusCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border shadow-sm ${disabledClass}"><option value="NOT_EXECUTED" ${c.estatus === 'NOT_EXECUTED' ? 'selected' : ''}>NOT EXECUTED</option><option value="IN_PROCESS" ${c.estatus === 'IN_PROCESS' ? 'selected' : ''}>IN PROCESS</option><option value="PASS" ${c.estatus === 'PASS' ? 'selected' : ''}>PASS</option><option value="FAIL" ${c.estatus === 'FAIL' ? 'selected' : ''}>FAIL</option><option value="HELP" ${c.estatus === 'HELP' ? 'selected' : ''}>HELP</option><option value="KIM" ${c.estatus === 'KIM' ? 'selected' : ''}>KIM</option></select></td>
+                        <td class="p-3 text-center"><input type="date" value="${c.fechaEjecucion || ''}" ${disabledStr} onchange="actualizarFecha('${c.id}', 'fechaEjecucion', this.value)" class="text-xs border rounded p-1 text-slate-700 ${disabledClass}"></td>
+                        <td class="p-3 text-center"><input type="date" value="${c.fechaKim || ''}" ${kimInputAttr} onchange="actualizarFecha('${c.id}', 'fechaKim', this.value)" class="text-xs border rounded p-1 ${kimInputClass}"></td>
                         <td class="p-3 text-center font-bold">${badgeHallazgo}</td>
+                        <td class="p-3 text-center">
+                            ${isOwnerOrAdmin ? `<button onclick="eliminarCaso('${c.id}')" class="text-rose-600 hover:text-rose-800 text-xs" title="Borrar Test Case"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 }
             });
         }
 
-        function generarOpcionesTestersMatriz(testerActual) {
-            let options = "";
-            testers.forEach(t => {
-                options += `<option value="${t}" ${t === testerActual ? 'selected' : ''}>${t}</option>`;
-            });
-            return options;
-        }
-
-        function actualizarTesterCaso(id, nuevoTester) {
-            const caso = casosPrueba.find(c => c.id === id);
-            if (caso) {
-                caso.tester = nuevoTester;
+        function eliminarCaso(id) {
+            if (confirm(`¿Estás seguro de que deseas eliminar el caso de prueba ${id}? Esta acción no se puede deshacer.`)) {
+                casosPrueba = casosPrueba.filter(c => c.id !== id);
+                hallazgos = hallazgos.filter(h => h.tcId !== id);
                 guardarDatosEnNubeOEnLocal();
                 actualizarTodo();
             }
         }
 
-        function actualizarPasos(id, cantidad) {
-            const caso = casosPrueba.find(c => c.id === id);
-            if (caso) {
-                caso.pasos = parseInt(cantidad) || 1;
-                guardarDatosEnNubeOEnLocal();
-            }
-        }
+        function generarOpcionesTestersMatriz(testerActual) { let options = ""; testers.forEach(t => { options += `<option value="${t}" ${t === testerActual ? 'selected' : ''}>${t}</option>`; }); return options; }
+        function actualizarTesterCaso(id, nuevoTester) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso.tester = nuevoTester; guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
+        function actualizarPasos(id, cantidad) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso.pasos = parseInt(cantidad) || 1; guardarDatosEnNubeOEnLocal(); } }
 
         function renderizarHallazgos() {
-            const tbody = document.getElementById("tablaHallazgosBody");
-            tbody.innerHTML = "";
-
+            const tbody = document.getElementById("tablaHallazgosBody"); tbody.innerHTML = "";
             const filtro = document.getElementById("filtroTipoHallazgo") ? document.getElementById("filtroTipoHallazgo").value : "TODOS";
             const esAdmin = usuarioSesion.rol === 'Admin';
-
             hallazgos.forEach((h, index) => {
                 if (filtro === "TODOS" || h.tipo === filtro) {
                     const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td class="p-3 text-center font-mono text-xs text-slate-400 font-bold">${index + 1}</td>
-                        <td class="p-3 font-mono font-bold text-slate-800">${h.id}</td>
-                        <td class="p-3 font-mono text-blue-600 font-bold">${h.tcId}</td>
-                        <td class="p-3 font-bold text-xs">
-                            <span class="px-2 py-0.5 rounded ${h.tipo === 'DEFECTO' ? 'bg-rose-100 text-rose-800' : 'bg-purple-100 text-purple-800'}">
-                                ${h.tipo}
-                            </span>
-                        </td>
-                        <td class="p-3 text-xs font-bold text-slate-700">${h.etapa || 'Ejecución'}</td>
-                        <td class="p-3 text-slate-700">${h.desc}</td>
-                        <td class="p-3 text-center text-xs font-medium text-slate-600">${h.fecha || 'N/A'}</td>
-                        <td class="p-3 text-center text-xs font-bold">${h.severidad}</td>
-                        <td class="p-3 text-center text-xs font-bold text-amber-600">${h.estatus}</td>
-                        <td class="p-3 text-center">
-                            ${esAdmin ? `<button onclick="eliminarHallazgo('${h.id}')" class="text-rose-600 hover:text-rose-800 text-xs" title="Eliminar Hallazgo"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}
-                        </td>
-                    `;
+                    tr.innerHTML = `<td class="p-3 text-center font-mono text-xs text-slate-400 font-bold">${index + 1}</td><td class="p-3 font-mono font-bold text-slate-800">${h.id}</td><td class="p-3 font-mono text-blue-600 font-bold">${h.tcId}</td><td class="p-3 font-bold text-xs"><span class="px-2 py-0.5 rounded ${h.tipo === 'DEFECTO' ? 'bg-rose-100 text-rose-800' : 'bg-purple-100 text-purple-800'}">${h.tipo}</span></td><td class="p-3 text-xs font-bold text-slate-700">${h.etapa || 'Ejecución'}</td><td class="p-3 text-slate-700">${h.desc}</td><td class="p-3 text-center text-xs font-medium text-slate-600">${h.fecha || 'N/A'}</td><td class="p-3 text-center text-xs font-bold">${h.severidad}</td><td class="p-3 text-center text-xs font-bold text-amber-600">${h.estatus}</td><td class="p-3 text-center">${esAdmin ? `<button onclick="eliminarHallazgo('${h.id}')" class="text-rose-600 hover:text-rose-800 text-xs"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}</td>`;
                     tbody.appendChild(tr);
                 }
             });
         }
-
-        function eliminarHallazgo(id) {
-            if (confirm(`¿Deseas borrar el hallazgo ${id}?`)) {
-                hallazgos = hallazgos.filter(h => h.id !== id);
-                guardarDatosEnNubeOEnLocal();
-                actualizarTodo();
-            }
-        }
+        function eliminarHallazgo(id) { if (confirm(`¿Deseas borrar el hallazgo ${id}?`)) { hallazgos = hallazgos.filter(h => h.id !== id); guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
 
         function renderizarMinutas() {
-            const contenedor = document.getElementById("contenedorMinutasHistorial");
-            contenedor.innerHTML = "";
-
+            const contenedor = document.getElementById("contenedorMinutasHistorial"); contenedor.innerHTML = "";
             const palabraClave = document.getElementById("buscarMinutaInput") ? document.getElementById("buscarMinutaInput").value.toLowerCase().trim() : "";
             const esAdmin = usuarioSesion.rol === 'Admin';
-
-            const minutasFiltradas = minutasLista.filter(m => {
-                if (!palabraClave) return true;
-                const textoPuntos = m.puntos.map(p => typeof p === 'object' ? `${p.texto} ${p.resp}` : p).join(" ");
-                const textoCompleto = `${m.fecha} ${m.objetivo} ${textoPuntos}`.toLowerCase();
-                return textoCompleto.includes(palabraClave);
-            });
-
-            if (minutasFiltradas.length === 0) {
-                contenedor.innerHTML = `<div class="p-8 text-center text-slate-400 text-sm font-semibold bg-white rounded-xl border">No se encontraron minutas que coincidan con la búsqueda.</div>`;
-                return;
-            }
-
+            const minutasFiltradas = minutasLista.filter(m => { if (!palabraClave) return true; const textoPuntos = m.puntos.map(p => typeof p === 'object' ? `${p.texto} ${p.resp}` : p).join(" "); const textoCompleto = `${m.fecha} ${m.objetivo} ${textoPuntos}`.toLowerCase(); return textoCompleto.includes(palabraClave); });
+            if (minutasFiltradas.length === 0) { contenedor.innerHTML = `<div class="p-8 text-center text-slate-400 text-sm font-semibold bg-white rounded-xl border">No se encontraron minutas.</div>`; return; }
             minutasFiltradas.forEach((m, idx) => {
                 let puntosHTML = "";
-                m.puntos.forEach(p => {
-                    const esTareaObj = typeof p === 'object' && p.esTarea;
-                    const textoP = typeof p === 'object' ? p.texto : p;
-                    const respP = typeof p === 'object' ? p.resp : '';
-
-                    puntosHTML += `<li class="flex items-start justify-between text-xs text-slate-700 bg-slate-50 p-2 rounded border border-slate-100">
-                        <div class="flex items-start gap-2">
-                            <i class="fa-solid fa-angle-right text-amber-500 mt-0.5"></i>
-                            <span class="font-medium">${textoP}</span>
-                        </div>
-                        ${esTareaObj ? `<span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded whitespace-nowrap"><i class="fa-solid fa-user-check"></i> Asignado a: ${respP}</span>` : ''}
-                    </li>`;
-                });
-
-                const card = document.createElement("div");
-                card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3";
-                card.innerHTML = `
-                    <div class="flex justify-between items-center border-b pb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded text-xs"><i class="fa-regular fa-calendar-check"></i> ${m.fecha}</span>
-                            <h4 class="font-bold text-slate-800 text-sm">${m.objetivo || "Daily de seguimiento"}</h4>
-                        </div>
-                        ${esAdmin ? `<button onclick="eliminarMinuta(${idx})" class="text-slate-400 hover:text-rose-600 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
-                    </div>
-                    <ul class="space-y-1.5 pt-1">
-                        ${puntosHTML}
-                    </ul>
-                `;
-                contenedor.appendChild(card);
+                m.puntos.forEach(p => { const esTareaObj = typeof p === 'object' && p.esTarea; const textoP = typeof p === 'object' ? p.texto : p; const respP = typeof p === 'object' ? p.resp : ''; puntosHTML += `<li class="flex items-start justify-between text-xs text-slate-700 bg-slate-50 p-2 rounded border border-slate-100"><div class="flex items-start gap-2"><i class="fa-solid fa-angle-right text-amber-500 mt-0.5"></i><span class="font-medium">${textoP}</span></div>${esTareaObj ? `<span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded whitespace-nowrap"><i class="fa-solid fa-user-check"></i> Asignado a: ${respP}</span>` : ''}</li>`; });
+                const card = document.createElement("div"); card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3"; card.innerHTML = `<div class="flex justify-between items-center border-b pb-2"><div class="flex items-center gap-2"><span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded text-xs"><i class="fa-regular fa-calendar-check"></i> ${m.fecha}</span><h4 class="font-bold text-slate-800 text-sm">${m.objetivo || "Daily de seguimiento"}</h4></div>${esAdmin ? `<button onclick="eliminarMinuta(${idx})" class="text-slate-400 hover:text-rose-600 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}</div><ul class="space-y-1.5 pt-1">${puntosHTML}</ul>`; contenedor.appendChild(card);
             });
         }
 
-        function abrirModalNuevaMinuta() {
-            document.getElementById("insMinutaFecha").value = new Date().toISOString().split('T')[0];
-            document.getElementById("insMinutaObjetivo").value = "";
-            document.getElementById("contenedorPuntosMinutaModal").innerHTML = "";
-            
-            agregarPuntoMinutaInput("", false, "", "");
-            agregarPuntoMinutaInput("", false, "", "");
-            
-            document.getElementById("modalMinuta").classList.remove("hidden");
-        }
-
-        function agregarPuntoMinutaInput(texto, esTarea, resp, fechaCompromiso) {
-            const cont = document.getElementById("contenedorPuntosMinutaModal");
-            const div = document.createElement("div");
-            div.className = "p-2.5 bg-white border border-slate-200 rounded-lg space-y-2 fila-punto-minuta shadow-sm";
-            
-            let opcionesInvolucrados = '<option value="">-- Seleccionar Responsable --</option>';
-            involucradosGlobales.forEach(t => {
-                if(t && t.nombre && t.nombre !== "undefined") {
-                    const tag = t.nombre === "TODOS" ? "TODOS (Todo el equipo)" : `${t.nombre} (${t.rol || 'Integrante'})`;
-                    opcionesInvolucrados += `<option value="${tag}" ${tag === resp ? 'selected' : ''}>${tag}</option>`;
-                }
-            });
-
-            const hoy = new Date().toISOString().split('T')[0];
-            const valFechaComp = fechaCompromiso || hoy;
-
-            div.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-circle-dot text-amber-500 text-xs"></i>
-                    <input type="text" value="${texto}" placeholder="Escribe un punto, acuerdo o actividad..." class="inp-texto-punto w-full border rounded p-1.5 text-xs text-slate-700 font-medium">
-                    <button onclick="this.parentElement.parentElement.remove()" class="text-slate-400 hover:text-rose-600 text-xs px-1"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="flex flex-wrap items-center gap-3 pl-5 bg-slate-50 p-2 rounded border border-slate-100">
-                    <label class="flex items-center gap-1 text-[11px] font-bold text-indigo-700 cursor-pointer">
-                        <input type="checkbox" ${esTarea ? 'checked' : ''} onchange="toggleSelectTesterMinuta(this)" class="inp-check-tarea accent-indigo-600 rounded">
-                        ⚡ Convertir en Tarea
-                    </label>
-                    <div class="box-tarea-detalles ${esTarea ? '' : 'hidden'} flex flex-wrap items-center gap-2">
-                        <select class="inp-select-resp text-xs border rounded p-1 bg-white text-slate-700 font-bold">
-                            ${opcionesInvolucrados}
-                        </select>
-                        <span class="text-[10px] font-bold text-slate-500">Compromiso:</span>
-                        <input type="date" value="${valFechaComp}" class="inp-fecha-comp-minuta text-xs border rounded p-1 bg-white text-slate-700">
-                    </div>
-                </div>
-            `;
-            cont.appendChild(div);
-        }
-
-        function toggleSelectTesterMinuta(chk) {
-            const boxDetalles = chk.parentElement.parentElement.querySelector('.box-tarea-detalles');
-            if(chk.checked) {
-                boxDetalles.classList.remove('hidden');
-            } else {
-                boxDetalles.classList.add('hidden');
-            }
-        }
-
-        function guardarNuevaMinuta() {
-            const fechaAlta = document.getElementById("insMinutaFecha").value;
-            let objetivo = document.getElementById("insMinutaObjetivo").value.trim();
-            if (!objetivo) objetivo = `Daily del ${fechaAlta}`;
-
-            const filas = document.querySelectorAll(".fila-punto-minuta");
-            const puntos = [];
-            let tareasNuevasCount = 0;
-
-            filas.forEach(f => {
-                const txt = f.querySelector(".inp-texto-punto").value.trim();
-                const esTarea = f.querySelector(".inp-check-tarea").checked;
-                const resp = f.querySelector(".inp-select-resp").value;
-                const fechaComp = f.querySelector(".inp-fecha-comp-minuta").value || fechaAlta;
-
-                if (txt) {
-                    puntos.push({ texto: txt, esTarea: esTarea, resp: esTarea ? resp : "" });
-
-                    if (esTarea && resp) {
-                        if (resp.startsWith("TODOS")) {
-                            const integrantesReales = involucradosGlobales.filter(i => i && i.nombre !== "TODOS");
-                            integrantesReales.forEach(integrante => {
-                                const nextNum = tareasDaily.length + 1;
-                                const tagIntegrante = `${integrante.nombre} (${integrante.rol})`;
-                                tareasDaily.push({
-                                    id: `TASK-${nextNum}`,
-                                    desc: txt,
-                                    resp: tagIntegrante,
-                                    prio: "MEDIA",
-                                    fechaAlta: fechaAlta,
-                                    fecha: fechaComp,
-                                    estatus: "NOT_STARTED",
-                                    origen: "Minuta Daily"
-                                });
-                                tareasNuevasCount++;
-                            });
-                        } else {
-                            const nextNum = tareasDaily.length + 1;
-                            tareasDaily.push({
-                                id: `TASK-${nextNum}`,
-                                desc: txt,
-                                resp: resp,
-                                prio: "MEDIA",
-                                fechaAlta: fechaAlta,
-                                fecha: fechaComp,
-                                estatus: "NOT_STARTED",
-                                origen: "Minuta Daily"
-                            });
-                            tareasNuevasCount++;
-                        }
-                    }
-                }
-            });
-
-            if (!fechaAlta) {
-                alert("Por favor ingresa la fecha de la minuta.");
-                return;
-            }
-
-            if (puntos.length === 0) {
-                alert("Por favor agrega al menos un punto en la minuta.");
-                return;
-            }
-
-            minutasLista.unshift({ fecha: fechaAlta, objetivo, puntos });
-            cerrarModal("modalMinuta");
-
-            if (tareasNuevasCount > 0) {
-                alert(`¡Minuta guardada! Se sincronizaron ${tareasNuevasCount} tarea(s) en el Tablero.`);
-            }
-
-            guardarDatosEnNubeOEnLocal();
-            actualizarTodo();
-        }
-
-        function eliminarMinuta(index) {
-            if (confirm("¿Deseas borrar esta minuta del histórico?")) {
-                minutasLista.splice(index, 1);
-                guardarDatosEnNubeOEnLocal();
-                actualizarTodo();
-            }
-        }
+        function abrirModalNuevaMinuta() { document.getElementById("insMinutaFecha").value = new Date().toISOString().split('T')[0]; document.getElementById("insMinutaObjetivo").value = ""; document.getElementById("contenedorPuntosMinutaModal").innerHTML = ""; agregarPuntoMinutaInput("", false, "", ""); agregarPuntoMinutaInput("", false, "", ""); document.getElementById("modalMinuta").classList.remove("hidden"); }
+        function agregarPuntoMinutaInput(texto, esTarea, resp, fechaCompromiso) { const cont = document.getElementById("contenedorPuntosMinutaModal"); const div = document.createElement("div"); div.className = "p-2.5 bg-white border border-slate-200 rounded-lg space-y-2 fila-punto-minuta shadow-sm"; let opcionesInvolucrados = '<option value="">-- Seleccionar Responsable --</option>'; involucradosGlobales.forEach(t => { if(t && t.nombre && t.nombre !== "undefined") { const tag = t.nombre === "TODOS" ? "TODOS (Todo el equipo)" : `${t.nombre} (${t.rol || 'Integrante'})`; opcionesInvolucrados += `<option value="${tag}" ${tag === resp ? 'selected' : ''}>${tag}</option>`; } }); const hoy = new Date().toISOString().split('T')[0]; const valFechaComp = fechaCompromiso || hoy; div.innerHTML = `<div class="flex items-center gap-2"><i class="fa-solid fa-circle-dot text-amber-500 text-xs"></i><input type="text" value="${texto}" placeholder="Escribe un punto o actividad..." class="inp-texto-punto w-full border rounded p-1.5 text-xs text-slate-700 font-medium"><button onclick="this.parentElement.parentElement.remove()" class="text-slate-400 hover:text-rose-600 text-xs px-1"><i class="fa-solid fa-xmark"></i></button></div><div class="flex flex-wrap items-center gap-3 pl-5 bg-slate-50 p-2 rounded border border-slate-100"><label class="flex items-center gap-1 text-[11px] font-bold text-indigo-700 cursor-pointer"><input type="checkbox" ${esTarea ? 'checked' : ''} onchange="toggleSelectTesterMinuta(this)" class="inp-check-tarea accent-indigo-600 rounded">⚡ Convertir en Tarea</label><div class="box-tarea-detalles ${esTarea ? '' : 'hidden'} flex flex-wrap items-center gap-2"><select class="inp-select-resp text-xs border rounded p-1 bg-white text-slate-700 font-bold">${opcionesInvolucrados}</select><span class="text-[10px] font-bold text-slate-500">Compromiso:</span><input type="date" value="${valFechaComp}" class="inp-fecha-comp-minuta text-xs border rounded p-1 bg-white text-slate-700"></div></div>`; cont.appendChild(div); }
+        function toggleSelectTesterMinuta(chk) { const boxDetalles = chk.parentElement.parentElement.querySelector('.box-tarea-detalles'); if(chk.checked) { boxDetalles.classList.remove('hidden'); } else { boxDetalles.classList.add('hidden'); } }
+        function guardarNuevaMinuta() { const fechaAlta = document.getElementById("insMinutaFecha").value; let objetivo = document.getElementById("insMinutaObjetivo").value.trim(); if (!objetivo) objetivo = `Daily del ${fechaAlta}`; const filas = document.querySelectorAll(".fila-punto-minuta"); const puntos = []; let tareasNuevasCount = 0; filas.forEach(f => { const txt = f.querySelector(".inp-texto-punto").value.trim(); const esTarea = f.querySelector(".inp-check-tarea").checked; const resp = f.querySelector(".inp-select-resp").value; const fechaComp = f.querySelector(".inp-fecha-comp-minuta").value || fechaAlta; if (txt) { puntos.push({ texto: txt, esTarea: esTarea, resp: esTarea ? resp : "" }); if (esTarea && resp) { if (resp.startsWith("TODOS")) { const integrantesReales = involucradosGlobales.filter(i => i && i.nombre !== "TODOS"); integrantesReales.forEach(integrante => { tareasDaily.push({ id: `TASK-${tareasDaily.length + 1}`, desc: txt, resp: `${integrante.nombre} (${integrante.rol})`, prio: "MEDIA", fechaAlta: fechaAlta, fecha: fechaComp, estatus: "NOT_STARTED", origen: "Minuta Daily" }); tareasNuevasCount++; }); } else { tareasDaily.push({ id: `TASK-${tareasDaily.length + 1}`, desc: txt, resp: resp, prio: "MEDIA", fechaAlta: fechaAlta, fecha: fechaComp, estatus: "NOT_STARTED", origen: "Minuta Daily" }); tareasNuevasCount++; } } } }); if (!fechaAlta) { alert("Ingresa la fecha de la minuta."); return; } if (puntos.length === 0) { alert("Agrega al menos un punto."); return; } minutasLista.unshift({ fecha: fechaAlta, objetivo, puntos }); cerrarModal("modalMinuta"); if (tareasNuevasCount > 0) { alert(`¡Minuta guardada! Se sincronizaron ${tareasNuevasCount} tarea(s).`); } guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
+        function eliminarMinuta(index) { if (confirm("¿Deseas borrar esta minuta del histórico?")) { minutasLista.splice(index, 1); guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
 
         function renderizarTareas() {
-            const tbody = document.getElementById("tablaTareasBody");
-            tbody.innerHTML = "";
-
+            const tbody = document.getElementById("tablaTareasBody"); tbody.innerHTML = "";
             const filtroResp = document.getElementById("filtroTareaResponsable") ? document.getElementById("filtroTareaResponsable").value : "TODOS";
             const filtroEst = document.getElementById("filtroTareaEstatus") ? document.getElementById("filtroTareaEstatus").value : "TODOS";
 
             tareasDaily.forEach((t, index) => {
-                let pasaResp = (filtroResp === "TODOS" || t.resp === filtroResp);
-                let pasaEst = (filtroEst === "TODOS" || t.estatus === filtroEst);
-
-                if (pasaResp && pasaEst) {
+                if ((filtroResp === "TODOS" || t.resp === filtroResp) && (filtroEst === "TODOS" || t.estatus === filtroEst)) {
                     const isOwnerOrAdmin = (usuarioSesion.rol === 'Admin' || normalizarTexto(t.resp).includes(normalizarTexto(usuarioSesion.nombre)));
                     const disabledStr = isOwnerOrAdmin ? '' : 'disabled';
                     const disabledClass = isOwnerOrAdmin ? 'bg-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed';
 
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td class="p-3 text-center font-mono text-xs text-slate-400 font-bold">${index + 1}</td>
-                        <td class="p-3 font-mono font-bold text-indigo-700">${t.id}</td>
-                        <td class="p-3 text-slate-800 font-medium">${t.desc}</td>
-                        <td class="p-3 font-semibold text-slate-700">${t.resp}</td>
-                        <td class="p-3 text-center text-xs font-bold">
-                            <span class="px-2 py-0.5 rounded ${t.origen && t.origen.includes('Minuta') ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}">
-                                ${t.origen || 'Manual'}
-                            </span>
-                        </td>
-                        <td class="p-3 text-center text-xs font-bold">
-                            <select onchange="actualizarPrioTarea('${t.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-0.5 border ${disabledClass}">
-                                <option value="ALTA" ${t.prio === 'ALTA' ? 'selected' : ''}>ALTA</option>
-                                <option value="MEDIA" ${t.prio === 'MEDIA' ? 'selected' : ''}>MEDIA</option>
-                                <option value="BAJA" ${t.prio === 'BAJA' ? 'selected' : ''}>BAJA</option>
-                            </select>
-                        </td>
-                        <td class="p-3 text-center text-xs text-slate-500 font-medium">${t.fechaAlta || t.fecha || 'N/A'}</td>
-                        <td class="p-3 text-center">
-                            <input type="date" value="${t.fecha || ''}" onchange="actualizarFechaTarea('${t.id}', this.value)" ${disabledStr} class="text-xs border rounded p-1 text-slate-700 font-medium ${disabledClass}">
-                        </td>
-                        <td class="p-3 text-center">
-                            <select onchange="actualizarEstatusTarea('${t.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border shadow-sm ${disabledClass}">
-                                <option value="NOT_STARTED" ${t.estatus === 'NOT_STARTED' ? 'selected' : ''}>⏳ NOT STARTED</option>
-                                <option value="IN_PROCESS" ${t.estatus === 'IN_PROCESS' ? 'selected' : ''}>🔄 IN PROCESS</option>
-                                <option value="REALIZADO" ${t.estatus === 'REALIZADO' ? 'selected' : ''}>✅ REALIZADO</option>
-                            </select>
-                        </td>
-                        <td class="p-3 text-center">
-                            ${isOwnerOrAdmin ? `<button onclick="eliminarTarea('${t.id}')" class="text-rose-600 hover:text-rose-800 text-xs" title="Eliminar Tarea"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
+                    tbody.innerHTML += `<tr><td class="p-3 text-center font-mono text-xs text-slate-400 font-bold">${index + 1}</td><td class="p-3 font-mono font-bold text-indigo-700">${t.id}</td><td class="p-3 text-slate-800 font-medium">${t.desc}</td><td class="p-3 font-semibold text-slate-700">${t.resp}</td><td class="p-3 text-center text-xs font-bold"><span class="px-2 py-0.5 rounded ${t.origen && t.origen.includes('Minuta') ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}">${t.origen || 'Manual'}</span></td><td class="p-3 text-center text-xs font-bold"><select onchange="actualizarPrioTarea('${t.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-0.5 border ${disabledClass}"><option value="ALTA" ${t.prio === 'ALTA' ? 'selected' : ''}>ALTA</option><option value="MEDIA" ${t.prio === 'MEDIA' ? 'selected' : ''}>MEDIA</option><option value="BAJA" ${t.prio === 'BAJA' ? 'selected' : ''}>BAJA</option></select></td><td class="p-3 text-center text-xs text-slate-500 font-medium">${t.fechaAlta || t.fecha || 'N/A'}</td><td class="p-3 text-center"><input type="date" value="${t.fecha || ''}" onchange="actualizarFechaTarea('${t.id}', this.value)" ${disabledStr} class="text-xs border rounded p-1 text-slate-700 font-medium ${disabledClass}"></td><td class="p-3 text-center"><select onchange="actualizarEstatusTarea('${t.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border shadow-sm ${disabledClass}"><option value="NOT_STARTED" ${t.estatus === 'NOT_STARTED' ? 'selected' : ''}>⏳ NOT STARTED</option><option value="IN_PROCESS" ${t.estatus === 'IN_PROCESS' ? 'selected' : ''}>🔄 IN PROCESS</option><option value="REALIZADO" ${t.estatus === 'REALIZADO' ? 'selected' : ''}>✅ REALIZADO</option></select></td><td class="p-3 text-center">${isOwnerOrAdmin ? `<button onclick="eliminarTarea('${t.id}')" class="text-rose-600 hover:text-rose-800 text-xs"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}</td></tr>`;
                 }
             });
         }
+        function abrirModalNuevaTarea() { document.getElementById("insTareaId").value = `TASK-${tareasDaily.length + 1}`; const sel = document.getElementById("insTareaResp"); sel.innerHTML = '<option value="">-- Seleccionar Responsable --</option>'; involucradosGlobales.forEach(t => { if(t && t.nombre && t.nombre !== "undefined") { const tag = t.nombre === "TODOS" ? "TODOS (Todo el equipo)" : `${t.nombre} (${t.rol || 'Integrante'})`; sel.innerHTML += `<option value="${tag}">${tag}</option>`; } }); const hoy = new Date().toISOString().split('T')[0]; document.getElementById("insTareaFechaAlta").value = hoy; document.getElementById("insTareaFecha").value = hoy; document.getElementById("modalTarea").classList.remove("hidden"); }
+        function guardarNuevaTarea() { const id = document.getElementById("insTareaId").value; const desc = document.getElementById("insTareaDesc").value.trim(); const resp = document.getElementById("insTareaResp").value; const prio = document.getElementById("insTareaPrio").value; const fechaAlta = document.getElementById("insTareaFechaAlta").value; const fechaComp = document.getElementById("insTareaFecha").value; if (!desc || !resp) { alert("Completa Descripción y Responsable."); return; } if (resp.startsWith("TODOS")) { const intReales = involucradosGlobales.filter(i => i && i.nombre !== "TODOS"); intReales.forEach((int) => { tareasDaily.push({ id: `TASK-${tareasDaily.length + 1}`, desc: desc, resp: `${int.nombre} (${int.rol || 'Integrante'})`, prio: prio, fechaAlta: fechaAlta, fecha: fechaComp, estatus: "NOT_STARTED", origen: "Manual (General)" }); }); } else { tareasDaily.push({ id, desc, resp, prio, fechaAlta, fecha: fechaComp, estatus: "NOT_STARTED", origen: "Manual" }); } cerrarModal("modalTarea"); document.getElementById("insTareaDesc").value = ""; guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
+        function eliminarTarea(id) { if (confirm(`¿Eliminar la tarea ${id}?`)) { tareasDaily = tareasDaily.filter(t => t.id !== id); guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
+        function actualizarPrioTarea(id, nuevaPrio) { const t = tareasDaily.find(item => item.id === id); if (t) { t.prio = nuevaPrio; guardarDatosEnNubeOEnLocal(); } }
+        function actualizarEstatusTarea(id, nuevoEstatus) { const t = tareasDaily.find(item => item.id === id); if (t) { t.estatus = nuevoEstatus; guardarDatosEnNubeOEnLocal(); renderizarTareas(); } }
+        function actualizarFechaTarea(id, nuevaFecha) { const t = tareasDaily.find(item => item.id === id); if (t) { t.fecha = nuevaFecha; guardarDatosEnNubeOEnLocal(); } }
 
-        function abrirModalNuevaTarea() {
-            const nextNum = tareasDaily.length + 1;
-            document.getElementById("insTareaId").value = `TASK-${nextNum}`;
+        function actualizarEstatusCaso(id, nuevoEstatus) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso.estatus = nuevoEstatus; if (nuevoEstatus !== "NOT_EXECUTED" && !caso.fechaEjecucion) { caso.fechaEjecucion = new Date().toISOString().split('T')[0]; } if (nuevoEstatus === "KIM") { caso.fechaKim = ""; } else if (nuevoEstatus === "PASS") { if (!caso.fechaKim) { caso.fechaKim = new Date().toISOString().split('T')[0]; } } else { caso.fechaKim = ""; } guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
+        function actualizarFecha(id, campoFecha, valor) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso[campoFecha] = valor; guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
 
-            const sel = document.getElementById("insTareaResp");
-            sel.innerHTML = '<option value="">-- Seleccionar Responsable --</option>';
-            involucradosGlobales.forEach(t => {
-                if(t && t.nombre && t.nombre !== "undefined") {
-                    const tag = t.nombre === "TODOS" ? "TODOS (Todo el equipo)" : `${t.nombre} (${t.rol || 'Integrante'})`;
-                    sel.innerHTML += `<option value="${tag}">${tag}</option>`;
-                }
-            });
-            const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById("insTareaFechaAlta").value = hoy;
-            document.getElementById("insTareaFecha").value = hoy;
-            document.getElementById("modalTarea").classList.remove("hidden");
+        // ID INTELIGENTE AL CREAR NUEVO CASO CON VALIDACIÓN DE DUPLICADOS
+        function abrirModalNuevoCaso() { 
+            const sel = document.getElementById("insTcTester"); sel.innerHTML = ""; 
+            testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); 
+            
+            const nextNum = casosPrueba.length + 1;
+            const newId = "TC-" + String(nextNum).padStart(3, '0');
+            document.getElementById("insTcId").value = newId;
+            document.getElementById("insTcNombre").value = "";
+            document.getElementById("insTcPasos").value = "1";
+
+            document.getElementById("modalCaso").classList.remove("hidden"); 
         }
-
-        function guardarNuevaTarea() {
-            const id = document.getElementById("insTareaId").value;
-            const desc = document.getElementById("insTareaDesc").value.trim();
-            const resp = document.getElementById("insTareaResp").value;
-            const prio = document.getElementById("insTareaPrio").value;
-            const fechaAlta = document.getElementById("insTareaFechaAlta").value;
-            const fechaComp = document.getElementById("insTareaFecha").value;
-
-            if (!desc || !resp) {
-                alert("Por favor completa los campos de Descripción y Responsable.");
+        
+        function guardarNuevoCaso() { 
+            const id = document.getElementById("insTcId").value.trim(); 
+            const nombre = document.getElementById("insTcNombre").value.trim(); 
+            const pasos = parseInt(document.getElementById("insTcPasos").value) || 1; 
+            const tester = document.getElementById("insTcTester").value; 
+            
+            if (!id || !nombre) { 
+                alert("Completa el ID y el Nombre del caso."); 
+                return; 
+            }
+            
+            if (casosPrueba.some(c => c.id.toLowerCase() === id.toLowerCase())) {
+                alert(`Error: El ID de Test Case "${id}" ya existe. Por favor usa un ID diferente.`);
                 return;
             }
 
-            if (resp.startsWith("TODOS")) {
-                const integrantesReales = involucradosGlobales.filter(i => i && i.nombre !== "TODOS");
-                integrantesReales.forEach((integrante) => {
-                    const nextNum = tareasDaily.length + 1;
-                    const tagIntegrante = `${integrante.nombre} (${integrante.rol || 'Integrante'})`;
-                    tareasDaily.push({
-                        id: `TASK-${nextNum}`,
-                        desc: desc,
-                        resp: tagIntegrante,
-                        prio: prio,
-                        fechaAlta: fechaAlta,
-                        fecha: fechaComp,
-                        estatus: "NOT_STARTED",
-                        origen: "Manual (General)"
-                    });
-                });
-            } else {
-                tareasDaily.push({ id, desc, resp, prio, fechaAlta, fecha: fechaComp, estatus: "NOT_STARTED", origen: "Manual" });
-            }
-
-            cerrarModal("modalTarea");
-            document.getElementById("insTareaDesc").value = "";
-            guardarDatosEnNubeOEnLocal();
-            actualizarTodo();
+            casosPrueba.push({ id, nombre, pasos, tester, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
+            cerrarModal("modalCaso"); 
+            guardarDatosEnNubeOEnLocal(); 
+            actualizarTodo(); 
         }
 
-        function eliminarTarea(id) {
-            if (confirm(`¿Deseas eliminar la tarea ${id}?`)) {
-                tareasDaily = tareasDaily.filter(t => t.id !== id);
-                guardarDatosEnNubeOEnLocal();
-                actualizarTodo();
-            }
-        }
-
-        function actualizarPrioTarea(id, nuevaPrio) {
-            const t = tareasDaily.find(item => item.id === id);
-            if (t) {
-                t.prio = nuevaPrio;
-                guardarDatosEnNubeOEnLocal();
-            }
-        }
-
-        function actualizarEstatusTarea(id, nuevoEstatus) {
-            const t = tareasDaily.find(item => item.id === id);
-            if (t) {
-                t.estatus = nuevoEstatus;
-                guardarDatosEnNubeOEnLocal();
-                renderizarTareas();
-            }
-        }
-
-        function actualizarFechaTarea(id, nuevaFecha) {
-            const t = tareasDaily.find(item => item.id === id);
-            if (t) {
-                t.fecha = nuevaFecha;
-                guardarDatosEnNubeOEnLocal();
-            }
-        }
-
-        // LÓGICA DE ESTATUS Y MANEJO DE FECHAS
-        function actualizarEstatusCaso(id, nuevoEstatus) {
-            const caso = casosPrueba.find(c => c.id === id);
-            if (caso) {
-                caso.estatus = nuevoEstatus;
-                
-                if (nuevoEstatus !== "NOT_EXECUTED" && !caso.fechaEjecucion) {
-                    caso.fechaEjecucion = new Date().toISOString().split('T')[0];
-                }
-                
-                if (nuevoEstatus === "KIM") {
-                    caso.fechaKim = "";
-                } else if (nuevoEstatus === "PASS") {
-                    if (!caso.fechaKim) {
-                        caso.fechaKim = new Date().toISOString().split('T')[0];
-                    }
-                } else {
-                    caso.fechaKim = "";
-                }
-                
-                guardarDatosEnNubeOEnLocal();
-                actualizarTodo();
-            }
-        }
-
-        function actualizarFecha(id, campoFecha, valor) {
-            const caso = casosPrueba.find(c => c.id === id);
-            if (caso) {
-                caso[campoFecha] = valor;
-                guardarDatosEnNubeOEnLocal();
-                actualizarTodo();
-            }
-        }
-
-        function abrirModalNuevoCaso() {
-            const sel = document.getElementById("insTcTester");
-            sel.innerHTML = "";
-            testers.forEach(t => {
-                if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`;
-            });
-            document.getElementById("modalCaso").classList.remove("hidden");
-        }
-
-        function guardarNuevoCaso() {
-            const id = document.getElementById("insTcId").value.trim();
-            const nombre = document.getElementById("insTcNombre").value.trim();
-            const pasos = parseInt(document.getElementById("insTcPasos").value) || 1;
-            const tester = document.getElementById("insTcTester").value;
-
-            if (id && nombre) {
-                casosPrueba.push({ id, nombre, pasos, tester, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" });
-                cerrarModal("modalCaso");
-                guardarDatosEnNubeOEnLocal();
-                actualizarTodo();
-            }
-        }
-
-        function abrirModalCargaMasiva() {
-            const sel = document.getElementById("insCargaMasivaTester");
-            sel.innerHTML = "";
-            testers.forEach(t => {
-                if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`;
-            });
-            document.getElementById("modalCargaMasiva").classList.remove("hidden");
-        }
-
-        function procesarCargaMasiva() {
-            const texto = document.getElementById("txtAreaCargaMasiva").value.trim();
-            const testerDefecto = document.getElementById("insCargaMasivaTester").value;
-
-            if (!texto) {
-                alert("Por favor pega la lista de casos.");
-                return;
-            }
-
-            const lineas = texto.split("\n");
-            let cargados = 0;
-
-            lineas.forEach(linea => {
-                if (linea.trim()) {
-                    let partes = linea.split(",");
-                    let id = partes[0] ? partes[0].trim() : "";
-                    let nombre = partes[1] ? partes[1].trim() : "Caso sin nombre";
-                    let pasos = partes[2] ? (parseInt(partes[2].trim()) || 1) : 1;
-
-                    if (id) {
-                        if (!casosPrueba.some(c => c.id === id)) {
-                            casosPrueba.push({
-                                id: id,
-                                nombre: nombre,
-                                pasos: pasos,
-                                tester: testerDefecto,
-                                estatus: "NOT_EXECUTED",
-                                fechaEjecucion: "",
-                                fechaKim: ""
-                            });
-                            cargados++;
-                        }
-                    }
-                }
-            });
-
-            alert(`¡Se cargaron exitosamente ${cargados} casos de prueba a la matriz!`);
-            document.getElementById("txtAreaCargaMasiva").value = "";
-            cerrarModal("modalCargaMasiva");
-            guardarDatosEnNubeOEnLocal();
-            actualizarTodo();
-        }
-
-        function abrirModalNuevoHallazgo() {
-            const sel = document.getElementById("insHalTc");
-            sel.innerHTML = "";
-            casosPrueba.forEach(c => {
-                sel.innerHTML += `<option value="${c.id}">${c.id} - ${c.nombre}</option>`;
-            });
-            document.getElementById("insHalFecha").value = new Date().toISOString().split('T')[0];
-            document.getElementById("modalHallazgo").classList.remove("hidden");
-        }
-
-        function guardarNuevoHallazgo() {
-            const idManual = document.getElementById("insHalIdManual").value.trim();
-            const tcId = document.getElementById("insHalTc").value;
-            const tipo = document.getElementById("insHalTipo").value;
-            const etapa = document.getElementById("insHalEtapa").value;
-            const fecha = document.getElementById("insHalFecha").value;
-            const desc = document.getElementById("insHalDesc").value.trim();
-            const severidad = document.getElementById("insHalSeveridad").value;
-
-            if (!idManual) {
-                alert("Por favor ingresa la clave / ID manual del defecto o desviación.");
-                return;
-            }
-
-            if (!desc) {
-                alert("Ingresa la descripción del fallo.");
-                return;
-            }
-
-            hallazgos.push({ id: idManual, tcId, tipo, etapa, desc, fecha, severidad, estatus: "ABIERTO" });
-
-            const tc = casosPrueba.find(c => c.id === tcId);
-            if (tc && tipo === "DEFECTO" && tc.estatus !== "KIM") {
-                tc.estatus = "FAIL";
-            }
-
-            document.getElementById("insHalIdManual").value = "";
-            document.getElementById("insHalDesc").value = "";
-            cerrarModal("modalHallazgo");
-            guardarDatosEnNubeOEnLocal();
-            actualizarTodo();
-        }
-
-        function cerrarModal(id) {
-            document.getElementById(id).classList.add("hidden");
-        }
-
-        function exportarReporteGeneralCSV() {
-            let csv = "ID_TC,Nombre_Caso,Total_Pasos,Tester,Estatus,Fecha_Ejecucion,Fecha_Kim,Num_Defectos,Num_Desviaciones\n";
-            casosPrueba.forEach(c => {
-                const numDef = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DEFECTO").length;
-                const numDesv = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DESVIACION").length;
-                csv += `"${c.id}","${c.nombre}","${c.pasos || 1}","${c.tester}","${c.estatus}","${c.fechaEjecucion || ''}","${c.fechaKim || ''}","${numDef}","${numDesv}"\n`;
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", "reporte_avance_qa.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function guardarDatosEnNubeOEnLocal() {
-            const dataState = {
-                tituloProyecto,
-                fechaEntregaDev,
-                fechaInicioPruebas,
-                fechaFinPruebas,
-                casosPrueba,
-                hallazgos,
-                testers,
-                involucradosGlobales,
-                minutasLista,
-                tareasDaily
-            };
-
-            if (firebaseActivo && db) {
-                db.ref("qa_tracker_data").set(dataState);
-            }
-        }
-
-        function cargarDatosDesdeFirebase() {
-            db.ref("qa_tracker_data").on("value", snapshot => {
-                const val = snapshot.val();
-                if (val) {
-                    if (val.tituloProyecto) tituloProyecto = val.tituloProyecto;
-                    if (val.fechaEntregaDev) fechaEntregaDev = val.fechaEntregaDev;
-                    if (val.fechaInicioPruebas) fechaInicioPruebas = val.fechaInicioPruebas;
-                    if (val.fechaFinPruebas) fechaFinPruebas = val.fechaFinPruebas;
-                    if (val.casosPrueba) casosPrueba = val.casosPrueba;
-                    if (val.hallazgos) hallazgos = val.hallazgos;
-                    if (val.testers) testers = val.testers;
-                    if (val.involucradosGlobales) involucradosGlobales = val.involucradosGlobales;
-                    if (val.minutasLista) minutasLista = val.minutasLista;
-                    if (val.tareasDaily) tareasDaily = val.tareasDaily;
+        function abrirModalCargaMasiva() { const sel = document.getElementById("insCargaMasivaTester"); sel.innerHTML = ""; testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); document.getElementById("modalCargaMasiva").classList.remove("hidden"); }
+        
+        // EXCEL MÁGICO EN CARGA MASIVA (OMITE DUPLICADOS)
+        function procesarCargaMasiva() { 
+            const texto = document.getElementById("txtAreaCargaMasiva").value.trim(); 
+            const testerDefecto = document.getElementById("insCargaMasivaTester").value; 
+            if (!texto) { alert("Pega la lista de casos."); return; } 
+            
+            const lineas = texto.split("\n"); 
+            let cargados = 0; 
+            let omitidos = 0;
+            
+            lineas.forEach(linea => { 
+                if (linea.trim()) { 
+                    const separador = linea.includes("\t") ? "\t" : ",";
+                    let partes = linea.split(separador); 
                     
-                    document.getElementById("tituloProyectoInput").value = tituloProyecto;
-                    actualizarTodo();
-                }
-            });
+                    let id = partes[0] ? partes[0].trim() : ""; 
+                    let nombre = partes[1] ? partes[1].trim() : "Caso sin nombre"; 
+                    let pasos = partes[2] ? (parseInt(partes[2].trim()) || 1) : 1; 
+                    
+                    if (id) { 
+                        if (!casosPrueba.some(c => c.id.toLowerCase() === id.toLowerCase())) { 
+                            casosPrueba.push({ id: id, nombre: nombre, pasos: pasos, tester: testerDefecto, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
+                            cargados++; 
+                        } else {
+                            omitidos++;
+                        }
+                    } 
+                } 
+            }); 
+            
+            let mensaje = `¡Se cargaron exitosamente ${cargados} casos de prueba a la matriz!`;
+            if (omitidos > 0) {
+                mensaje += `\n(Se omitieron ${omitidos} casos porque su ID ya existía en la tabla).`;
+            }
+            alert(mensaje); 
+            
+            document.getElementById("txtAreaCargaMasiva").value = ""; 
+            cerrarModal("modalCargaMasiva"); 
+            guardarDatosEnNubeOEnLocal(); 
+            actualizarTodo(); 
         }
+
+        function abrirModalNuevoHallazgo() { const sel = document.getElementById("insHalTc"); sel.innerHTML = ""; casosPrueba.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.id} - ${c.nombre}</option>`; }); document.getElementById("insHalFecha").value = new Date().toISOString().split('T')[0]; document.getElementById("modalHallazgo").classList.remove("hidden"); }
+        
+        function guardarNuevoHallazgo() { 
+            const idManual = document.getElementById("insHalIdManual").value.trim(); 
+            const tcId = document.getElementById("insHalTc").value; 
+            const tipo = document.getElementById("insHalTipo").value; 
+            const etapa = document.getElementById("insHalEtapa").value; 
+            const fecha = document.getElementById("insHalFecha").value; 
+            const desc = document.getElementById("insHalDesc").value.trim(); 
+            const severidad = document.getElementById("insHalSeveridad").value; 
+            
+            if (!idManual || !desc) { 
+                alert("Completa el ID Manual y la Descripción."); 
+                return; 
+            } 
+            
+            if (hallazgos.some(h => h.id.toLowerCase() === idManual.toLowerCase())) {
+                alert(`Error: El ID "${idManual}" ya está registrado como Defecto o Desviación. Usa un ID único.`);
+                return;
+            }
+
+            hallazgos.push({ id: idManual, tcId, tipo, etapa, desc, fecha, severidad, estatus: "ABIERTO" }); 
+            const tc = casosPrueba.find(c => c.id === tcId); 
+            if (tc && tipo === "DEFECTO" && tc.estatus !== "KIM") { tc.estatus = "FAIL"; } 
+            
+            document.getElementById("insHalIdManual").value = ""; 
+            document.getElementById("insHalDesc").value = ""; 
+            cerrarModal("modalHallazgo"); 
+            guardarDatosEnNubeOEnLocal(); 
+            actualizarTodo(); 
+        }
+
+        function cerrarModal(id) { document.getElementById(id).classList.add("hidden"); }
+
+        function exportarReporteGeneralCSV() { let csv = "ID_TC,Nombre_Caso,Total_Pasos,Tester,Estatus,Fecha_Ejecucion,Fecha_Kim,Num_Defectos,Num_Desviaciones\n"; casosPrueba.forEach(c => { const numDef = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DEFECTO").length; const numDesv = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DESVIACION").length; csv += `"${c.id}","${c.nombre}","${c.pasos || 1}","${c.tester}","${c.estatus}","${c.fechaEjecucion || ''}","${c.fechaKim || ''}","${numDef}","${numDesv}"\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", "reporte_avance_qa.csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+
+        // ================== ORDENAR Y GUARDAR ==================
+        function guardarDatosEnNubeOEnLocal() { 
+            // ORDENAR SIEMPRE ALFANUMÉRICAMENTE ANTES DE GUARDAR
+            casosPrueba.sort((a, b) => a.id.localeCompare(b.id, undefined, {numeric: true, sensitivity: 'base'}));
+            
+            const dataState = { tituloProyecto, fechaEntregaDev, fechaInicioPruebas, fechaFinPruebas, casosPrueba, hallazgos, testers, involucradosGlobales, minutasLista, tareasDaily }; 
+            if (firebaseActivo && db) { db.ref("qa_tracker_data").set(dataState); } 
+        }
+
+        function cargarDatosDesdeFirebase() { db.ref("qa_tracker_data").on("value", snapshot => { const val = snapshot.val(); if (val) { if (val.tituloProyecto) tituloProyecto = val.tituloProyecto; if (val.fechaEntregaDev) fechaEntregaDev = val.fechaEntregaDev; if (val.fechaInicioPruebas) fechaInicioPruebas = val.fechaInicioPruebas; if (val.fechaFinPruebas) fechaFinPruebas = val.fechaFinPruebas; if (val.casosPrueba) casosPrueba = val.casosPrueba; if (val.hallazgos) hallazgos = val.hallazgos; if (val.testers) testers = val.testers; if (val.involucradosGlobales) involucradosGlobales = val.involucradosGlobales; if (val.minutasLista) minutasLista = val.minutasLista; if (val.tareasDaily) tareasDaily = val.tareasDaily; document.getElementById("tituloProyectoInput").value = tituloProyecto; actualizarTodo(); } }); }
     </script>
 </body>
 </html>
