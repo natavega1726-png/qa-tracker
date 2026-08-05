@@ -152,14 +152,14 @@
                 </div>
 
                 <!-- Métricas por Estatus -->
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 text-center">
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-9 gap-2 text-center">
                     <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
                         <span class="text-[10px] font-bold text-slate-500 uppercase block">Total TCs</span>
                         <span id="kpiTotal" class="text-base font-bold text-slate-800">0</span>
                         <span class="text-[9px] text-slate-400 block font-semibold">100%</span>
                     </div>
                     <div class="bg-amber-50/80 p-2 rounded-lg border border-amber-200 shadow-sm">
-                        <span class="text-[10px] font-bold text-amber-700 uppercase block">Not Executed</span>
+                        <span class="text-[10px] font-bold text-amber-700 uppercase block">Not Exec</span>
                         <span id="kpiNotExecuted" class="text-base font-bold text-amber-800">0</span>
                         <span id="pctNotExecuted" class="text-[9px] text-amber-600 block font-semibold">0%</span>
                     </div>
@@ -187,6 +187,11 @@
                         <span class="text-[10px] font-bold text-purple-700 uppercase block">KIM</span>
                         <span id="kpiKim" class="text-base font-bold text-purple-800">0</span>
                         <span id="pctKim" class="text-[9px] text-purple-600 block font-semibold">0%</span>
+                    </div>
+                    <div class="bg-slate-200/80 p-2 rounded-lg border border-slate-300 shadow-sm">
+                        <span class="text-[10px] font-bold text-slate-600 uppercase block">N/A</span>
+                        <span id="kpiNa" class="text-base font-bold text-slate-800">0</span>
+                        <span id="pctNa" class="text-[9px] text-slate-500 block font-semibold">Excluidos</span>
                     </div>
                     <div class="bg-indigo-50/80 p-2 rounded-lg border border-indigo-200 shadow-sm">
                         <span class="text-[10px] font-bold text-indigo-700 uppercase block">Ejecutados</span>
@@ -231,7 +236,7 @@
                 <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                     <div class="flex justify-between items-center mb-1.5">
                         <span class="text-xs font-bold text-slate-600 uppercase">Distribución Porcentual del Avance</span>
-                        <span id="txtProgresoEstatus" class="text-xs font-bold text-slate-500">0 / 0 Casos Procesados</span>
+                        <span id="txtProgresoEstatus" class="text-xs font-bold text-slate-500">0 / 0 Casos Ejecutables</span>
                     </div>
                     <div class="w-full bg-slate-100 h-5 rounded-full overflow-hidden flex shadow-inner text-[10px] font-bold text-white text-center leading-5">
                         <div id="barPass" style="width: 0%" class="bg-emerald-500 h-full transition-all" title="Pass"></div>
@@ -240,6 +245,7 @@
                         <div id="barHelp" style="width: 0%" class="bg-orange-500 h-full transition-all" title="Help"></div>
                         <div id="barKim" style="width: 0%" class="bg-purple-500 h-full transition-all" title="KIM"></div>
                         <div id="barNotExecuted" style="width: 100%" class="bg-slate-300 h-full text-slate-600 transition-all" title="Not Executed"></div>
+                        <div id="barNa" style="width: 0%" class="bg-slate-600 h-full transition-all" title="N/A"></div>
                     </div>
                 </div>
 
@@ -287,8 +293,11 @@
                         </div>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
                             <select id="filtroTesterCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">👤 Todos los Testers</option></select>
-                            <select id="filtroEstatusCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">🔍 Todos los Estatus</option><option value="NOT_EXECUTED">⏳ NOT EXECUTED</option><option value="IN_PROCESS">🔄 IN PROCESS</option><option value="PASS">✅ PASS</option><option value="FAIL">❌ FAIL</option><option value="HELP">🆘 HELP</option><option value="KIM">⭐ KIM</option></select>
+                            <select id="filtroEstatusCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500"><option value="TODOS">🔍 Todos los Estatus</option><option value="NOT_EXECUTED">⏳ NOT EXECUTED</option><option value="IN_PROCESS">🔄 IN PROCESS</option><option value="PASS">✅ PASS</option><option value="FAIL">❌ FAIL</option><option value="HELP">🆘 HELP</option><option value="KIM">⭐ KIM</option><option value="N/A">🚫 N/A</option></select>
                             
+                            <button onclick="eliminarCasosSeleccionados()" class="ocultar-tester bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
+                                <i class="fa-solid fa-trash"></i> Eliminar Seleccionados
+                            </button>
                             <button onclick="abrirModalCargaMasiva()" class="ocultar-tester bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-file-excel"></i> Cargar Excel (Masivo)</button>
                             <button onclick="abrirModalNuevoCaso()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-plus"></i> Nuevo Test Case</button>
                         </div>
@@ -298,16 +307,18 @@
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
                                 <tr>
+                                    <th class="p-3 w-8 text-center"><input type="checkbox" onclick="toggleAllCasos(this)" class="ocultar-tester rounded accent-rose-500 cursor-pointer"></th>
                                     <th class="p-3 w-10 text-center">#</th>
-                                    <th class="p-3 w-28">ID TC</th>
+                                    <th class="p-3 w-24">ID TC</th>
+                                    <th class="p-3 w-32">Folder</th>
                                     <th class="p-3">Nombre del Caso de Prueba</th>
+                                    <th class="p-3 text-center">Riesgo</th>
                                     <th class="p-3 text-center">Pasos TC</th>
                                     <th class="p-3">Tester Asignado</th>
                                     <th class="p-3 text-center">Estatus</th>
                                     <th class="p-3 text-center">Fecha Ejecución</th>
                                     <th class="p-3 text-center">Fecha KIM</th>
                                     <th class="p-3 text-center">Hallazgos</th>
-                                    <th class="p-3 text-center text-rose-300">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="tablaCasosBody" class="divide-y divide-slate-200 bg-white"></tbody>
@@ -376,9 +387,46 @@
     <div id="modalAgregarIntegrante" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-user-plus text-slate-800"></i> Registrar Nuevo Integrante</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">Nombre Completo:</label><input type="text" id="insIntNombre" placeholder="Ej. Juan Pérez" class="w-full border rounded-lg p-2 text-sm"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Rol / Cargo:</label><select id="insIntRol" class="w-full border rounded-lg p-2 text-sm font-bold text-slate-700"><option value="Tester">Tester / QA</option><option value="Líder">Líder de Proyecto</option><option value="Analista">Analista QA / Negocio</option><option value="Desarrollador">Desarrollador (Dev)</option></select></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalAgregarIntegrante')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoIntegrante()" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Guardar Integrante</button></div></div></div>
     <div id="modalEditarIntegrante" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-user-pen text-blue-600"></i> Editar Integrante del Equipo</h3><input type="hidden" id="editIntIndex"><div><label class="block text-xs font-bold text-slate-600 mb-1">Nombre Completo:</label><input type="text" id="editIntNombre" class="w-full border rounded-lg p-2 text-sm"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Rol / Cargo:</label><select id="editIntRol" class="w-full border rounded-lg p-2 text-sm font-bold text-slate-700"><option value="Tester">Tester / QA</option><option value="Líder">Líder de Proyecto</option><option value="Analista">Analista QA / Negocio</option><option value="Desarrollador">Desarrollador (Dev)</option></select></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalEditarIntegrante')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarEdicionIntegrante()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Actualizar Datos</button></div></div></div>
 
-    <div id="modalCaso" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800">Agregar Nuevo Caso de Prueba</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">ID / Número del Test Case (Generado auto):</label><input type="text" id="insTcId" placeholder="Ej: TC-001" class="w-full border rounded-lg p-2 text-sm font-mono bg-amber-50"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Nombre / Descripción:</label><input type="text" id="insTcNombre" placeholder="Ej: Validar guardado de folletería" class="w-full border rounded-lg p-2 text-sm"></div><div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Total de Pasos del TC:</label><input type="number" id="insTcPasos" value="1" min="1" class="w-full border rounded-lg p-2 text-sm font-bold"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Tester Asignado:</label><select id="insTcTester" class="w-full border rounded-lg p-2 text-sm"></select></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalCaso')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoCaso()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Guardar TC</button></div></div></div>
+    <div id="modalCaso" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
+            <h3 class="text-lg font-bold text-slate-800">Agregar Nuevo Caso de Prueba</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div><label class="block text-xs font-bold text-slate-600 mb-1">ID (Autogenerado):</label><input type="text" id="insTcId" class="w-full border rounded-lg p-2 text-sm font-mono bg-amber-50" readonly></div>
+                <div><label class="block text-xs font-bold text-slate-600 mb-1">Folder:</label><input type="text" id="insTcFolder" placeholder="Ej: 08-DOCUMENTS" class="w-full border rounded-lg p-2 text-sm"></div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Nombre / Descripción:</label>
+                <input type="text" id="insTcNombre" placeholder="Ej: Validar guardado de folletería" class="w-full border rounded-lg p-2 text-sm">
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+                <div><label class="block text-xs font-bold text-slate-600 mb-1">Riesgo:</label><select id="insTcRiesgo" class="w-full border rounded-lg p-2 text-sm"><option value="High">High</option><option value="Medium" selected>Medium</option><option value="Low">Low</option></select></div>
+                <div><label class="block text-xs font-bold text-slate-600 mb-1">Pasos:</label><input type="number" id="insTcPasos" value="1" min="1" class="w-full border rounded-lg p-2 text-sm font-bold"></div>
+                <div><label class="block text-xs font-bold text-slate-600 mb-1">Tester:</label><select id="insTcTester" class="w-full border rounded-lg p-2 text-sm"></select></div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="cerrarModal('modalCaso')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
+                <button onclick="guardarNuevoCaso()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Guardar TC</button>
+            </div>
+        </div>
+    </div>
 
-    <div id="modalCargaMasiva" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-file-excel text-emerald-600"></i> Carga Masiva desde Excel</h3><p class="text-xs text-slate-500">Selecciona en tu Excel las columnas <strong>ID, Nombre y Pasos</strong>, cópialas (<kbd>Ctrl+C</kbd>) y pégalas directamente en el cuadro de abajo (<kbd>Ctrl+V</kbd>):</p><div><textarea id="txtAreaCargaMasiva" rows="8" placeholder="TC-01    Validar Login    5&#10;TC-02    Cerrar Sesion    2" class="w-full border rounded-lg p-2.5 text-xs font-mono focus:ring-2 focus:ring-emerald-500 bg-emerald-50"></textarea></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Asignar por defecto a Tester:</label><select id="insCargaMasivaTester" class="w-full border rounded-lg p-2 text-sm"></select></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalCargaMasiva')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="procesarCargaMasiva()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">Procesar Excel y Cargar</button></div></div></div>
+    <div id="modalCargaMasiva" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full p-6 space-y-4">
+            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-file-excel text-emerald-600"></i> Carga Masiva desde Excel</h3>
+            <p class="text-xs text-slate-500">Selecciona en tu Excel las columnas <strong>Nombre, Folder y Riesgo</strong>, cópialas (<kbd>Ctrl+C</kbd>) y pégalas aquí abajo.<br><br><em>Nota: El sistema extraerá automáticamente el "TC01" del nombre, y los pasos se quedarán en 1 por defecto.</em></p>
+            <div>
+                <textarea id="txtAreaCargaMasiva" rows="8" placeholder="TC01 Validar Login     08-DOCUMENTS     High&#10;TC02 Cerrar Sesion     08-DOCUMENTS     Medium" class="w-full border rounded-lg p-2.5 text-xs font-mono focus:ring-2 focus:ring-emerald-500 bg-emerald-50"></textarea>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Asignar por defecto a Tester:</label>
+                <select id="insCargaMasivaTester" class="w-full border rounded-lg p-2 text-sm"></select>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="cerrarModal('modalCargaMasiva')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button>
+                <button onclick="procesarCargaMasiva()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">Procesar Excel y Cargar</button>
+            </div>
+        </div>
+    </div>
 
     <div id="modalMinuta" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-amber-600"></i> Registrar Minuta de Sesión</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha de la Reunión (Alta):</label><input type="date" id="insMinutaFecha" class="w-full border rounded-lg p-2 text-sm text-slate-700 font-bold"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Título / Tema General (Opcional):</label><input type="text" id="insMinutaObjetivo" placeholder="Ej. Daily de seguimiento" class="w-full border rounded-lg p-2 text-sm"></div></div><div><div class="flex justify-between items-center mb-2"><label class="block text-xs font-bold text-slate-700 uppercase">Puntos Discutidos & Tareas:</label><button onclick="agregarPuntoMinutaInput('', false, '', '')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded border border-slate-300"><i class="fa-solid fa-plus text-amber-600"></i> Agregar Punto</button></div><div id="contenedorPuntosMinutaModal" class="space-y-3 max-h-60 overflow-y-auto p-2 border rounded-lg bg-slate-50"></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalMinuta')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevaMinuta()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold">Guardar Minuta y Tareas</button></div></div></div>
     
@@ -389,7 +437,7 @@
     <!-- JAVASCRIPT -->
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyB-_1nc3wZ0zve2g4ZWczojFwU-b_8ugPM",
+            apiKey: "AIzaSyB-_lnc3wZ0zve2g4ZWczojFwU-b_8ugPM",
             authDomain: "qa-tracker-cc2ca.firebaseapp.com",
             databaseURL: "https://qa-tracker-cc2ca-default-rtdb.firebaseio.com",
             projectId: "qa-tracker-cc2ca",
@@ -483,14 +531,16 @@
             const fail = casosPrueba.filter(c => c.estatus === "FAIL").length; 
             const help = casosPrueba.filter(c => c.estatus === "HELP").length; 
             const kim = casosPrueba.filter(c => c.estatus === "KIM").length; 
+            const na = casosPrueba.filter(c => c.estatus === "N/A").length;
 
-            // CÁLCULO ESTRICTO: Avance Real es SOLO PASS. Ejecutados es todo lo diferente a NOT_EXECUTED.
-            const ejecutados = total - notExec; 
-            const pctReal = total > 0 ? ((pass / total) * 100) : 0; 
-            const pctEjecucion = total > 0 ? ((ejecutados / total) * 100) : 0; 
+            // ESTRICTO: N/A no cuenta como caso ejecutable. 
+            const ejecutables = total - na;
+            const ejecutados = ejecutables - notExec; 
+            const pctReal = ejecutables > 0 ? ((pass / ejecutables) * 100) : 0; 
+            const pctEjecucion = ejecutables > 0 ? ((ejecutados / ejecutables) * 100) : 0; 
 
             const hoy = new Date().toISOString().split('T')[0]; 
-            const ejecutadosHoyCount = casosPrueba.filter(c => c.estatus !== "NOT_EXECUTED" && c.fechaEjecucion === hoy).length; 
+            const ejecutadosHoyCount = casosPrueba.filter(c => c.estatus !== "NOT_EXECUTED" && c.estatus !== "N/A" && c.fechaEjecucion === hoy).length; 
             const faltantesEjecucionCount = notExec + inProc; 
             const aprobadosKimCount = casosPrueba.filter(c => c.estatus === "PASS" || (c.estatus === "KIM" && c.fechaKim && c.fechaKim.trim() !== "")).length; 
             const pendientesKimCount = casosPrueba.filter(c => c.estatus === "KIM" && (!c.fechaKim || c.fechaKim.trim() === "")).length; 
@@ -501,23 +551,24 @@
 
             document.getElementById("kpiEjecutadosHoy").innerText = ejecutadosHoyCount; 
             document.getElementById("kpiFaltantesEjecucion").innerText = faltantesEjecucionCount; 
-            document.getElementById("pctFaltantesEjecucion").innerText = total > 0 ? ((faltantesEjecucionCount / total) * 100).toFixed(1) + "% del total" : "0%"; 
+            document.getElementById("pctFaltantesEjecucion").innerText = ejecutables > 0 ? ((faltantesEjecucionCount / ejecutables) * 100).toFixed(1) + "% ejecutables" : "0%"; 
             document.getElementById("kpiAprobadosKim").innerText = aprobadosKimCount; 
-            document.getElementById("pctAprobadosKim").innerText = total > 0 ? ((aprobadosKimCount / total) * 100).toFixed(1) + "% del total" : "0%"; 
+            document.getElementById("pctAprobadosKim").innerText = ejecutables > 0 ? ((aprobadosKimCount / ejecutables) * 100).toFixed(1) + "% ejecutables" : "0%"; 
             document.getElementById("kpiPendientesKim").innerText = pendientesKimCount; 
             document.getElementById("pctPendientesKim").innerText = kim > 0 ? ((pendientesKimCount / kim) * 100).toFixed(1) + "% de estatus KIM" : "0%"; 
 
             document.getElementById("kpiTotal").innerText = total; document.getElementById("kpiNotExecuted").innerText = notExec; 
             document.getElementById("kpiInProcess").innerText = inProc; document.getElementById("kpiPass").innerText = pass; 
             document.getElementById("kpiFail").innerText = fail; document.getElementById("kpiHelp").innerText = help; 
-            document.getElementById("kpiKim").innerText = kim; document.getElementById("kpiEjecutados").innerText = ejecutados; 
+            document.getElementById("kpiKim").innerText = kim; document.getElementById("kpiEjecutados").innerText = ejecutados;
+            document.getElementById("kpiNa").innerText = na; 
 
-            document.getElementById("pctNotExecuted").innerText = total > 0 ? ((notExec / total) * 100).toFixed(1) + "%" : "0%"; 
-            document.getElementById("pctInProcess").innerText = total > 0 ? ((inProc / total) * 100).toFixed(1) + "%" : "0%"; 
-            document.getElementById("pctPass").innerText = total > 0 ? ((pass / total) * 100).toFixed(1) + "%" : "0%"; 
-            document.getElementById("pctFail").innerText = total > 0 ? ((fail / total) * 100).toFixed(1) + "%" : "0%"; 
-            document.getElementById("pctHelp").innerText = total > 0 ? ((help / total) * 100).toFixed(1) + "%" : "0%"; 
-            document.getElementById("pctKim").innerText = total > 0 ? ((kim / total) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctNotExecuted").innerText = ejecutables > 0 ? ((notExec / ejecutables) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctInProcess").innerText = ejecutables > 0 ? ((inProc / ejecutables) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctPass").innerText = ejecutables > 0 ? ((pass / ejecutables) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctFail").innerText = ejecutables > 0 ? ((fail / ejecutables) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctHelp").innerText = ejecutables > 0 ? ((help / ejecutables) * 100).toFixed(1) + "%" : "0%"; 
+            document.getElementById("pctKim").innerText = ejecutables > 0 ? ((kim / ejecutables) * 100).toFixed(1) + "%" : "0%"; 
             document.getElementById("pctEjecutados").innerText = pctEjecucion.toFixed(1) + "% Ejecución"; 
 
             document.getElementById("txtTotalDefectosCount").innerText = totalDefectosCount; 
@@ -525,16 +576,24 @@
             document.getElementById("txtTcsConDefectoCount").innerText = tcsConDefectoSet.size; 
             document.getElementById("txtTcsConDesviacionCount").innerText = tcsConDesviacionSet.size;
 
-            if (total > 0) { document.getElementById("barPass").style.width = ((pass / total) * 100) + "%"; document.getElementById("barInProcess").style.width = ((inProc / total) * 100) + "%"; document.getElementById("barFail").style.width = ((fail / total) * 100) + "%"; document.getElementById("barHelp").style.width = ((help / total) * 100) + "%"; document.getElementById("barKim").style.width = ((kim / total) * 100) + "%"; document.getElementById("barNotExecuted").style.width = ((notExec / total) * 100) + "%"; }
+            if (total > 0) { 
+                document.getElementById("barPass").style.width = ((pass / total) * 100) + "%"; 
+                document.getElementById("barInProcess").style.width = ((inProc / total) * 100) + "%"; 
+                document.getElementById("barFail").style.width = ((fail / total) * 100) + "%"; 
+                document.getElementById("barHelp").style.width = ((help / total) * 100) + "%"; 
+                document.getElementById("barKim").style.width = ((kim / total) * 100) + "%"; 
+                document.getElementById("barNotExecuted").style.width = ((notExec / total) * 100) + "%";
+                document.getElementById("barNa").style.width = ((na / total) * 100) + "%";
+            }
             
             document.getElementById("txtAvanceReal").innerText = pctReal.toFixed(1) + "%"; 
-            document.getElementById("txtProgresoEstatus").innerText = `${ejecutados} / ${total} Casos Procesados`;
+            document.getElementById("txtProgresoEstatus").innerText = `${ejecutados} / ${ejecutables} Casos Ejecutables`;
 
             const cardSalud = document.getElementById("cardSaludProyecto"); const tituloSalud = document.getElementById("tituloSalud"); const descSalud = document.getElementById("descSalud"); const iconoSalud = document.getElementById("iconoSalud");
-            if (pctReal === 100 && total > 0) { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-emerald-50 border-emerald-200 text-emerald-900"; iconoSalud.className = "text-3xl text-emerald-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-flag-checkered"></i>'; tituloSalud.innerText = "¡PRUEBAS COMPLETADAS!"; descSalud.innerText = `Se ha alcanzado el 100% de ejecución real.`; } else if (fechaFinPruebas && hoy > fechaFinPruebas && pctReal < 100) { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-rose-50 border-rose-200 text-rose-900"; iconoSalud.className = "text-3xl text-rose-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>'; tituloSalud.innerText = "ALERTA: PROYECTO RETRASADO"; descSalud.innerText = `Se superó la fecha fin de pruebas (${fechaFinPruebas}) y el avance no está al 100%.`; } else { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-blue-50 border-blue-200 text-blue-900"; iconoSalud.className = "text-3xl text-blue-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; tituloSalud.innerText = "EN EJECUCIÓN"; descSalud.innerText = `El proyecto está en curso de acuerdo a los tiempos establecidos.`; }
+            if (pctReal === 100 && ejecutables > 0) { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-emerald-50 border-emerald-200 text-emerald-900"; iconoSalud.className = "text-3xl text-emerald-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-flag-checkered"></i>'; tituloSalud.innerText = "¡PRUEBAS COMPLETADAS!"; descSalud.innerText = `Se ha alcanzado el 100% de ejecución real.`; } else if (fechaFinPruebas && hoy > fechaFinPruebas && pctReal < 100) { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-rose-50 border-rose-200 text-rose-900"; iconoSalud.className = "text-3xl text-rose-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>'; tituloSalud.innerText = "ALERTA: PROYECTO RETRASADO"; descSalud.innerText = `Se superó la fecha fin de pruebas (${fechaFinPruebas}) y el avance no está al 100%.`; } else { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-blue-50 border-blue-200 text-blue-900"; iconoSalud.className = "text-3xl text-blue-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; tituloSalud.innerText = "EN EJECUCIÓN"; descSalud.innerText = `El proyecto está en curso de acuerdo a los tiempos establecidos.`; }
         }
 
-        function abrirModalHistoricoEjecucion() { const tbody = document.getElementById("tablaHistoricoEjecucionBody"); tbody.innerHTML = ""; const mapaHistorico = {}; casosPrueba.forEach(c => { if (c.fechaEjecucion && c.fechaEjecucion.trim() !== "") { const f = c.fechaEjecucion; if (!mapaHistorico[f]) { mapaHistorico[f] = { ejecutados: 0, pass: 0, pendKim: 0, aprobKim: 0 }; } if (c.estatus !== "NOT_EXECUTED") mapaHistorico[f].ejecutados += 1; if (c.estatus === "PASS") mapaHistorico[f].pass += 1; if (c.estatus === "KIM") { if (c.fechaKim && c.fechaKim.trim() !== "") mapaHistorico[f].aprobKim += 1; else mapaHistorico[f].pendKim += 1; } } }); const totalFaltantesHoy = casosPrueba.filter(c => c.estatus === "NOT_EXECUTED" || c.estatus === "IN_PROCESS").length; const fechasOrdenadas = Object.keys(mapaHistorico).sort().reverse(); if (fechasOrdenadas.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-semibold">Aún no hay registros de fechas de ejecución.</td></tr>`; } else { fechasOrdenadas.forEach(f => { const data = mapaHistorico[f]; const tr = document.createElement("tr"); tr.innerHTML = `<td class="p-2.5 font-bold text-slate-700">${f}</td><td class="p-2.5 text-center font-bold text-blue-600">${data.ejecutados} TC(s)</td><td class="p-2.5 text-center font-bold text-amber-600">${totalFaltantesHoy} TC(s)</td><td class="p-2.5 text-center font-bold text-emerald-600">${data.pass} PASS</td><td class="p-2.5 text-center font-bold text-rose-600">${data.pendKim} KIM</td><td class="p-2.5 text-center font-bold text-purple-600">${data.aprobKim} KIM</td>`; tbody.appendChild(tr); }); } document.getElementById("modalHistoricoEjecucion").classList.remove("hidden"); }
+        function abrirModalHistoricoEjecucion() { const tbody = document.getElementById("tablaHistoricoEjecucionBody"); tbody.innerHTML = ""; const mapaHistorico = {}; casosPrueba.forEach(c => { if (c.fechaEjecucion && c.fechaEjecucion.trim() !== "") { const f = c.fechaEjecucion; if (!mapaHistorico[f]) { mapaHistorico[f] = { ejecutados: 0, pass: 0, pendKim: 0, aprobKim: 0 }; } if (c.estatus !== "NOT_EXECUTED" && c.estatus !== "N/A") mapaHistorico[f].ejecutados += 1; if (c.estatus === "PASS") mapaHistorico[f].pass += 1; if (c.estatus === "KIM") { if (c.fechaKim && c.fechaKim.trim() !== "") mapaHistorico[f].aprobKim += 1; else mapaHistorico[f].pendKim += 1; } } }); const totalFaltantesHoy = casosPrueba.filter(c => c.estatus === "NOT_EXECUTED" || c.estatus === "IN_PROCESS").length; const fechasOrdenadas = Object.keys(mapaHistorico).sort().reverse(); if (fechasOrdenadas.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-semibold">Aún no hay registros de fechas de ejecución.</td></tr>`; } else { fechasOrdenadas.forEach(f => { const data = mapaHistorico[f]; const tr = document.createElement("tr"); tr.innerHTML = `<td class="p-2.5 font-bold text-slate-700">${f}</td><td class="p-2.5 text-center font-bold text-blue-600">${data.ejecutados} TC(s)</td><td class="p-2.5 text-center font-bold text-amber-600">${totalFaltantesHoy} TC(s)</td><td class="p-2.5 text-center font-bold text-emerald-600">${data.pass} PASS</td><td class="p-2.5 text-center font-bold text-rose-600">${data.pendKim} KIM</td><td class="p-2.5 text-center font-bold text-purple-600">${data.aprobKim} KIM</td>`; tbody.appendChild(tr); }); } document.getElementById("modalHistoricoEjecucion").classList.remove("hidden"); }
 
         function renderizarTesters() {
             const tbody = document.getElementById("tablaTestersBody"); tbody.innerHTML = "";
@@ -544,13 +603,42 @@
             soloTesters.forEach((invInfo, idx) => {
                 const normTarget = normalizarTexto(invInfo.nombre);
                 const asignados = casosPrueba.filter(c => c.tester && normalizarTexto(c.tester).includes(normTarget));
-                const totalT = asignados.length; const notExec = asignados.filter(c => c.estatus === "NOT_EXECUTED").length; const inProc = asignados.filter(c => c.estatus === "IN_PROCESS").length; const pass = asignados.filter(c => c.estatus === "PASS").length; const fail = asignados.filter(c => c.estatus === "FAIL").length; const help = asignados.filter(c => c.estatus === "HELP").length; const kim = asignados.filter(c => c.estatus === "KIM").length; 
-                const pct = totalT > 0 ? ((pass / totalT) * 100).toFixed(1) : "0.0"; // AHORA SOLO MIDE PASS
+                const totalT = asignados.length; 
+                const na = asignados.filter(c => c.estatus === "N/A").length;
+                const ejecutables = totalT - na;
+                const notExec = asignados.filter(c => c.estatus === "NOT_EXECUTED").length; 
+                const inProc = asignados.filter(c => c.estatus === "IN_PROCESS").length; 
+                const pass = asignados.filter(c => c.estatus === "PASS").length; 
+                const fail = asignados.filter(c => c.estatus === "FAIL").length; 
+                const help = asignados.filter(c => c.estatus === "HELP").length; 
+                const kim = asignados.filter(c => c.estatus === "KIM").length; 
+                const pct = ejecutables > 0 ? ((pass / ejecutables) * 100).toFixed(1) : "0.0";
                 
                 const tr = document.createElement("tr");
                 tr.innerHTML = `<td class="p-3 font-bold text-slate-700">${invInfo.nombre} <span class="text-[10px] text-slate-400 font-normal">(${invInfo.rol})</span></td><td class="p-3 text-center font-bold">${totalT}</td><td class="p-3 text-center text-amber-700 font-semibold bg-amber-50/50">${notExec}</td><td class="p-3 text-center text-blue-700 font-semibold bg-blue-50/50">${inProc}</td><td class="p-3 text-center text-emerald-700 font-semibold bg-emerald-50/50">${pass}</td><td class="p-3 text-center text-rose-700 font-semibold bg-rose-50/50">${fail}</td><td class="p-3 text-center text-orange-700 font-semibold bg-orange-50/50">${help}</td><td class="p-3 text-center text-purple-700 font-semibold bg-purple-50/50">${kim}</td><td class="p-3 text-center font-bold text-indigo-700">${pct}%</td><td class="p-3 text-center flex justify-center gap-1">${esAdmin ? `<button onclick="abrirModalEditarIntegrante(${idx})" class="text-blue-600 hover:text-blue-800 text-xs font-bold px-2 py-1 bg-blue-50 rounded border border-blue-200" title="Editar"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarIntegrante('${invInfo.nombre}')" class="text-rose-600 hover:text-rose-800 text-xs font-bold px-2 py-1 bg-rose-50 rounded border border-rose-200" title="Eliminar"><i class="fa-solid fa-trash"></i></button>` : `<span class="text-xs text-slate-400">Lectura</span>`}</td>`;
                 tbody.appendChild(tr);
             });
+        }
+
+        // ================== CHECKBOX MAESTRO ==================
+        function toggleAllCasos(source) {
+            const checkboxes = document.querySelectorAll('.chk-caso');
+            checkboxes.forEach(chk => { if(!chk.disabled) chk.checked = source.checked; });
+        }
+
+        // ================== ELIMINAR VARIOS A LA VEZ ==================
+        function eliminarCasosSeleccionados() {
+            const seleccionados = Array.from(document.querySelectorAll('.chk-caso:checked')).map(chk => chk.value);
+            if (seleccionados.length === 0) {
+                alert("Selecciona al menos un Test Case marcando su casilla.");
+                return;
+            }
+            if (confirm(`¿Estás seguro de eliminar ${seleccionados.length} Test Case(s)? Esta acción no se puede deshacer.`)) {
+                casosPrueba = casosPrueba.filter(c => !seleccionados.includes(c.id));
+                hallazgos = hallazgos.filter(h => !seleccionados.includes(h.tcId));
+                guardarDatosEnNubeOEnLocal();
+                actualizarTodo();
+            }
         }
 
         function renderizarCasos() {
@@ -576,33 +664,29 @@
                     const kimInputAttr = (esPass && isOwnerOrAdmin) ? '' : 'disabled title="Solo si es PASS"';
                     const kimInputClass = (esPass && isOwnerOrAdmin) ? 'bg-white text-slate-700 border-slate-300' : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed';
 
+                    let colorRiesgo = "text-slate-600";
+                    if(c.riesgo === "High") colorRiesgo = "text-rose-600 font-bold";
+                    if(c.riesgo === "Medium") colorRiesgo = "text-amber-600 font-bold";
+                    if(c.riesgo === "Low") colorRiesgo = "text-emerald-600 font-bold";
+
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
+                        <td class="p-3 text-center"><input type="checkbox" class="chk-caso accent-rose-500 cursor-pointer" value="${c.id}" ${disabledStr}></td>
                         <td class="p-3 text-center font-mono text-xs text-slate-400 font-bold">${index + 1}</td>
                         <td class="p-3 font-bold font-mono text-slate-700">${c.id}</td>
+                        <td class="p-3 text-xs text-slate-500"><i class="fa-regular fa-folder text-blue-400"></i> ${c.folder || '00-GENERAL'}</td>
                         <td class="p-3 text-slate-800 font-medium">${c.nombre}</td>
+                        <td class="p-3 text-center text-xs ${colorRiesgo}">${c.riesgo || 'Medium'}</td>
                         <td class="p-3 text-center"><input type="number" value="${c.pasos || 1}" min="1" ${disabledStr} onchange="actualizarPasos('${c.id}', this.value)" class="w-14 text-center border rounded p-1 text-xs font-bold ${disabledClass}"></td>
                         <td class="p-3 text-slate-600 font-medium"><select onchange="actualizarTesterCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border ${disabledClass}">${generarOpcionesTestersMatriz(c.tester)}</select></td>
-                        <td class="p-3 text-center"><select onchange="actualizarEstatusCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border shadow-sm ${disabledClass}"><option value="NOT_EXECUTED" ${c.estatus === 'NOT_EXECUTED' ? 'selected' : ''}>NOT EXECUTED</option><option value="IN_PROCESS" ${c.estatus === 'IN_PROCESS' ? 'selected' : ''}>IN PROCESS</option><option value="PASS" ${c.estatus === 'PASS' ? 'selected' : ''}>PASS</option><option value="FAIL" ${c.estatus === 'FAIL' ? 'selected' : ''}>FAIL</option><option value="HELP" ${c.estatus === 'HELP' ? 'selected' : ''}>HELP</option><option value="KIM" ${c.estatus === 'KIM' ? 'selected' : ''}>KIM</option></select></td>
+                        <td class="p-3 text-center"><select onchange="actualizarEstatusCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border shadow-sm ${disabledClass}"><option value="NOT_EXECUTED" ${c.estatus === 'NOT_EXECUTED' ? 'selected' : ''}>NOT EXECUTED</option><option value="IN_PROCESS" ${c.estatus === 'IN_PROCESS' ? 'selected' : ''}>IN PROCESS</option><option value="PASS" ${c.estatus === 'PASS' ? 'selected' : ''}>PASS</option><option value="FAIL" ${c.estatus === 'FAIL' ? 'selected' : ''}>FAIL</option><option value="HELP" ${c.estatus === 'HELP' ? 'selected' : ''}>HELP</option><option value="KIM" ${c.estatus === 'KIM' ? 'selected' : ''}>KIM</option><option value="N/A" ${c.estatus === 'N/A' ? 'selected' : ''}>🚫 N/A</option></select></td>
                         <td class="p-3 text-center"><input type="date" value="${c.fechaEjecucion || ''}" ${disabledStr} onchange="actualizarFecha('${c.id}', 'fechaEjecucion', this.value)" class="text-xs border rounded p-1 text-slate-700 ${disabledClass}"></td>
                         <td class="p-3 text-center"><input type="date" value="${c.fechaKim || ''}" ${kimInputAttr} onchange="actualizarFecha('${c.id}', 'fechaKim', this.value)" class="text-xs border rounded p-1 ${kimInputClass}"></td>
                         <td class="p-3 text-center font-bold">${badgeHallazgo}</td>
-                        <td class="p-3 text-center">
-                            ${isOwnerOrAdmin ? `<button onclick="eliminarCaso('${c.id}')" class="text-rose-600 hover:text-rose-800 text-xs" title="Borrar Test Case"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}
-                        </td>
                     `;
                     tbody.appendChild(tr);
                 }
             });
-        }
-
-        function eliminarCaso(id) {
-            if (confirm(`¿Estás seguro de que deseas eliminar el caso de prueba ${id}? Esta acción no se puede deshacer.`)) {
-                casosPrueba = casosPrueba.filter(c => c.id !== id);
-                hallazgos = hallazgos.filter(h => h.tcId !== id);
-                guardarDatosEnNubeOEnLocal();
-                actualizarTodo();
-            }
         }
 
         function generarOpcionesTestersMatriz(testerActual) { let options = ""; testers.forEach(t => { options += `<option value="${t}" ${t === testerActual ? 'selected' : ''}>${t}</option>`; }); return options; }
@@ -664,18 +748,18 @@
         function actualizarEstatusTarea(id, nuevoEstatus) { const t = tareasDaily.find(item => item.id === id); if (t) { t.estatus = nuevoEstatus; guardarDatosEnNubeOEnLocal(); renderizarTareas(); } }
         function actualizarFechaTarea(id, nuevaFecha) { const t = tareasDaily.find(item => item.id === id); if (t) { t.fecha = nuevaFecha; guardarDatosEnNubeOEnLocal(); } }
 
-        function actualizarEstatusCaso(id, nuevoEstatus) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso.estatus = nuevoEstatus; if (nuevoEstatus !== "NOT_EXECUTED" && !caso.fechaEjecucion) { caso.fechaEjecucion = new Date().toISOString().split('T')[0]; } if (nuevoEstatus === "KIM") { caso.fechaKim = ""; } else if (nuevoEstatus === "PASS") { if (!caso.fechaKim) { caso.fechaKim = new Date().toISOString().split('T')[0]; } } else { caso.fechaKim = ""; } guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
+        function actualizarEstatusCaso(id, nuevoEstatus) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso.estatus = nuevoEstatus; if (nuevoEstatus !== "NOT_EXECUTED" && nuevoEstatus !== "N/A" && !caso.fechaEjecucion) { caso.fechaEjecucion = new Date().toISOString().split('T')[0]; } if (nuevoEstatus === "KIM" || nuevoEstatus === "N/A") { caso.fechaKim = ""; } else if (nuevoEstatus === "PASS") { if (!caso.fechaKim) { caso.fechaKim = new Date().toISOString().split('T')[0]; } } else { caso.fechaKim = ""; } guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
         function actualizarFecha(id, campoFecha, valor) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso[campoFecha] = valor; guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
 
-        // ID INTELIGENTE AL CREAR NUEVO CASO CON VALIDACIÓN DE DUPLICADOS
+        // ID INTELIGENTE AL CREAR NUEVO CASO (OMITE DUPLICADOS)
         function abrirModalNuevoCaso() { 
             const sel = document.getElementById("insTcTester"); sel.innerHTML = ""; 
             testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); 
             
             const nextNum = casosPrueba.length + 1;
-            const newId = "TC-" + String(nextNum).padStart(3, '0');
-            document.getElementById("insTcId").value = newId;
+            document.getElementById("insTcId").value = "TC-" + String(nextNum).padStart(3, '0');
             document.getElementById("insTcNombre").value = "";
+            document.getElementById("insTcFolder").value = "00-GENERAL";
             document.getElementById("insTcPasos").value = "1";
 
             document.getElementById("modalCaso").classList.remove("hidden"); 
@@ -684,49 +768,52 @@
         function guardarNuevoCaso() { 
             const id = document.getElementById("insTcId").value.trim(); 
             const nombre = document.getElementById("insTcNombre").value.trim(); 
+            const folder = document.getElementById("insTcFolder").value.trim() || "00-GENERAL";
+            const riesgo = document.getElementById("insTcRiesgo").value;
             const pasos = parseInt(document.getElementById("insTcPasos").value) || 1; 
             const tester = document.getElementById("insTcTester").value; 
             
-            if (!id || !nombre) { 
-                alert("Completa el ID y el Nombre del caso."); 
-                return; 
-            }
-            
+            if (!id || !nombre) { alert("Completa el ID y el Nombre del caso."); return; }
             if (casosPrueba.some(c => c.id.toLowerCase() === id.toLowerCase())) {
-                alert(`Error: El ID de Test Case "${id}" ya existe. Por favor usa un ID diferente.`);
-                return;
+                alert(`Error: El ID "${id}" ya existe. Escribe uno diferente.`); return;
             }
 
-            casosPrueba.push({ id, nombre, pasos, tester, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
-            cerrarModal("modalCaso"); 
-            guardarDatosEnNubeOEnLocal(); 
-            actualizarTodo(); 
+            casosPrueba.push({ id, folder, nombre, riesgo, pasos, tester, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
+            cerrarModal("modalCaso"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
         }
 
         function abrirModalCargaMasiva() { const sel = document.getElementById("insCargaMasivaTester"); sel.innerHTML = ""; testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); document.getElementById("modalCargaMasiva").classList.remove("hidden"); }
         
-        // EXCEL MÁGICO EN CARGA MASIVA (OMITE DUPLICADOS)
+        // EXCEL MÁGICO EN CARGA MASIVA (EXTRAE TC01 DEL NOMBRE)
         function procesarCargaMasiva() { 
             const texto = document.getElementById("txtAreaCargaMasiva").value.trim(); 
             const testerDefecto = document.getElementById("insCargaMasivaTester").value; 
             if (!texto) { alert("Pega la lista de casos."); return; } 
             
             const lineas = texto.split("\n"); 
-            let cargados = 0; 
-            let omitidos = 0;
+            let cargados = 0; let omitidos = 0;
             
             lineas.forEach(linea => { 
                 if (linea.trim()) { 
                     const separador = linea.includes("\t") ? "\t" : ",";
                     let partes = linea.split(separador); 
                     
-                    let id = partes[0] ? partes[0].trim() : ""; 
-                    let nombre = partes[1] ? partes[1].trim() : "Caso sin nombre"; 
-                    let pasos = partes[2] ? (parseInt(partes[2].trim()) || 1) : 1; 
+                    let nombre = partes[0] ? partes[0].trim() : "Caso sin nombre"; 
+                    let folder = partes[1] ? partes[1].trim() : "00-GENERAL";
+                    let riesgo = partes[2] ? partes[2].trim() : "Medium";
+                    
+                    // Extrae el TCxx del principio del nombre
+                    let id = "";
+                    let match = nombre.match(/^TC-?\d{1,4}/i);
+                    if (match) {
+                        id = match[0].toUpperCase().replace("-", ""); 
+                    } else {
+                        id = "TC" + String(casosPrueba.length + cargados + 1).padStart(3, '0');
+                    }
                     
                     if (id) { 
                         if (!casosPrueba.some(c => c.id.toLowerCase() === id.toLowerCase())) { 
-                            casosPrueba.push({ id: id, nombre: nombre, pasos: pasos, tester: testerDefecto, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
+                            casosPrueba.push({ id: id, folder: folder, nombre: nombre, riesgo: riesgo, pasos: 1, tester: testerDefecto, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
                             cargados++; 
                         } else {
                             omitidos++;
@@ -736,58 +823,36 @@
             }); 
             
             let mensaje = `¡Se cargaron exitosamente ${cargados} casos de prueba a la matriz!`;
-            if (omitidos > 0) {
-                mensaje += `\n(Se omitieron ${omitidos} casos porque su ID ya existía en la tabla).`;
-            }
+            if (omitidos > 0) mensaje += `\n(Se omitieron ${omitidos} casos porque su ID ya existía en la tabla).`;
             alert(mensaje); 
             
-            document.getElementById("txtAreaCargaMasiva").value = ""; 
-            cerrarModal("modalCargaMasiva"); 
-            guardarDatosEnNubeOEnLocal(); 
-            actualizarTodo(); 
+            document.getElementById("txtAreaCargaMasiva").value = ""; cerrarModal("modalCargaMasiva"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
         }
 
         function abrirModalNuevoHallazgo() { const sel = document.getElementById("insHalTc"); sel.innerHTML = ""; casosPrueba.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.id} - ${c.nombre}</option>`; }); document.getElementById("insHalFecha").value = new Date().toISOString().split('T')[0]; document.getElementById("modalHallazgo").classList.remove("hidden"); }
         
         function guardarNuevoHallazgo() { 
-            const idManual = document.getElementById("insHalIdManual").value.trim(); 
-            const tcId = document.getElementById("insHalTc").value; 
-            const tipo = document.getElementById("insHalTipo").value; 
-            const etapa = document.getElementById("insHalEtapa").value; 
-            const fecha = document.getElementById("insHalFecha").value; 
-            const desc = document.getElementById("insHalDesc").value.trim(); 
-            const severidad = document.getElementById("insHalSeveridad").value; 
+            const idManual = document.getElementById("insHalIdManual").value.trim(); const tcId = document.getElementById("insHalTc").value; const tipo = document.getElementById("insHalTipo").value; const etapa = document.getElementById("insHalEtapa").value; const fecha = document.getElementById("insHalFecha").value; const desc = document.getElementById("insHalDesc").value.trim(); const severidad = document.getElementById("insHalSeveridad").value; 
             
-            if (!idManual || !desc) { 
-                alert("Completa el ID Manual y la Descripción."); 
-                return; 
-            } 
-            
+            if (!idManual || !desc) { alert("Completa el ID Manual y la Descripción."); return; } 
             if (hallazgos.some(h => h.id.toLowerCase() === idManual.toLowerCase())) {
-                alert(`Error: El ID "${idManual}" ya está registrado como Defecto o Desviación. Usa un ID único.`);
-                return;
+                alert(`Error: El ID "${idManual}" ya está registrado como Defecto o Desviación. Usa un ID único.`); return;
             }
 
             hallazgos.push({ id: idManual, tcId, tipo, etapa, desc, fecha, severidad, estatus: "ABIERTO" }); 
             const tc = casosPrueba.find(c => c.id === tcId); 
-            if (tc && tipo === "DEFECTO" && tc.estatus !== "KIM") { tc.estatus = "FAIL"; } 
+            if (tc && tipo === "DEFECTO" && tc.estatus !== "KIM" && tc.estatus !== "N/A") { tc.estatus = "FAIL"; } 
             
-            document.getElementById("insHalIdManual").value = ""; 
-            document.getElementById("insHalDesc").value = ""; 
-            cerrarModal("modalHallazgo"); 
-            guardarDatosEnNubeOEnLocal(); 
-            actualizarTodo(); 
+            document.getElementById("insHalIdManual").value = ""; document.getElementById("insHalDesc").value = ""; cerrarModal("modalHallazgo"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
         }
 
         function cerrarModal(id) { document.getElementById(id).classList.add("hidden"); }
 
-        function exportarReporteGeneralCSV() { let csv = "ID_TC,Nombre_Caso,Total_Pasos,Tester,Estatus,Fecha_Ejecucion,Fecha_Kim,Num_Defectos,Num_Desviaciones\n"; casosPrueba.forEach(c => { const numDef = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DEFECTO").length; const numDesv = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DESVIACION").length; csv += `"${c.id}","${c.nombre}","${c.pasos || 1}","${c.tester}","${c.estatus}","${c.fechaEjecucion || ''}","${c.fechaKim || ''}","${numDef}","${numDesv}"\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", "reporte_avance_qa.csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+        function exportarReporteGeneralCSV() { let csv = "ID_TC,Folder,Riesgo,Nombre_Caso,Total_Pasos,Tester,Estatus,Fecha_Ejecucion,Fecha_Kim,Num_Defectos,Num_Desviaciones\n"; casosPrueba.forEach(c => { const numDef = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DEFECTO").length; const numDesv = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DESVIACION").length; csv += `"${c.id}","${c.folder || ''}","${c.riesgo || ''}","${c.nombre}","${c.pasos || 1}","${c.tester}","${c.estatus}","${c.fechaEjecucion || ''}","${c.fechaKim || ''}","${numDef}","${numDesv}"\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", "reporte_avance_qa.csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
         // ================== ORDENAR Y GUARDAR ==================
         function guardarDatosEnNubeOEnLocal() { 
-            // ORDENAR SIEMPRE ALFANUMÉRICAMENTE ANTES DE GUARDAR
             casosPrueba.sort((a, b) => a.id.localeCompare(b.id, undefined, {numeric: true, sensitivity: 'base'}));
-            
             const dataState = { tituloProyecto, fechaEntregaDev, fechaInicioPruebas, fechaFinPruebas, casosPrueba, hallazgos, testers, involucradosGlobales, minutasLista, tareasDaily }; 
             if (firebaseActivo && db) { db.ref("qa_tracker_data").set(dataState); } 
         }
