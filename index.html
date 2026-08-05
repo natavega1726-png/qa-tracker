@@ -332,7 +332,6 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <h3 class="text-lg font-bold text-slate-800">Bitácora Detallada de Defectos y Desviaciones (1:N)</h3>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                            <!-- NUEVO BUSCADOR PREDICTIVO POR ID DE TC -->
                             <input type="text" id="filtroTcHallazgo" list="listaFiltroTc" oninput="renderizarHallazgos()" placeholder="🔍 Filtrar ID TC..." class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500 w-36 uppercase">
                             <datalist id="listaFiltroTc"></datalist>
 
@@ -344,7 +343,6 @@
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
                                 <tr>
-                                    <th class="p-3 w-10 text-center">#</th>
                                     <th class="p-3 w-28">ID Manual</th>
                                     <th class="p-3 w-24">ID TC</th>
                                     <th class="p-3 w-28">Tipo</th>
@@ -408,7 +406,34 @@
     </div>
 
     <!-- ================== MODALES Y FORMULARIOS ================== -->
-    <div id="modalHistoricoEjecucion" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4"><div class="flex justify-between items-center border-b pb-2"><h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Histórico General de Avance</h3><button onclick="cerrarModal('modalHistoricoEjecucion')" class="text-slate-400 hover:text-slate-600 text-sm"><i class="fa-solid fa-xmark"></i></button></div><div class="overflow-y-auto max-h-72 border rounded-lg"><table class="w-full text-left text-xs"><thead class="bg-slate-800 text-white uppercase sticky top-0"><tr><th class="p-2.5">Fecha</th><th class="p-2.5 text-center text-blue-300">Ejecutados</th><th class="p-2.5 text-center text-amber-300">Faltantes Totales</th><th class="p-2.5 text-center text-emerald-300">PASS</th><th class="p-2.5 text-center text-rose-300">Pendientes KIM</th><th class="p-2.5 text-center text-purple-300">Aprobados KIM</th></tr></thead><tbody id="tablaHistoricoEjecucionBody" class="divide-y divide-slate-200 bg-white font-medium"></tbody></table></div><div class="flex justify-end pt-2"><button onclick="cerrarModal('modalHistoricoEjecucion')" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Cerrar Ventana</button></div></div></div>
+    <!-- MODAL HISTÓRICO EJECUCIÓN (ACTUALIZADO ACUMULATIVO) -->
+    <div id="modalHistoricoEjecucion" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Histórico General de Avance
+                </h3>
+                <button onclick="cerrarModal('modalHistoricoEjecucion')" class="text-slate-400 hover:text-slate-600 text-sm"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="overflow-y-auto max-h-72 border rounded-lg">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-800 text-white uppercase sticky top-0">
+                        <tr>
+                            <th class="p-2.5">Fecha</th>
+                            <th class="p-2.5 text-center text-blue-300">Ejecutados Hoy</th>
+                            <th class="p-2.5 text-center text-amber-300">Faltantes (Restante)</th>
+                            <th class="p-2.5 text-center text-emerald-300">PASS</th>
+                            <th class="p-2.5 text-center text-rose-300">Pendientes KIM</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaHistoricoEjecucionBody" class="divide-y divide-slate-200 bg-white font-medium"></tbody>
+                </table>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="cerrarModal('modalHistoricoEjecucion')" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Cerrar Ventana</button>
+            </div>
+        </div>
+    </div>
     
     <div id="modalAgregarIntegrante" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-user-plus text-slate-800"></i> Registrar Nuevo Integrante</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">Nombre Completo:</label><input type="text" id="insIntNombre" placeholder="Ej. Juan Pérez" class="w-full border rounded-lg p-2 text-sm"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Rol / Cargo:</label><select id="insIntRol" class="w-full border rounded-lg p-2 text-sm font-bold text-slate-700"><option value="Tester">Tester / QA</option><option value="Líder">Líder de Proyecto</option><option value="Analista">Analista QA / Negocio</option><option value="Desarrollador">Desarrollador (Dev)</option></select></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalAgregarIntegrante')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoIntegrante()" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Guardar Integrante</button></div></div></div>
     <div id="modalEditarIntegrante" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-user-pen text-blue-600"></i> Editar Integrante del Equipo</h3><input type="hidden" id="editIntIndex"><div><label class="block text-xs font-bold text-slate-600 mb-1">Nombre Completo:</label><input type="text" id="editIntNombre" class="w-full border rounded-lg p-2 text-sm"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Rol / Cargo:</label><select id="editIntRol" class="w-full border rounded-lg p-2 text-sm font-bold text-slate-700"><option value="Tester">Tester / QA</option><option value="Líder">Líder de Proyecto</option><option value="Analista">Analista QA / Negocio</option><option value="Desarrollador">Desarrollador (Dev)</option></select></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalEditarIntegrante')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarEdicionIntegrante()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Actualizar Datos</button></div></div></div>
@@ -455,11 +480,10 @@
         </div>
     </div>
 
-    <div id="modalMinuta" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-amber-600"></i> Registrar Minuta de Sesión</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha de la Reunión (Alta):</label><input type="date" id="insMinutaFecha" class="w-full border rounded-lg p-2 text-sm text-slate-700 font-bold"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Título / Tema General (Opcional):</label><input type="text" id="insMinutaObjetivo" placeholder="Ej. Daily de seguimiento" class="w-full border rounded-lg p-2 text-sm"></div></div><div><div class="flex justify-between items-center mb-2"><label class="block text-xs font-bold text-slate-700 uppercase">Puntos Discutidos & Tareas:</label><button onclick="agregarPuntoMinutaInput('', false, '', '')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded border border-slate-300"><i class="fa-solid fa-plus text-amber-600"></i> Agregar Punto</button></div><div id="contenedorPuntosMinutaModal" class="space-y-3 max-h-60 overflow-y-auto p-2 border rounded-lg bg-slate-50"></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalMinuta')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevaMinuta()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold">Guardar Minuta y Tareas</button></div></div></div>
+    <div id="modalMinuta" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-amber-600"></i> Registrar Minuta de Sesión</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha de la Reunión (Alta):</label><input type="date" id="insMinutaFecha" class="w-full border rounded-lg p-2 text-sm text-slate-700 font-bold"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Título / Tema General (Opcional):</label><input type="text" id="insMinutaObjetivo" placeholder="Ej. Daily de seguimiento de ejecución" class="w-full border rounded-lg p-2 text-sm"></div></div><div><div class="flex justify-between items-center mb-2"><label class="block text-xs font-bold text-slate-700 uppercase">Puntos Discutidos & Tareas:</label><button onclick="agregarPuntoMinutaInput('', false, '', '')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded border border-slate-300"><i class="fa-solid fa-plus text-amber-600"></i> Agregar Punto</button></div><div id="contenedorPuntosMinutaModal" class="space-y-3 max-h-60 overflow-y-auto p-2 border rounded-lg bg-slate-50"></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalMinuta')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevaMinuta()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold">Guardar Minuta y Tareas</button></div></div></div>
     
     <div id="modalTarea" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-tasks text-indigo-600"></i> Registrar Nueva Tarea</h3><div><label class="block text-xs font-bold text-slate-600 mb-1">ID Tarea (Autogenerado):</label><input type="text" id="insTareaId" readonly class="w-full border rounded-lg p-2 text-sm font-mono font-bold bg-slate-100 text-slate-500"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Descripción de la Tarea:</label><textarea id="insTareaDesc" rows="3" placeholder="Ej. Validar con desarrollo el fix del error 500" class="w-full border rounded-lg p-2 text-sm"></textarea></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Responsable Asignado:</label><select id="insTareaResp" class="w-full border rounded-lg p-2 text-sm font-bold"></select></div><div class="grid grid-cols-3 gap-2"><div><label class="block text-xs font-bold text-slate-600 mb-1">Prioridad:</label><select id="insTareaPrio" class="w-full border rounded-lg p-2 text-sm"><option value="ALTA">Alta</option><option value="MEDIA" selected>Media</option><option value="BAJA">Baja</option></select></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha Alta:</label><input type="date" id="insTareaFechaAlta" class="w-full border rounded-lg p-1.5 text-xs text-slate-700"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha Compromiso:</label><input type="date" id="insTareaFecha" class="w-full border rounded-lg p-1.5 text-xs text-slate-700"></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalTarea')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevaTarea()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold">Crear Tarea</button></div></div></div>
 
-    <!-- NUEVO FORMULARIO PREDICTIVO PARA HALLAZGOS -->
     <div id="modalHallazgo" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
             <h3 class="text-lg font-bold text-slate-800">Asociar Defecto o Desviación</h3>
@@ -631,6 +655,7 @@
             const kim = casosPrueba.filter(c => c.estatus === "KIM").length; 
             const na = casosPrueba.filter(c => c.estatus === "N/A").length;
 
+            // ESTRICTO: N/A no cuenta como caso ejecutable. 
             const ejecutables = total - na;
             const ejecutados = ejecutables - notExec; 
             const pctReal = ejecutables > 0 ? ((pass / ejecutables) * 100) : 0; 
@@ -690,7 +715,56 @@
             if (pctReal === 100 && ejecutables > 0) { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-emerald-50 border-emerald-200 text-emerald-900"; iconoSalud.className = "text-3xl text-emerald-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-flag-checkered"></i>'; tituloSalud.innerText = "¡PRUEBAS COMPLETADAS!"; descSalud.innerText = `Se ha alcanzado el 100% de ejecución real.`; } else if (fechaFinPruebas && hoy > fechaFinPruebas && pctReal < 100) { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-rose-50 border-rose-200 text-rose-900"; iconoSalud.className = "text-3xl text-rose-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>'; tituloSalud.innerText = "ALERTA: PROYECTO RETRASADO"; descSalud.innerText = `Se superó la fecha fin de pruebas (${fechaFinPruebas}) y el avance no está al 100%.`; } else { cardSalud.className = "p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-blue-50 border-blue-200 text-blue-900"; iconoSalud.className = "text-3xl text-blue-600"; iconoSalud.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; tituloSalud.innerText = "EN EJECUCIÓN"; descSalud.innerText = `El proyecto está en curso de acuerdo a los tiempos establecidos.`; }
         }
 
-        function abrirModalHistoricoEjecucion() { const tbody = document.getElementById("tablaHistoricoEjecucionBody"); tbody.innerHTML = ""; const mapaHistorico = {}; casosPrueba.forEach(c => { if (c.fechaEjecucion && c.fechaEjecucion.trim() !== "") { const f = c.fechaEjecucion; if (!mapaHistorico[f]) { mapaHistorico[f] = { ejecutados: 0, pass: 0, pendKim: 0, aprobKim: 0 }; } if (c.estatus !== "NOT_EXECUTED" && c.estatus !== "N/A") mapaHistorico[f].ejecutados += 1; if (c.estatus === "PASS") mapaHistorico[f].pass += 1; if (c.estatus === "KIM") { if (c.fechaKim && c.fechaKim.trim() !== "") mapaHistorico[f].aprobKim += 1; else mapaHistorico[f].pendKim += 1; } } }); const totalFaltantesHoy = casosPrueba.filter(c => c.estatus === "NOT_EXECUTED" || c.estatus === "IN_PROCESS").length; const fechasOrdenadas = Object.keys(mapaHistorico).sort().reverse(); if (fechasOrdenadas.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-semibold">Aún no hay registros de fechas de ejecución.</td></tr>`; } else { fechasOrdenadas.forEach(f => { const data = mapaHistorico[f]; const tr = document.createElement("tr"); tr.innerHTML = `<td class="p-2.5 font-bold text-slate-700">${f}</td><td class="p-2.5 text-center font-bold text-blue-600">${data.ejecutados} TC(s)</td><td class="p-2.5 text-center font-bold text-amber-600">${totalFaltantesHoy} TC(s)</td><td class="p-2.5 text-center font-bold text-emerald-600">${data.pass} PASS</td><td class="p-2.5 text-center font-bold text-rose-600">${data.pendKim} KIM</td><td class="p-2.5 text-center font-bold text-purple-600">${data.aprobKim} KIM</td>`; tbody.appendChild(tr); }); } document.getElementById("modalHistoricoEjecucion").classList.remove("hidden"); }
+        // HISTÓRICO CON LÓGICA ACUMULATIVA (FALTANTES DÍA POR DÍA)
+        function abrirModalHistoricoEjecucion() { 
+            const tbody = document.getElementById("tablaHistoricoEjecucionBody"); 
+            tbody.innerHTML = ""; 
+            const mapaHistorico = {}; 
+            
+            // Filtramos los que no son N/A
+            const ejecutables = casosPrueba.filter(c => c.estatus !== "N/A");
+            const totalEjecutables = ejecutables.length;
+
+            ejecutables.forEach(c => { 
+                if (c.fechaEjecucion && c.fechaEjecucion.trim() !== "") { 
+                    const f = c.fechaEjecucion; 
+                    if (!mapaHistorico[f]) { mapaHistorico[f] = { ejecutadosDia: 0, passDia: 0, pendKimDia: 0 }; } 
+                    
+                    if (c.estatus !== "NOT_EXECUTED") mapaHistorico[f].ejecutadosDia += 1; 
+                    if (c.estatus === "PASS") mapaHistorico[f].passDia += 1; 
+                    if (c.estatus === "KIM") mapaHistorico[f].pendKimDia += 1; 
+                } 
+            }); 
+
+            // Cálculo acumulativo para faltantes día por día
+            const fechasAsc = Object.keys(mapaHistorico).sort();
+            let acumuladoEjecutados = 0;
+            fechasAsc.forEach(f => {
+                acumuladoEjecutados += mapaHistorico[f].ejecutadosDia;
+                mapaHistorico[f].faltantes = totalEjecutables - acumuladoEjecutados;
+            });
+
+            // Para mostrar, las ordenamos de más reciente a más antigua
+            const fechasDesc = [...fechasAsc].reverse();
+
+            if (fechasDesc.length === 0) { 
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 font-semibold">Aún no hay registros de fechas de ejecución.</td></tr>`; 
+            } else { 
+                fechasDesc.forEach(f => { 
+                    const data = mapaHistorico[f]; 
+                    const tr = document.createElement("tr"); 
+                    tr.innerHTML = `
+                        <td class="p-2.5 font-bold text-slate-700">${f}</td>
+                        <td class="p-2.5 text-center font-bold text-blue-600">${data.ejecutadosDia} TC(s)</td>
+                        <td class="p-2.5 text-center font-bold text-amber-600">${data.faltantes} TC(s)</td>
+                        <td class="p-2.5 text-center font-bold text-emerald-600">${data.passDia} PASS</td>
+                        <td class="p-2.5 text-center font-bold text-rose-600">${data.pendKimDia} KIM</td>
+                    `; 
+                    tbody.appendChild(tr); 
+                }); 
+            } 
+            document.getElementById("modalHistoricoEjecucion").classList.remove("hidden"); 
+        }
 
         function renderizarTesters() {
             const tbody = document.getElementById("tablaTestersBody"); tbody.innerHTML = "";
@@ -717,6 +791,7 @@
             });
         }
 
+        // ELIMINACIÓN MASIVA
         function toggleAllCasos(source) {
             const checkboxes = document.querySelectorAll('.chk-caso');
             checkboxes.forEach(chk => { if(!chk.disabled) chk.checked = source.checked; });
@@ -854,14 +929,17 @@
         function actualizarEstatusCaso(id, nuevoEstatus) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso.estatus = nuevoEstatus; if (nuevoEstatus !== "NOT_EXECUTED" && nuevoEstatus !== "N/A" && !caso.fechaEjecucion) { caso.fechaEjecucion = new Date().toISOString().split('T')[0]; } if (nuevoEstatus === "KIM" || nuevoEstatus === "N/A") { caso.fechaKim = ""; } else if (nuevoEstatus === "PASS") { if (!caso.fechaKim) { caso.fechaKim = new Date().toISOString().split('T')[0]; } } else { caso.fechaKim = ""; } guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
         function actualizarFecha(id, campoFecha, valor) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso[campoFecha] = valor; guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
 
+        // ID INTELIGENTE AL CREAR NUEVO CASO CON VALIDACIÓN DE DUPLICADOS
         function abrirModalNuevoCaso() { 
             const sel = document.getElementById("insTcTester"); sel.innerHTML = ""; 
             testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); 
+            
             const nextNum = casosPrueba.length + 1;
-            document.getElementById("insTcId").value = "TC" + String(nextNum).padStart(2, '0');
+            document.getElementById("insTcId").value = "TC-" + String(nextNum).padStart(3, '0');
             document.getElementById("insTcNombre").value = "";
             document.getElementById("insTcFolder").value = "00-GENERAL";
             document.getElementById("insTcPasos").value = "1";
+
             document.getElementById("modalCaso").classList.remove("hidden"); 
         }
         
@@ -873,22 +951,33 @@
             const pasos = parseInt(document.getElementById("insTcPasos").value) || 1; 
             const tester = document.getElementById("insTcTester").value; 
             
-            if (!id || !nombre) { alert("Completa el ID y el Nombre del caso."); return; }
-            if (casosPrueba.some(c => c.id.toLowerCase() === id.toLowerCase())) { alert(`Error: El ID "${id}" ya existe.`); return; }
+            if (!id || !nombre) { 
+                alert("Completa el ID y el Nombre del caso."); 
+                return; 
+            }
+            
+            if (casosPrueba.some(c => c.id.toLowerCase() === id.toLowerCase())) {
+                alert(`Error: El ID de Test Case "${id}" ya existe. Por favor usa un ID diferente.`);
+                return;
+            }
 
             casosPrueba.push({ id, folder, nombre, riesgo, pasos, tester, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
-            cerrarModal("modalCaso"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
+            cerrarModal("modalCaso"); 
+            guardarDatosEnNubeOEnLocal(); 
+            actualizarTodo(); 
         }
 
         function abrirModalCargaMasiva() { const sel = document.getElementById("insCargaMasivaTester"); sel.innerHTML = ""; testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); document.getElementById("modalCargaMasiva").classList.remove("hidden"); }
         
+        // EXCEL MÁGICO EN CARGA MASIVA (OMITE DUPLICADOS)
         function procesarCargaMasiva() { 
             const texto = document.getElementById("txtAreaCargaMasiva").value.trim(); 
             const testerDefecto = document.getElementById("insCargaMasivaTester").value; 
             if (!texto) { alert("Pega la lista de casos."); return; } 
             
             const lineas = texto.split("\n"); 
-            let cargados = 0; let omitidos = 0;
+            let cargados = 0; 
+            let omitidos = 0;
             
             lineas.forEach(linea => { 
                 if (linea.trim()) { 
@@ -911,24 +1000,34 @@
 
                     if (!idFinal) {
                         let match = nombreFinal.match(/^TC-?\d{1,4}/i);
-                        if (match) idFinal = match[0].toUpperCase().replace("-", "");
-                        else idFinal = "TC" + String(casosPrueba.length + cargados + 1).padStart(2, '0');
+                        if (match) {
+                            idFinal = match[0].toUpperCase().replace("-", ""); 
+                        } else {
+                            idFinal = "TC" + String(casosPrueba.length + cargados + 1).padStart(3, '0');
+                        }
                     }
                     
                     if (idFinal) { 
                         if (!casosPrueba.some(c => c.id.toLowerCase() === idFinal.toLowerCase())) { 
                             casosPrueba.push({ id: idFinal, folder: folderFinal, nombre: nombreFinal, riesgo: riesgoFinal, pasos: 1, tester: testerDefecto, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
                             cargados++; 
-                        } else { omitidos++; }
+                        } else {
+                            omitidos++;
+                        }
                     } 
                 } 
             }); 
             
             let mensaje = `¡Se cargaron exitosamente ${cargados} casos de prueba a la matriz!`;
-            if (omitidos > 0) mensaje += `\n(Se omitieron ${omitidos} casos porque su ID ya existía).`;
+            if (omitidos > 0) {
+                mensaje += `\n(Se omitieron ${omitidos} casos porque su ID ya existía en la tabla).`;
+            }
             alert(mensaje); 
             
-            document.getElementById("txtAreaCargaMasiva").value = ""; cerrarModal("modalCargaMasiva"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
+            document.getElementById("txtAreaCargaMasiva").value = ""; 
+            cerrarModal("modalCargaMasiva"); 
+            guardarDatosEnNubeOEnLocal(); 
+            actualizarTodo(); 
         }
 
         function abrirModalNuevoHallazgo() { 
@@ -948,7 +1047,10 @@
             const desc = document.getElementById("insHalDesc").value.trim(); 
             const severidad = document.getElementById("insHalSeveridad").value; 
             
-            if (!idManual || !desc || !tcId) { alert("Completa el ID Manual, el ID del Test Case y la Descripción."); return; } 
+            if (!idManual || !desc || !tcId) { 
+                alert("Completa el ID Manual, el ID del Test Case y la Descripción."); 
+                return; 
+            } 
             
             if (!casosPrueba.some(c => c.id === tcId)) {
                 alert(`Error: El Test Case "${tcId}" no existe en la matriz. Verifica el ID.`);
@@ -967,15 +1069,20 @@
             document.getElementById("insHalIdManual").value = ""; 
             document.getElementById("insHalDesc").value = ""; 
             document.getElementById("insHalTc").value = ""; 
-            cerrarModal("modalHallazgo"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
+            cerrarModal("modalHallazgo"); 
+            guardarDatosEnNubeOEnLocal(); 
+            actualizarTodo(); 
         }
 
         function cerrarModal(id) { document.getElementById(id).classList.add("hidden"); }
 
         function exportarReporteGeneralCSV() { let csv = "ID_TC,Folder,Riesgo,Nombre_Caso,Total_Pasos,Tester,Estatus,Fecha_Ejecucion,Fecha_Kim,Num_Defectos,Num_Desviaciones\n"; casosPrueba.forEach(c => { const numDef = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DEFECTO").length; const numDesv = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DESVIACION").length; csv += `"${c.id}","${c.folder || ''}","${c.riesgo || ''}","${c.nombre}","${c.pasos || 1}","${c.tester}","${c.estatus}","${c.fechaEjecucion || ''}","${c.fechaKim || ''}","${numDef}","${numDesv}"\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", "reporte_avance_qa.csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
+        // ================== ORDENAR Y GUARDAR ==================
         function guardarDatosEnNubeOEnLocal() { 
+            // ORDENAR SIEMPRE ALFANUMÉRICAMENTE ANTES DE GUARDAR
             casosPrueba.sort((a, b) => a.id.localeCompare(b.id, undefined, {numeric: true, sensitivity: 'base'}));
+            
             const dataState = { tituloProyecto, fechaEntregaDev, fechaInicioPruebas, fechaFinPruebas, casosPrueba, hallazgos, testers, involucradosGlobales, minutasLista, tareasDaily }; 
             if (firebaseActivo && db) { db.ref("qa_tracker_data").set(dataState); } 
         }
