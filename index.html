@@ -531,8 +531,7 @@
                     // Actualizar UI del usuario
                     document.getElementById('txtUserLogged').innerText = usuarioSesion.nombre;
                     document.getElementById('txtUserRole').innerText = `Rol: ${usuarioSesion.rol}`;
-                    document.getElementById('indicadorConexion').innerHTML = '<i class="fa-solid fa-wifi text-emerald-400"></i> En Línea (Firebase Sync)';
-                    document.getElementById('indicadorConexion').className = 'text-[11px] bg-slate-800 text-emerald-400 px-3 py-1.5 rounded-full font-bold border border-slate-700 flex items-center gap-1.5';
+                    
 
                     // Aplicar restricciones visuales globales a Admins
                     if (usuarioSesion.rol !== 'Admin') {
