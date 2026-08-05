@@ -307,18 +307,17 @@
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
                                 <tr>
-                                    <th class="p-3 w-8 text-center"><input type="checkbox" onclick="toggleAllCasos(this)" class="ocultar-tester rounded accent-rose-500 cursor-pointer"></th>
-                                    <th class="p-3 w-10 text-center">#</th>
-                                    <th class="p-3 w-24">ID TC</th>
-                                    <th class="p-3 w-32">Folder</th>
-                                    <th class="p-3">Nombre del Caso de Prueba</th>
-                                    <th class="p-3 text-center">Riesgo</th>
-                                    <th class="p-3 text-center">Pasos TC</th>
-                                    <th class="p-3">Tester Asignado</th>
-                                    <th class="p-3 text-center">Estatus</th>
-                                    <th class="p-3 text-center">Fecha Ejecución</th>
-                                    <th class="p-3 text-center">Fecha KIM</th>
-                                    <th class="p-3 text-center">Hallazgos</th>
+                                    <th class="p-2 w-8 text-center"><input type="checkbox" onclick="toggleAllCasos(this)" class="ocultar-tester rounded accent-rose-500 cursor-pointer"></th>
+                                    <th class="p-2 w-16 text-xs">ID TC</th>
+                                    <th class="p-2 w-24 text-xs">Folder</th>
+                                    <th class="p-2 w-48 text-xs leading-tight">Nombre del Caso de Prueba</th>
+                                    <th class="p-2 text-center text-xs">Riesgo</th>
+                                    <th class="p-2 text-center text-xs">Pasos</th>
+                                    <th class="p-2 text-xs">Tester Asignado</th>
+                                    <th class="p-2 text-center text-xs">Estatus</th>
+                                    <th class="p-2 text-center text-xs leading-tight">Fecha<br>Ejec.</th>
+                                    <th class="p-2 text-center text-xs leading-tight">Fecha<br>KIM</th>
+                                    <th class="p-2 text-center text-xs">Hallazgos</th>
                                 </tr>
                             </thead>
                             <tbody id="tablaCasosBody" class="divide-y divide-slate-200 bg-white"></tbody>
@@ -338,7 +337,17 @@
                     <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
-                                <tr><th class="p-3 w-10 text-center">#</th><th class="p-3">ID Hallazgo (Manual)</th><th class="p-3">ID Caso de Prueba</th><th class="p-3">Tipo</th><th class="p-3">Etapa Afectada</th><th class="p-3">Descripción / Detalle del Problema</th><th class="p-3 text-center">Fecha Registro</th><th class="p-3 text-center">Severidad</th><th class="p-3 text-center">Estatus Hallazgo</th><th class="p-3 text-center">Acción</th></tr>
+                                <tr>
+                                    <th class="p-3 w-28">ID Manual</th>
+                                    <th class="p-3 w-24">ID TC</th>
+                                    <th class="p-3 w-28">Tipo</th>
+                                    <th class="p-3 w-32">Etapa Afectada</th>
+                                    <th class="p-3">Descripción / Detalle del Problema</th>
+                                    <th class="p-3 w-24 text-center">Fecha</th>
+                                    <th class="p-3 w-24 text-center">Severidad</th>
+                                    <th class="p-3 w-24 text-center">Estatus</th>
+                                    <th class="p-3 w-16 text-center">Acción</th>
+                                </tr>
                             </thead>
                             <tbody id="tablaHallazgosBody" class="divide-y divide-slate-200 bg-white"></tbody>
                         </table>
@@ -370,7 +379,17 @@
                     <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
-                                <tr><th class="p-3 w-10 text-center">#</th><th class="p-3 w-28">ID Tarea</th><th class="p-3">Tarea / Pendiente Asignado</th><th class="p-3">Responsable</th><th class="p-3 text-center">Origen</th><th class="p-3 text-center">Prioridad</th><th class="p-3 text-center">Fecha Alta</th><th class="p-3 text-center">Fecha Compromiso</th><th class="p-3 text-center">Estatus Tarea</th><th class="p-3 text-center">Acción</th></tr>
+                                <tr>
+                                    <th class="p-3 w-28">ID Tarea</th>
+                                    <th class="p-3">Tarea / Pendiente Asignado</th>
+                                    <th class="p-3 w-40">Responsable</th>
+                                    <th class="p-3 w-28 text-center">Origen</th>
+                                    <th class="p-3 w-24 text-center">Prioridad</th>
+                                    <th class="p-3 w-24 text-center">Fecha Alta</th>
+                                    <th class="p-3 w-24 text-center">Compromiso</th>
+                                    <th class="p-3 w-32 text-center">Estatus</th>
+                                    <th class="p-3 w-16 text-center">Acción</th>
+                                </tr>
                             </thead>
                             <tbody id="tablaTareasBody" class="divide-y divide-slate-200 bg-white"></tbody>
                         </table>
@@ -396,10 +415,10 @@
             </div>
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1">Nombre / Descripción:</label>
-                <input type="text" id="insTcNombre" placeholder="Ej: Validar guardado de folletería" class="w-full border rounded-lg p-2 text-sm">
+                <input type="text" id="insTcNombre" placeholder="Ej: TC01 Validar guardado de folletería" class="w-full border rounded-lg p-2 text-sm">
             </div>
             <div class="grid grid-cols-3 gap-2">
-                <div><label class="block text-xs font-bold text-slate-600 mb-1">Riesgo:</label><select id="insTcRiesgo" class="w-full border rounded-lg p-2 text-sm"><option value="High">High</option><option value="Medium" selected>Medium</option><option value="Low">Low</option></select></div>
+                <div><label class="block text-xs font-bold text-slate-600 mb-1">Riesgo:</label><select id="insTcRiesgo" class="w-full border rounded-lg p-2 text-sm"><option value="High">High</option><option value="Med" selected>Med</option><option value="Low">Low</option></select></div>
                 <div><label class="block text-xs font-bold text-slate-600 mb-1">Pasos:</label><input type="number" id="insTcPasos" value="1" min="1" class="w-full border rounded-lg p-2 text-sm font-bold"></div>
                 <div><label class="block text-xs font-bold text-slate-600 mb-1">Tester:</label><select id="insTcTester" class="w-full border rounded-lg p-2 text-sm"></select></div>
             </div>
@@ -410,12 +429,13 @@
         </div>
     </div>
 
+    <!-- CARGA MASIVA MEJORADA CERO COMAS -->
     <div id="modalCargaMasiva" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full p-6 space-y-4">
             <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-file-excel text-emerald-600"></i> Carga Masiva desde Excel</h3>
-            <p class="text-xs text-slate-500">Selecciona en tu Excel las columnas <strong>Nombre, Folder y Riesgo</strong>, cópialas (<kbd>Ctrl+C</kbd>) y pégalas aquí abajo.<br><br><em>Nota: El sistema extraerá automáticamente el "TC01" del nombre, y los pasos se quedarán en 1 por defecto.</em></p>
+            <p class="text-xs text-slate-500">Selecciona en tu Excel las columnas <strong>Nombre, Folder y Riesgo</strong>, cópialas (<kbd>Ctrl+C</kbd>) y pégalas aquí abajo.<br><br><em>Nota: El sistema detectará automáticamente tu Folder si empieza con número, tu Riesgo si dice High/Med/Low, extraerá tu "TC" para el ID y dejará los pasos en 1.</em></p>
             <div>
-                <textarea id="txtAreaCargaMasiva" rows="8" placeholder="TC01 Validar Login     08-DOCUMENTS     High&#10;TC02 Cerrar Sesion     08-DOCUMENTS     Medium" class="w-full border rounded-lg p-2.5 text-xs font-mono focus:ring-2 focus:ring-emerald-500 bg-emerald-50"></textarea>
+                <textarea id="txtAreaCargaMasiva" rows="8" placeholder="TC01 Validar Login     08-DOCUMENTS     High&#10;TC02 Cerrar Sesion     08-DOCUMENTS     Med" class="w-full border rounded-lg p-2.5 text-xs font-mono focus:ring-2 focus:ring-emerald-500 bg-emerald-50 whitespace-pre"></textarea>
             </div>
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1">Asignar por defecto a Tester:</label>
@@ -533,7 +553,6 @@
             const kim = casosPrueba.filter(c => c.estatus === "KIM").length; 
             const na = casosPrueba.filter(c => c.estatus === "N/A").length;
 
-            // ESTRICTO: N/A no cuenta como caso ejecutable. 
             const ejecutables = total - na;
             const ejecutados = ejecutables - notExec; 
             const pctReal = ejecutables > 0 ? ((pass / ejecutables) * 100) : 0; 
@@ -620,19 +639,15 @@
             });
         }
 
-        // ================== CHECKBOX MAESTRO ==================
+        // ELIMINACIÓN MASIVA
         function toggleAllCasos(source) {
             const checkboxes = document.querySelectorAll('.chk-caso');
             checkboxes.forEach(chk => { if(!chk.disabled) chk.checked = source.checked; });
         }
 
-        // ================== ELIMINAR VARIOS A LA VEZ ==================
         function eliminarCasosSeleccionados() {
             const seleccionados = Array.from(document.querySelectorAll('.chk-caso:checked')).map(chk => chk.value);
-            if (seleccionados.length === 0) {
-                alert("Selecciona al menos un Test Case marcando su casilla.");
-                return;
-            }
+            if (seleccionados.length === 0) { alert("Selecciona al menos un Test Case marcando su casilla."); return; }
             if (confirm(`¿Estás seguro de eliminar ${seleccionados.length} Test Case(s)? Esta acción no se puede deshacer.`)) {
                 casosPrueba = casosPrueba.filter(c => !seleccionados.includes(c.id));
                 hallazgos = hallazgos.filter(h => !seleccionados.includes(h.tcId));
@@ -646,7 +661,7 @@
             const filtroTester = document.getElementById("filtroTesterCaso") ? document.getElementById("filtroTesterCaso").value : "TODOS";
             const filtroEstatus = document.getElementById("filtroEstatusCaso") ? document.getElementById("filtroEstatusCaso").value : "TODOS";
 
-            casosPrueba.forEach((c, index) => {
+            casosPrueba.forEach((c) => {
                 if ((filtroTester === "TODOS" || c.tester === filtroTester) && (filtroEstatus === "TODOS" || c.estatus === filtroEstatus)) {
                     const isOwnerOrAdmin = (usuarioSesion.rol === 'Admin' || normalizarTexto(c.tester).includes(normalizarTexto(usuarioSesion.nombre)));
                     const disabledStr = isOwnerOrAdmin ? '' : 'disabled title="No tienes permiso"';
@@ -655,10 +670,10 @@
                     const numDef = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DEFECTO").length;
                     const numDesv = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DESVIACION").length;
 
-                    let badgeHallazgo = `<span class="text-slate-400 font-medium text-xs">-</span>`;
-                    if (numDef > 0 && numDesv > 0) badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-[11px]"><i class="fa-solid fa-bug text-rose-600"></i> ${numDef} | <i class="fa-solid fa-code-compare text-purple-600"></i> ${numDesv}</span>`;
-                    else if (numDef > 0) badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[11px]"><i class="fa-solid fa-bug"></i> ${numDef} Def</span>`;
-                    else if (numDesv > 0) badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold text-[11px]"><i class="fa-solid fa-code-compare"></i> ${numDesv} Desv</span>`;
+                    let badgeHallazgo = `<span class="text-slate-400 font-medium text-[11px]">-</span>`;
+                    if (numDef > 0 && numDesv > 0) badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-[10px]"><i class="fa-solid fa-bug text-rose-600"></i> ${numDef} | <i class="fa-solid fa-code-compare text-purple-600"></i> ${numDesv}</span>`;
+                    else if (numDef > 0) badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[10px]"><i class="fa-solid fa-bug"></i> ${numDef} Def</span>`;
+                    else if (numDesv > 0) badgeHallazgo = `<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold text-[10px]"><i class="fa-solid fa-code-compare"></i> ${numDesv} Desv</span>`;
 
                     const esPass = (c.estatus === 'PASS');
                     const kimInputAttr = (esPass && isOwnerOrAdmin) ? '' : 'disabled title="Solo si es PASS"';
@@ -666,23 +681,22 @@
 
                     let colorRiesgo = "text-slate-600";
                     if(c.riesgo === "High") colorRiesgo = "text-rose-600 font-bold";
-                    if(c.riesgo === "Medium") colorRiesgo = "text-amber-600 font-bold";
+                    if(c.riesgo === "Med") colorRiesgo = "text-amber-600 font-bold";
                     if(c.riesgo === "Low") colorRiesgo = "text-emerald-600 font-bold";
 
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
-                        <td class="p-3 text-center"><input type="checkbox" class="chk-caso accent-rose-500 cursor-pointer" value="${c.id}" ${disabledStr}></td>
-                        <td class="p-3 text-center font-mono text-xs text-slate-400 font-bold">${index + 1}</td>
-                        <td class="p-3 font-bold font-mono text-slate-700">${c.id}</td>
-                        <td class="p-3 text-xs text-slate-500"><i class="fa-regular fa-folder text-blue-400"></i> ${c.folder || '00-GENERAL'}</td>
-                        <td class="p-3 text-slate-800 font-medium">${c.nombre}</td>
-                        <td class="p-3 text-center text-xs ${colorRiesgo}">${c.riesgo || 'Medium'}</td>
-                        <td class="p-3 text-center"><input type="number" value="${c.pasos || 1}" min="1" ${disabledStr} onchange="actualizarPasos('${c.id}', this.value)" class="w-14 text-center border rounded p-1 text-xs font-bold ${disabledClass}"></td>
-                        <td class="p-3 text-slate-600 font-medium"><select onchange="actualizarTesterCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border ${disabledClass}">${generarOpcionesTestersMatriz(c.tester)}</select></td>
-                        <td class="p-3 text-center"><select onchange="actualizarEstatusCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border shadow-sm ${disabledClass}"><option value="NOT_EXECUTED" ${c.estatus === 'NOT_EXECUTED' ? 'selected' : ''}>NOT EXECUTED</option><option value="IN_PROCESS" ${c.estatus === 'IN_PROCESS' ? 'selected' : ''}>IN PROCESS</option><option value="PASS" ${c.estatus === 'PASS' ? 'selected' : ''}>PASS</option><option value="FAIL" ${c.estatus === 'FAIL' ? 'selected' : ''}>FAIL</option><option value="HELP" ${c.estatus === 'HELP' ? 'selected' : ''}>HELP</option><option value="KIM" ${c.estatus === 'KIM' ? 'selected' : ''}>KIM</option><option value="N/A" ${c.estatus === 'N/A' ? 'selected' : ''}>🚫 N/A</option></select></td>
-                        <td class="p-3 text-center"><input type="date" value="${c.fechaEjecucion || ''}" ${disabledStr} onchange="actualizarFecha('${c.id}', 'fechaEjecucion', this.value)" class="text-xs border rounded p-1 text-slate-700 ${disabledClass}"></td>
-                        <td class="p-3 text-center"><input type="date" value="${c.fechaKim || ''}" ${kimInputAttr} onchange="actualizarFecha('${c.id}', 'fechaKim', this.value)" class="text-xs border rounded p-1 ${kimInputClass}"></td>
-                        <td class="p-3 text-center font-bold">${badgeHallazgo}</td>
+                        <td class="p-2 text-center border-r"><input type="checkbox" class="chk-caso accent-rose-500 cursor-pointer" value="${c.id}" ${disabledStr}></td>
+                        <td class="p-2 font-bold font-mono text-slate-700 text-[11px]">${c.id}</td>
+                        <td class="p-2 text-[10px] text-slate-500 whitespace-nowrap"><i class="fa-regular fa-folder text-blue-400"></i> ${c.folder || '00-GENERAL'}</td>
+                        <td class="p-2 text-[11px] text-slate-800 font-medium leading-tight max-w-[200px] break-words whitespace-normal">${c.nombre}</td>
+                        <td class="p-2 text-center text-[11px] ${colorRiesgo}">${c.riesgo || 'Med'}</td>
+                        <td class="p-2 text-center"><input type="number" value="${c.pasos || 1}" min="1" ${disabledStr} onchange="actualizarPasos('${c.id}', this.value)" class="w-12 text-center border rounded p-1 text-[11px] font-bold ${disabledClass}"></td>
+                        <td class="p-2 text-slate-600 font-medium"><select onchange="actualizarTesterCaso('${c.id}', this.value)" ${disabledStr} class="text-[10px] font-bold rounded p-1 border ${disabledClass}">${generarOpcionesTestersMatriz(c.tester)}</select></td>
+                        <td class="p-2 text-center"><select onchange="actualizarEstatusCaso('${c.id}', this.value)" ${disabledStr} class="text-[10px] font-bold rounded p-1 border shadow-sm ${disabledClass}"><option value="NOT_EXECUTED" ${c.estatus === 'NOT_EXECUTED' ? 'selected' : ''}>NOT EXECUTED</option><option value="IN_PROCESS" ${c.estatus === 'IN_PROCESS' ? 'selected' : ''}>IN PROCESS</option><option value="PASS" ${c.estatus === 'PASS' ? 'selected' : ''}>PASS</option><option value="FAIL" ${c.estatus === 'FAIL' ? 'selected' : ''}>FAIL</option><option value="HELP" ${c.estatus === 'HELP' ? 'selected' : ''}>HELP</option><option value="KIM" ${c.estatus === 'KIM' ? 'selected' : ''}>KIM</option><option value="N/A" ${c.estatus === 'N/A' ? 'selected' : ''}>🚫 N/A</option></select></td>
+                        <td class="p-2 text-center"><input type="date" value="${c.fechaEjecucion || ''}" ${disabledStr} onchange="actualizarFecha('${c.id}', 'fechaEjecucion', this.value)" class="text-[10px] border rounded p-1 text-slate-700 ${disabledClass}"></td>
+                        <td class="p-2 text-center"><input type="date" value="${c.fechaKim || ''}" ${kimInputAttr} onchange="actualizarFecha('${c.id}', 'fechaKim', this.value)" class="text-[10px] border rounded p-1 ${kimInputClass}"></td>
+                        <td class="p-2 text-center">${badgeHallazgo}</td>
                     `;
                     tbody.appendChild(tr);
                 }
@@ -697,10 +711,10 @@
             const tbody = document.getElementById("tablaHallazgosBody"); tbody.innerHTML = "";
             const filtro = document.getElementById("filtroTipoHallazgo") ? document.getElementById("filtroTipoHallazgo").value : "TODOS";
             const esAdmin = usuarioSesion.rol === 'Admin';
-            hallazgos.forEach((h, index) => {
+            hallazgos.forEach((h) => {
                 if (filtro === "TODOS" || h.tipo === filtro) {
                     const tr = document.createElement("tr");
-                    tr.innerHTML = `<td class="p-3 text-center font-mono text-xs text-slate-400 font-bold">${index + 1}</td><td class="p-3 font-mono font-bold text-slate-800">${h.id}</td><td class="p-3 font-mono text-blue-600 font-bold">${h.tcId}</td><td class="p-3 font-bold text-xs"><span class="px-2 py-0.5 rounded ${h.tipo === 'DEFECTO' ? 'bg-rose-100 text-rose-800' : 'bg-purple-100 text-purple-800'}">${h.tipo}</span></td><td class="p-3 text-xs font-bold text-slate-700">${h.etapa || 'Ejecución'}</td><td class="p-3 text-slate-700">${h.desc}</td><td class="p-3 text-center text-xs font-medium text-slate-600">${h.fecha || 'N/A'}</td><td class="p-3 text-center text-xs font-bold">${h.severidad}</td><td class="p-3 text-center text-xs font-bold text-amber-600">${h.estatus}</td><td class="p-3 text-center">${esAdmin ? `<button onclick="eliminarHallazgo('${h.id}')" class="text-rose-600 hover:text-rose-800 text-xs"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}</td>`;
+                    tr.innerHTML = `<td class="p-3 font-mono font-bold text-slate-800 text-[11px]">${h.id}</td><td class="p-3 font-mono text-blue-600 font-bold text-[11px]">${h.tcId}</td><td class="p-3 font-bold text-xs"><span class="px-2 py-0.5 rounded ${h.tipo === 'DEFECTO' ? 'bg-rose-100 text-rose-800' : 'bg-purple-100 text-purple-800'}">${h.tipo}</span></td><td class="p-3 text-[11px] font-bold text-slate-700">${h.etapa || 'Ejecución'}</td><td class="p-3 text-[11px] text-slate-700">${h.desc}</td><td class="p-3 text-center text-[10px] font-medium text-slate-600">${h.fecha || 'N/A'}</td><td class="p-3 text-center text-[11px] font-bold">${h.severidad}</td><td class="p-3 text-center text-[11px] font-bold text-amber-600">${h.estatus}</td><td class="p-3 text-center">${esAdmin ? `<button onclick="eliminarHallazgo('${h.id}')" class="text-rose-600 hover:text-rose-800 text-xs"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}</td>`;
                     tbody.appendChild(tr);
                 }
             });
@@ -731,13 +745,13 @@
             const filtroResp = document.getElementById("filtroTareaResponsable") ? document.getElementById("filtroTareaResponsable").value : "TODOS";
             const filtroEst = document.getElementById("filtroTareaEstatus") ? document.getElementById("filtroTareaEstatus").value : "TODOS";
 
-            tareasDaily.forEach((t, index) => {
+            tareasDaily.forEach((t) => {
                 if ((filtroResp === "TODOS" || t.resp === filtroResp) && (filtroEst === "TODOS" || t.estatus === filtroEst)) {
                     const isOwnerOrAdmin = (usuarioSesion.rol === 'Admin' || normalizarTexto(t.resp).includes(normalizarTexto(usuarioSesion.nombre)));
                     const disabledStr = isOwnerOrAdmin ? '' : 'disabled';
                     const disabledClass = isOwnerOrAdmin ? 'bg-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed';
 
-                    tbody.innerHTML += `<tr><td class="p-3 text-center font-mono text-xs text-slate-400 font-bold">${index + 1}</td><td class="p-3 font-mono font-bold text-indigo-700">${t.id}</td><td class="p-3 text-slate-800 font-medium">${t.desc}</td><td class="p-3 font-semibold text-slate-700">${t.resp}</td><td class="p-3 text-center text-xs font-bold"><span class="px-2 py-0.5 rounded ${t.origen && t.origen.includes('Minuta') ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}">${t.origen || 'Manual'}</span></td><td class="p-3 text-center text-xs font-bold"><select onchange="actualizarPrioTarea('${t.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-0.5 border ${disabledClass}"><option value="ALTA" ${t.prio === 'ALTA' ? 'selected' : ''}>ALTA</option><option value="MEDIA" ${t.prio === 'MEDIA' ? 'selected' : ''}>MEDIA</option><option value="BAJA" ${t.prio === 'BAJA' ? 'selected' : ''}>BAJA</option></select></td><td class="p-3 text-center text-xs text-slate-500 font-medium">${t.fechaAlta || t.fecha || 'N/A'}</td><td class="p-3 text-center"><input type="date" value="${t.fecha || ''}" onchange="actualizarFechaTarea('${t.id}', this.value)" ${disabledStr} class="text-xs border rounded p-1 text-slate-700 font-medium ${disabledClass}"></td><td class="p-3 text-center"><select onchange="actualizarEstatusTarea('${t.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border shadow-sm ${disabledClass}"><option value="NOT_STARTED" ${t.estatus === 'NOT_STARTED' ? 'selected' : ''}>⏳ NOT STARTED</option><option value="IN_PROCESS" ${t.estatus === 'IN_PROCESS' ? 'selected' : ''}>🔄 IN PROCESS</option><option value="REALIZADO" ${t.estatus === 'REALIZADO' ? 'selected' : ''}>✅ REALIZADO</option></select></td><td class="p-3 text-center">${isOwnerOrAdmin ? `<button onclick="eliminarTarea('${t.id}')" class="text-rose-600 hover:text-rose-800 text-xs"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}</td></tr>`;
+                    tbody.innerHTML += `<tr><td class="p-3 font-mono font-bold text-indigo-700 text-[11px]">${t.id}</td><td class="p-3 text-[11px] text-slate-800 font-medium">${t.desc}</td><td class="p-3 font-semibold text-[10px] text-slate-700">${t.resp}</td><td class="p-3 text-center text-[10px] font-bold"><span class="px-2 py-0.5 rounded ${t.origen && t.origen.includes('Minuta') ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}">${t.origen || 'Manual'}</span></td><td class="p-3 text-center text-[10px] font-bold"><select onchange="actualizarPrioTarea('${t.id}', this.value)" ${disabledStr} class="text-[10px] font-bold rounded p-0.5 border ${disabledClass}"><option value="ALTA" ${t.prio === 'ALTA' ? 'selected' : ''}>ALTA</option><option value="MEDIA" ${t.prio === 'MEDIA' ? 'selected' : ''}>MEDIA</option><option value="BAJA" ${t.prio === 'BAJA' ? 'selected' : ''}>BAJA</option></select></td><td class="p-3 text-center text-[10px] text-slate-500 font-medium">${t.fechaAlta || t.fecha || 'N/A'}</td><td class="p-3 text-center"><input type="date" value="${t.fecha || ''}" onchange="actualizarFechaTarea('${t.id}', this.value)" ${disabledStr} class="text-[10px] border rounded p-1 text-slate-700 font-medium ${disabledClass}"></td><td class="p-3 text-center"><select onchange="actualizarEstatusTarea('${t.id}', this.value)" ${disabledStr} class="text-[10px] font-bold rounded p-1 border shadow-sm ${disabledClass}"><option value="NOT_STARTED" ${t.estatus === 'NOT_STARTED' ? 'selected' : ''}>⏳ NOT STARTED</option><option value="IN_PROCESS" ${t.estatus === 'IN_PROCESS' ? 'selected' : ''}>🔄 IN PROCESS</option><option value="REALIZADO" ${t.estatus === 'REALIZADO' ? 'selected' : ''}>✅ REALIZADO</option></select></td><td class="p-3 text-center">${isOwnerOrAdmin ? `<button onclick="eliminarTarea('${t.id}')" class="text-rose-600 hover:text-rose-800 text-xs"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}</td></tr>`;
                 }
             });
         }
@@ -751,17 +765,14 @@
         function actualizarEstatusCaso(id, nuevoEstatus) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso.estatus = nuevoEstatus; if (nuevoEstatus !== "NOT_EXECUTED" && nuevoEstatus !== "N/A" && !caso.fechaEjecucion) { caso.fechaEjecucion = new Date().toISOString().split('T')[0]; } if (nuevoEstatus === "KIM" || nuevoEstatus === "N/A") { caso.fechaKim = ""; } else if (nuevoEstatus === "PASS") { if (!caso.fechaKim) { caso.fechaKim = new Date().toISOString().split('T')[0]; } } else { caso.fechaKim = ""; } guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
         function actualizarFecha(id, campoFecha, valor) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso[campoFecha] = valor; guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
 
-        // ID INTELIGENTE AL CREAR NUEVO CASO (OMITE DUPLICADOS)
         function abrirModalNuevoCaso() { 
             const sel = document.getElementById("insTcTester"); sel.innerHTML = ""; 
             testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); 
-            
             const nextNum = casosPrueba.length + 1;
-            document.getElementById("insTcId").value = "TC-" + String(nextNum).padStart(3, '0');
+            document.getElementById("insTcId").value = "TC" + String(nextNum).padStart(2, '0');
             document.getElementById("insTcNombre").value = "";
             document.getElementById("insTcFolder").value = "00-GENERAL";
             document.getElementById("insTcPasos").value = "1";
-
             document.getElementById("modalCaso").classList.remove("hidden"); 
         }
         
@@ -774,9 +785,7 @@
             const tester = document.getElementById("insTcTester").value; 
             
             if (!id || !nombre) { alert("Completa el ID y el Nombre del caso."); return; }
-            if (casosPrueba.some(c => c.id.toLowerCase() === id.toLowerCase())) {
-                alert(`Error: El ID "${id}" ya existe. Escribe uno diferente.`); return;
-            }
+            if (casosPrueba.some(c => c.id.toLowerCase() === id.toLowerCase())) { alert(`Error: El ID "${id}" ya existe.`); return; }
 
             casosPrueba.push({ id, folder, nombre, riesgo, pasos, tester, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
             cerrarModal("modalCaso"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
@@ -784,7 +793,7 @@
 
         function abrirModalCargaMasiva() { const sel = document.getElementById("insCargaMasivaTester"); sel.innerHTML = ""; testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); document.getElementById("modalCargaMasiva").classList.remove("hidden"); }
         
-        // EXCEL MÁGICO EN CARGA MASIVA (EXTRAE TC01 DEL NOMBRE)
+        // EXCEL MÁGICO: AUTO DETECTA CARPETA, RIESGO, NOMBRE E ID SIN IMPORTAR EL ORDEN EN QUE LO PEGUEN
         function procesarCargaMasiva() { 
             const texto = document.getElementById("txtAreaCargaMasiva").value.trim(); 
             const testerDefecto = document.getElementById("insCargaMasivaTester").value; 
@@ -795,62 +804,51 @@
             
             lineas.forEach(linea => { 
                 if (linea.trim()) { 
-                    const separador = linea.includes("\t") ? "\t" : ",";
-                    let partes = linea.split(separador); 
+                    let partes = linea.split('\t'); 
+                    if(partes.length === 1) partes = linea.split(/\s{2,}/); // Soporte si copian de otro lado
                     
-                    let nombre = partes[0] ? partes[0].trim() : "Caso sin nombre"; 
-                    let folder = partes[1] ? partes[1].trim() : "00-GENERAL";
-                    let riesgo = partes[2] ? partes[2].trim() : "Medium";
-                    
-                    // Extrae el TCxx del principio del nombre
-                    let id = "";
-                    let match = nombre.match(/^TC-?\d{1,4}/i);
-                    if (match) {
-                        id = match[0].toUpperCase().replace("-", ""); 
-                    } else {
-                        id = "TC" + String(casosPrueba.length + cargados + 1).padStart(3, '0');
+                    let nombreFinal = ""; let folderFinal = "00-GENERAL"; let riesgoFinal = "Med"; let idFinal = "";
+
+                    partes.forEach(p => {
+                        let txt = p.trim();
+                        if (!txt) return;
+                        if (/^\d{2}-/i.test(txt)) { folderFinal = txt; } 
+                        else if (/^(High|Med|Low)$/i.test(txt)) { riesgoFinal = txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase(); } 
+                        else if (/^TC-?\d{1,4}$/i.test(txt) && txt.length <= 8) { idFinal = txt.toUpperCase().replace("-", ""); } 
+                        else { nombreFinal += (nombreFinal ? " " : "") + txt; }
+                    });
+
+                    if (!nombreFinal) nombreFinal = "Caso sin nombre";
+
+                    if (!idFinal) {
+                        let match = nombreFinal.match(/^TC-?\d{1,4}/i);
+                        if (match) idFinal = match[0].toUpperCase().replace("-", "");
+                        else idFinal = "TC" + String(casosPrueba.length + cargados + 1).padStart(2, '0');
                     }
                     
-                    if (id) { 
-                        if (!casosPrueba.some(c => c.id.toLowerCase() === id.toLowerCase())) { 
-                            casosPrueba.push({ id: id, folder: folder, nombre: nombre, riesgo: riesgo, pasos: 1, tester: testerDefecto, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
+                    if (idFinal) { 
+                        if (!casosPrueba.some(c => c.id.toLowerCase() === idFinal.toLowerCase())) { 
+                            casosPrueba.push({ id: idFinal, folder: folderFinal, nombre: nombreFinal, riesgo: riesgoFinal, pasos: 1, tester: testerDefecto, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" }); 
                             cargados++; 
-                        } else {
-                            omitidos++;
-                        }
+                        } else { omitidos++; }
                     } 
                 } 
             }); 
             
             let mensaje = `¡Se cargaron exitosamente ${cargados} casos de prueba a la matriz!`;
-            if (omitidos > 0) mensaje += `\n(Se omitieron ${omitidos} casos porque su ID ya existía en la tabla).`;
+            if (omitidos > 0) mensaje += `\n(Se omitieron ${omitidos} casos porque su ID ya existía).`;
             alert(mensaje); 
             
             document.getElementById("txtAreaCargaMasiva").value = ""; cerrarModal("modalCargaMasiva"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
         }
 
         function abrirModalNuevoHallazgo() { const sel = document.getElementById("insHalTc"); sel.innerHTML = ""; casosPrueba.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.id} - ${c.nombre}</option>`; }); document.getElementById("insHalFecha").value = new Date().toISOString().split('T')[0]; document.getElementById("modalHallazgo").classList.remove("hidden"); }
-        
-        function guardarNuevoHallazgo() { 
-            const idManual = document.getElementById("insHalIdManual").value.trim(); const tcId = document.getElementById("insHalTc").value; const tipo = document.getElementById("insHalTipo").value; const etapa = document.getElementById("insHalEtapa").value; const fecha = document.getElementById("insHalFecha").value; const desc = document.getElementById("insHalDesc").value.trim(); const severidad = document.getElementById("insHalSeveridad").value; 
-            
-            if (!idManual || !desc) { alert("Completa el ID Manual y la Descripción."); return; } 
-            if (hallazgos.some(h => h.id.toLowerCase() === idManual.toLowerCase())) {
-                alert(`Error: El ID "${idManual}" ya está registrado como Defecto o Desviación. Usa un ID único.`); return;
-            }
-
-            hallazgos.push({ id: idManual, tcId, tipo, etapa, desc, fecha, severidad, estatus: "ABIERTO" }); 
-            const tc = casosPrueba.find(c => c.id === tcId); 
-            if (tc && tipo === "DEFECTO" && tc.estatus !== "KIM" && tc.estatus !== "N/A") { tc.estatus = "FAIL"; } 
-            
-            document.getElementById("insHalIdManual").value = ""; document.getElementById("insHalDesc").value = ""; cerrarModal("modalHallazgo"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); 
-        }
+        function guardarNuevoHallazgo() { const idManual = document.getElementById("insHalIdManual").value.trim(); const tcId = document.getElementById("insHalTc").value; const tipo = document.getElementById("insHalTipo").value; const etapa = document.getElementById("insHalEtapa").value; const fecha = document.getElementById("insHalFecha").value; const desc = document.getElementById("insHalDesc").value.trim(); const severidad = document.getElementById("insHalSeveridad").value; if (!idManual || !desc) { alert("Completa el ID Manual y la Descripción."); return; } if (hallazgos.some(h => h.id.toLowerCase() === idManual.toLowerCase())) { alert(`Error: El ID "${idManual}" ya está registrado.`); return; } hallazgos.push({ id: idManual, tcId, tipo, etapa, desc, fecha, severidad, estatus: "ABIERTO" }); const tc = casosPrueba.find(c => c.id === tcId); if (tc && tipo === "DEFECTO" && tc.estatus !== "KIM" && tc.estatus !== "N/A") { tc.estatus = "FAIL"; } document.getElementById("insHalIdManual").value = ""; document.getElementById("insHalDesc").value = ""; cerrarModal("modalHallazgo"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
 
         function cerrarModal(id) { document.getElementById(id).classList.add("hidden"); }
 
         function exportarReporteGeneralCSV() { let csv = "ID_TC,Folder,Riesgo,Nombre_Caso,Total_Pasos,Tester,Estatus,Fecha_Ejecucion,Fecha_Kim,Num_Defectos,Num_Desviaciones\n"; casosPrueba.forEach(c => { const numDef = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DEFECTO").length; const numDesv = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DESVIACION").length; csv += `"${c.id}","${c.folder || ''}","${c.riesgo || ''}","${c.nombre}","${c.pasos || 1}","${c.tester}","${c.estatus}","${c.fechaEjecucion || ''}","${c.fechaKim || ''}","${numDef}","${numDesv}"\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", "reporte_avance_qa.csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
-        // ================== ORDENAR Y GUARDAR ==================
         function guardarDatosEnNubeOEnLocal() { 
             casosPrueba.sort((a, b) => a.id.localeCompare(b.id, undefined, {numeric: true, sensitivity: 'base'}));
             const dataState = { tituloProyecto, fechaEntregaDev, fechaInicioPruebas, fechaFinPruebas, casosPrueba, hallazgos, testers, involucradosGlobales, minutasLista, tareasDaily }; 
