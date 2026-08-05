@@ -4,48 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard & Tracker de QA</title>
+    
+    <!-- ========================================== -->
+    <!-- LIBRERÍAS EXTERNAS (Diseño, Íconos y Base de Datos) -->
+    <!-- ========================================== -->
+    <!-- Tailwind CSS: Sirve para darle diseño, colores y forma a la página -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome: Sirve para poner los íconos (lupa, basurero, usuario, etc.) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- LIBRERÍAS DE FIREBASE -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <!-- FIREBASE: Las 3 librerías necesarias de Google -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script> <!-- Motor principal -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script> <!-- Sistema de Login / Contraseñas -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script> <!-- Base de datos en tiempo real -->
     
+    <!-- ESTILOS PERSONALIZADOS -->
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        /* Pinta de azul la pestaña que esté seleccionada en el menú */
         .tab-btn.active { border-bottom: 4px solid #3b82f6; color: #1e40af; font-weight: bold; background-color: #eff6ff; }
+        /* Clase especial para bloquear botones a los que no son Administradores */
         .bloqueado { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen relative">
 
-    <!-- OVERLAY DE LOGIN (Se oculta al iniciar sesión) -->
+    <!-- ========================================================================= -->
+    <!-- 1. PANTALLA DE LOGIN (Se oculta sola cuando el usuario entra)             -->
+    <!-- ========================================================================= -->
     <div id="modalLogin" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col justify-center items-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-8 space-y-6 text-center">
             <div class="text-blue-600 text-5xl"><i class="fa-solid fa-shield-halved"></i></div>
             <h2 class="text-2xl font-black text-slate-800">Acceso al Dashboard QA</h2>
             <p class="text-sm text-slate-500">Ingresa tus credenciales para administrar tus casos y tareas.</p>
+            
             <div class="space-y-4 text-left">
+                <!-- Campo de Correo -->
                 <div>
                     <label class="text-xs font-bold text-slate-600 block mb-1">Correo Electrónico:</label>
-                    <input type="email" id="inEmail" placeholder="ej. ivan@empresa.com" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500">
+                    <input type="email" id="inEmail" autocomplete="username" placeholder="ej. ivan@empresa.com" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500">
                 </div>
+                <!-- Campo de Contraseña y botón del Ojo -->
                 <div>
                     <label class="text-xs font-bold text-slate-600 block mb-1">Contraseña:</label>
-                    <input type="password" id="inPass" placeholder="••••••••" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500">
+                    <div class="relative">
+                        <input type="password" id="inPass" autocomplete="current-password" placeholder="••••••••" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 pr-10">
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-2.5 text-slate-400 hover:text-blue-600 transition">
+                            <i id="iconoOjo" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
+                <!-- Checkbox para recordar sesión -->
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="chkRecordar" checked class="w-4 h-4 text-blue-600 rounded border-slate-300">
+                    <label for="chkRecordar" class="text-xs font-bold text-slate-600 cursor-pointer">Recordar mi sesión en este equipo</label>
+                </div>
+                
                 <button onclick="iniciarSesion()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition shadow-lg">Entrar al Sistema</button>
                 <p id="loginError" class="text-xs font-bold text-rose-600 text-center hidden"></p>
             </div>
         </div>
     </div>
 
-    <!-- CONTENIDO PRINCIPAL (Se muestra tras el login) -->
+    <!-- ========================================================================= -->
+    <!-- 2. APLICACIÓN PRINCIPAL (Todo el Dashboard)                               -->
+    <!-- ========================================================================= -->
     <div id="appPrincipal" class="hidden p-4 md:p-6">
         <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
             
-            <!-- ENCABEZADO PRINCIPAL -->
+            <!-- ENCABEZADO SUPERIOR NEGRO -->
             <div class="bg-slate-900 text-white p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div class="flex-1 w-full md:w-auto">
                     <div class="flex items-center gap-2">
@@ -53,9 +80,10 @@
                         <input type="text" id="tituloProyectoInput" value="QA Testing Executive Tracker" onchange="actualizarTituloProyecto(this.value)" class="bg-transparent text-xl md:text-2xl font-bold text-white border-b border-transparent hover:border-slate-500 focus:border-blue-400 focus:outline-none w-full md:w-auto transition px-1" title="Haz clic para editar el nombre del proyecto">
                         <button id="btnEditTitle" onclick="document.getElementById('tituloProyectoInput').focus()" class="text-slate-400 hover:text-white text-xs"><i class="fa-solid fa-pen"></i></button>
                     </div>
-                    <p class="text-slate-400 text-xs mt-1 tracking-wide">Control de Avance / Minuta / Tareas Pendientes</p>
+                    <p class="text-slate-400 text-xs mt-1 tracking-wide">Control de Avance / Minuta / Tareas Pendientes[cite: 1]</p>
                 </div>
                 <div class="flex items-center gap-3">
+                    <!-- Textos dinámicos que muestran quién está conectado -->
                     <div class="text-right mr-2 border-r border-slate-700 pr-4">
                         <span id="txtUserLogged" class="block text-sm font-bold text-emerald-400">Usuario</span>
                         <span id="txtUserRole" class="block text-[10px] text-slate-400 uppercase">Rol</span>
@@ -69,14 +97,13 @@
                 </div>
             </div>
 
-            <!-- PANEL GLOBAL FIJO: FECHAS Y KPIS -->
+            <!-- PANEL FIJO DE AVANCE EJECUCIÓN (FECHAS Y KPIS) -->
             <div class="bg-slate-50 border-b border-slate-300 p-4 md:p-6 space-y-4 shadow-inner">
                 
+                <!-- Cronograma -->
                 <div id="cardSaludProyecto" class="p-3.5 rounded-xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-white border-slate-200 shadow-sm transition-all">
                     <div class="flex items-center gap-3">
-                        <div id="iconoSalud" class="text-3xl text-blue-600">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
+                        <div id="iconoSalud" class="text-3xl text-blue-600"><i class="fa-solid fa-calendar-days"></i></div>
                         <div>
                             <span class="text-[10px] uppercase font-bold tracking-wider text-slate-500">Cronograma del Proyecto</span>
                             <h2 id="tituloSalud" class="text-lg font-bold text-slate-800">FECHAS DE EJECUCIÓN</h2>
@@ -86,6 +113,7 @@
                     <div class="flex flex-wrap items-center gap-5 text-center border-t md:border-t-0 md:border-l border-slate-200 pt-3 md:pt-0 md:pl-5">
                         <div>
                             <span class="text-[10px] text-slate-500 font-bold block mb-0.5">ENTREGA DESARROLLO</span>
+                            <!-- permiso-admin bloquea estos campos a los Testers -->
                             <input type="date" id="inpFechaDev" onchange="actualizarFechasProyecto()" class="permiso-admin text-xs font-bold text-indigo-700 bg-slate-50 border border-slate-200 rounded p-1 focus:outline-none focus:ring-1 focus:ring-indigo-400">
                         </div>
                         <div>
@@ -103,14 +131,13 @@
                     </div>
                 </div>
 
+                <!-- Tarjetas de Métricas Diarias -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
                     <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                         <div>
                             <span class="text-[10px] font-bold text-slate-500 uppercase block">Ejecutados Hoy</span>
                             <span id="kpiEjecutadosHoy" class="text-xl font-black text-indigo-600">0</span>
-                            <button onclick="abrirModalHistoricoEjecucion()" class="text-[10px] text-blue-600 hover:text-blue-800 underline font-bold block mt-0.5">
-                                <i class="fa-solid fa-clock-rotate-left"></i> Ver Histórico Diario
-                            </button>
+                            <button onclick="abrirModalHistoricoEjecucion()" class="text-[10px] text-blue-600 hover:text-blue-800 underline font-bold block mt-0.5"><i class="fa-solid fa-clock-rotate-left"></i> Ver Histórico Diario</button>
                         </div>
                         <div class="text-indigo-200 text-2xl"><i class="fa-solid fa-calendar-day"></i></div>
                     </div>
@@ -140,84 +167,19 @@
                     </div>
                 </div>
 
+                <!-- Recuadros de Casos por Estatus -->
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 text-center">
-                    <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
-                        <span class="text-[10px] font-bold text-slate-500 uppercase block">Total TCs</span>
-                        <span id="kpiTotal" class="text-base font-bold text-slate-800">0</span>
-                        <span class="text-[9px] text-slate-400 block font-semibold">100%</span>
-                    </div>
-                    <div class="bg-amber-50/80 p-2 rounded-lg border border-amber-200 shadow-sm">
-                        <span class="text-[10px] font-bold text-amber-700 uppercase block">Not Executed</span>
-                        <span id="kpiNotExecuted" class="text-base font-bold text-amber-800">0</span>
-                        <span id="pctNotExecuted" class="text-[9px] text-amber-600 block font-semibold">0%</span>
-                    </div>
-                    <div class="bg-blue-50/80 p-2 rounded-lg border border-blue-200 shadow-sm">
-                        <span class="text-[10px] font-bold text-blue-700 uppercase block">In Process</span>
-                        <span id="kpiInProcess" class="text-base font-bold text-blue-800">0</span>
-                        <span id="pctInProcess" class="text-[9px] text-blue-600 block font-semibold">0%</span>
-                    </div>
-                    <div class="bg-emerald-50/80 p-2 rounded-lg border border-emerald-200 shadow-sm">
-                        <span class="text-[10px] font-bold text-emerald-700 uppercase block">Pass</span>
-                        <span id="kpiPass" class="text-base font-bold text-emerald-800">0</span>
-                        <span id="pctPass" class="text-[9px] text-emerald-600 block font-semibold">0%</span>
-                    </div>
-                    <div class="bg-rose-50/80 p-2 rounded-lg border border-rose-200 shadow-sm">
-                        <span class="text-[10px] font-bold text-rose-700 uppercase block">Fail</span>
-                        <span id="kpiFail" class="text-base font-bold text-rose-800">0</span>
-                        <span id="pctFail" class="text-[9px] text-rose-600 block font-semibold">0%</span>
-                    </div>
-                    <div class="bg-orange-50/80 p-2 rounded-lg border border-orange-200 shadow-sm">
-                        <span class="text-[10px] font-bold text-orange-700 uppercase block">Help</span>
-                        <span id="kpiHelp" class="text-base font-bold text-orange-800">0</span>
-                        <span id="pctHelp" class="text-[9px] text-orange-600 block font-semibold">0%</span>
-                    </div>
-                    <div class="bg-purple-50/80 p-2 rounded-lg border border-purple-200 shadow-sm">
-                        <span class="text-[10px] font-bold text-purple-700 uppercase block">KIM</span>
-                        <span id="kpiKim" class="text-base font-bold text-purple-800">0</span>
-                        <span id="pctKim" class="text-[9px] text-purple-600 block font-semibold">0%</span>
-                    </div>
-                    <div class="bg-indigo-50/80 p-2 rounded-lg border border-indigo-200 shadow-sm">
-                        <span class="text-[10px] font-bold text-indigo-700 uppercase block">Ejecutados</span>
-                        <span id="kpiEjecutados" class="text-base font-bold text-indigo-800">0</span>
-                        <span id="pctEjecutados" class="text-[9px] text-indigo-600 block font-semibold">0%</span>
-                    </div>
+                    <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm"><span class="text-[10px] font-bold text-slate-500 uppercase block">Total TCs</span><span id="kpiTotal" class="text-base font-bold text-slate-800">0</span></div>
+                    <div class="bg-amber-50/80 p-2 rounded-lg border border-amber-200 shadow-sm"><span class="text-[10px] font-bold text-amber-700 uppercase block">Not Executed</span><span id="kpiNotExecuted" class="text-base font-bold text-amber-800">0</span></div>
+                    <div class="bg-blue-50/80 p-2 rounded-lg border border-blue-200 shadow-sm"><span class="text-[10px] font-bold text-blue-700 uppercase block">In Process</span><span id="kpiInProcess" class="text-base font-bold text-blue-800">0</span></div>
+                    <div class="bg-emerald-50/80 p-2 rounded-lg border border-emerald-200 shadow-sm"><span class="text-[10px] font-bold text-emerald-700 uppercase block">Pass</span><span id="kpiPass" class="text-base font-bold text-emerald-800">0</span></div>
+                    <div class="bg-rose-50/80 p-2 rounded-lg border border-rose-200 shadow-sm"><span class="text-[10px] font-bold text-rose-700 uppercase block">Fail</span><span id="kpiFail" class="text-base font-bold text-rose-800">0</span></div>
+                    <div class="bg-orange-50/80 p-2 rounded-lg border border-orange-200 shadow-sm"><span class="text-[10px] font-bold text-orange-700 uppercase block">Help</span><span id="kpiHelp" class="text-base font-bold text-orange-800">0</span></div>
+                    <div class="bg-purple-50/80 p-2 rounded-lg border border-purple-200 shadow-sm"><span class="text-[10px] font-bold text-purple-700 uppercase block">KIM</span><span id="kpiKim" class="text-base font-bold text-purple-800">0</span></div>
+                    <div class="bg-indigo-50/80 p-2 rounded-lg border border-indigo-200 shadow-sm"><span class="text-[10px] font-bold text-indigo-700 uppercase block">Ejecutados</span><span id="kpiEjecutados" class="text-base font-bold text-indigo-800">0</span></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div class="bg-white p-3 rounded-xl border border-rose-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <span class="text-[10px] font-bold text-rose-700 uppercase block">Total Defectos (1:N)</span>
-                            <span id="txtTotalDefectosCount" class="text-2xl font-black text-rose-600">0</span>
-                            <span class="text-[10px] text-slate-400 block">Acumulado total de fallas</span>
-                        </div>
-                        <div class="text-rose-200 text-3xl"><i class="fa-solid fa-bug"></i></div>
-                    </div>
-                    <div class="bg-white p-3 rounded-xl border border-rose-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <span class="text-[10px] font-bold text-rose-700 uppercase block">TCs con Defecto</span>
-                            <span id="txtTcsConDefectoCount" class="text-2xl font-black text-rose-700">0</span>
-                            <span class="text-[10px] text-rose-500 block font-semibold">Casos afectados por fallo</span>
-                        </div>
-                        <div class="text-rose-100 text-3xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    </div>
-                    <div class="bg-white p-3 rounded-xl border border-purple-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <span class="text-[10px] font-bold text-purple-700 uppercase block">Total Desviaciones (1:N)</span>
-                            <span id="txtTotalDesviacionesCount" class="text-2xl font-black text-purple-600">0</span>
-                            <span class="text-[10px] text-slate-400 block">Acumulado vs requerimiento</span>
-                        </div>
-                        <div class="text-purple-200 text-3xl"><i class="fa-solid fa-code-compare"></i></div>
-                    </div>
-                    <div class="bg-white p-3 rounded-xl border border-purple-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <span class="text-[10px] font-bold text-purple-700 uppercase block">TCs con Desviación</span>
-                            <span id="txtTcsConDesviacionCount" class="text-2xl font-black text-purple-700">0</span>
-                            <span class="text-[10px] text-purple-500 block font-semibold">Casos con discrepancia</span>
-                        </div>
-                        <div class="text-purple-100 text-3xl"><i class="fa-solid fa-file-circle-xmark"></i></div>
-                    </div>
-                </div>
-
+                <!-- Barra de Progreso a colores -->
                 <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                     <div class="flex justify-between items-center mb-1.5">
                         <span class="text-xs font-bold text-slate-600 uppercase">Distribución Porcentual del Avance</span>
@@ -235,59 +197,39 @@
 
             </div>
 
-            <!-- BARRA DE NAVEGACIÓN -->
+            <!-- ========================================================================= -->
+            <!-- 3. MENÚ DE PESTAÑAS (NAVEGACIÓN)                                          -->
+            <!-- ========================================================================= -->
             <div class="bg-slate-200 border-b border-slate-300 flex overflow-x-auto text-sm font-medium">
-                <button onclick="cambiarPestana('pestana-testers')" id="btn-pestana-testers" class="tab-btn active px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-users"></i> 1. Control por Tester & Equipo
-                </button>
-                <button onclick="cambiarPestana('pestana-casos')" id="btn-pestana-casos" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-list-check"></i> 2. Matriz de Casos de Prueba
-                </button>
-                <button onclick="cambiarPestana('pestana-hallazgos')" id="btn-pestana-hallazgos" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-bug"></i> 3. Registro de Defectos y Desviaciones
-                </button>
-                <button onclick="cambiarPestana('pestana-minutas')" id="btn-pestana-minutas" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-book-bookmark text-amber-600"></i> 4. Minutas de Sesiones
-                </button>
-                <button onclick="cambiarPestana('pestana-tareas')" id="btn-pestana-tareas" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-tasks text-indigo-600"></i> 5. Tablero de Tareas
-                </button>
+                <button onclick="cambiarPestana('pestana-testers')" id="btn-pestana-testers" class="tab-btn active px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-users"></i> 1. Control por Tester</button>
+                <button onclick="cambiarPestana('pestana-casos')" id="btn-pestana-casos" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-list-check"></i> 2. Matriz de Casos</button>
+                <button onclick="cambiarPestana('pestana-hallazgos')" id="btn-pestana-hallazgos" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-bug"></i> 3. Defectos y Desviaciones</button>
+                <button onclick="cambiarPestana('pestana-minutas')" id="btn-pestana-minutas" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-book-bookmark text-amber-600"></i> 4. Minutas</button>
+                <button onclick="cambiarPestana('pestana-tareas')" id="btn-pestana-tareas" class="tab-btn px-6 py-3 text-slate-700 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-tasks text-indigo-600"></i> 5. Tablero de Tareas</button>
             </div>
 
-            <!-- CONTENIDO DE PESTAÑAS -->
+            <!-- ========================================================================= -->
+            <!-- 4. CONTENEDORES DE LAS PESTAÑAS (Aquí se inyectan las tablas)             -->
+            <!-- ========================================================================= -->
             <div class="p-4 md:p-6">
 
-                <!-- PESTAÑA 1: CONTROL POR TESTER -->
+                <!-- PESTAÑA 1: TESTERS -->
                 <div id="pestana-testers" class="space-y-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <div>
                             <h3 class="text-lg font-bold text-slate-800">Carga de Trabajo y Avance por QA Tester</h3>
-                            <p class="text-xs text-slate-500">Métricas de ejecución operativas (No incluye Liderazgo).</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <button onclick="forzarRefreshTablaTesters()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1.5 shadow transition">
-                                <i class="fa-solid fa-rotate text-xs"></i> Recargar Tabla
-                            </button>
-                            <button id="btnRegistrarInt" onclick="abrirModalAgregarIntegrante()" class="permiso-admin hidden bg-slate-800 hover:bg-slate-900 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow transition">
-                                <i class="fa-solid fa-user-plus text-xs"></i> Registrar Integrante
-                            </button>
+                            <button onclick="forzarRefreshTablaTesters()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1.5 shadow transition"><i class="fa-solid fa-rotate text-xs"></i> Recargar Tabla</button>
+                            <!-- Registrar integrante bloqueado a Testers -->
+                            <button id="btnRegistrarInt" onclick="abrirModalAgregarIntegrante()" class="permiso-admin hidden bg-slate-800 hover:bg-slate-900 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow transition"><i class="fa-solid fa-user-plus text-xs"></i> Registrar Integrante</button>
                         </div>
                     </div>
-                    
                     <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
                                 <tr>
-                                    <th class="p-3">Tester Asignado</th>
-                                    <th class="p-3 text-center">Asignados</th>
-                                    <th class="p-3 text-center text-amber-300">Not Executed</th>
-                                    <th class="p-3 text-center text-blue-300">In Process</th>
-                                    <th class="p-3 text-center text-emerald-300">Pass</th>
-                                    <th class="p-3 text-center text-rose-300">Fail</th>
-                                    <th class="p-3 text-center text-orange-300">Help</th>
-                                    <th class="p-3 text-center text-purple-300">KIM</th>
-                                    <th class="p-3 text-center">% Avance Real</th>
-                                    <th class="p-3 text-center">Acciones</th>
+                                    <th class="p-3">Tester Asignado</th><th class="p-3 text-center">Asignados</th><th class="p-3 text-center text-amber-300">Not Executed</th><th class="p-3 text-center text-blue-300">In Process</th><th class="p-3 text-center text-emerald-300">Pass</th><th class="p-3 text-center text-rose-300">Fail</th><th class="p-3 text-center text-orange-300">Help</th><th class="p-3 text-center text-purple-300">KIM</th><th class="p-3 text-center">% Avance Real</th><th class="p-3 text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="tablaTestersBody" class="divide-y divide-slate-200 bg-white"></tbody>
@@ -295,84 +237,45 @@
                     </div>
                 </div>
 
-                <!-- PESTAÑA 2: MATRIZ DE CASOS DE PRUEBA -->
+                <!-- PESTAÑA 2: CASOS DE PRUEBA -->
                 <div id="pestana-casos" class="hidden space-y-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <div>
                             <h3 class="text-lg font-bold text-slate-800">Matriz General de Casos de Prueba</h3>
-                            <p class="text-xs text-slate-500">Solo los administradores o los dueños del Test Case pueden editarlo.</p>
                         </div>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                            <select id="filtroTesterCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500">
-                                <option value="TODOS">👤 Todos los Testers</option>
-                            </select>
-                            <select id="filtroEstatusCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500">
-                                <option value="TODOS">🔍 Todos los Estatus</option>
-                                <option value="NOT_EXECUTED">⏳ NOT EXECUTED</option>
-                                <option value="IN_PROCESS">🔄 IN PROCESS</option>
-                                <option value="PASS">✅ PASS</option>
-                                <option value="FAIL">❌ FAIL</option>
-                                <option value="HELP">🆘 HELP</option>
-                                <option value="KIM">⭐ KIM</option>
-                            </select>
-                            <button id="btnCargaMasiva" onclick="abrirModalCargaMasiva()" class="permiso-admin hidden bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
-                                <i class="fa-solid fa-file-csv"></i> Carga Masiva
-                            </button>
-                            <button id="btnNuevoCaso" onclick="abrirModalNuevoCaso()" class="permiso-admin hidden bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
-                                <i class="fa-solid fa-plus"></i> Nuevo Test Case
-                            </button>
+                            <select id="filtroTesterCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm"><option value="TODOS">👤 Todos los Testers</option></select>
+                            <select id="filtroEstatusCaso" onchange="renderizarCasos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm"><option value="TODOS">🔍 Todos los Estatus</option><option value="NOT_EXECUTED">⏳ NOT EXECUTED</option><option value="IN_PROCESS">🔄 IN PROCESS</option><option value="PASS">✅ PASS</option><option value="FAIL">❌ FAIL</option><option value="HELP">🆘 HELP</option><option value="KIM">⭐ KIM</option></select>
+                            
+                            <!-- La Carga Masiva es solo para Admins -->
+                            <button id="btnCargaMasiva" onclick="abrirModalCargaMasiva()" class="permiso-admin hidden bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-file-csv"></i> Carga Masiva</button>
+                            <!-- El nuevo caso lo puede hacer cualquiera -->
+                            <button onclick="abrirModalNuevoCaso()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-plus"></i> Nuevo Test Case</button>
                         </div>
                     </div>
                     <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
-                                <tr>
-                                    <th class="p-3 w-10 text-center">#</th>
-                                    <th class="p-3 w-28">ID TC</th>
-                                    <th class="p-3">Nombre del Caso de Prueba</th>
-                                    <th class="p-3 text-center">Pasos TC</th>
-                                    <th class="p-3">Tester Asignado</th>
-                                    <th class="p-3 text-center">Estatus</th>
-                                    <th class="p-3 text-center">Fecha Ejecución</th>
-                                    <th class="p-3 text-center">Aprobación KIM</th>
-                                    <th class="p-3 text-center">Hallazgos</th>
-                                </tr>
+                                <tr><th class="p-3 w-10 text-center">#</th><th class="p-3 w-28">ID TC</th><th class="p-3">Nombre del Caso de Prueba</th><th class="p-3 text-center">Pasos TC</th><th class="p-3">Tester Asignado</th><th class="p-3 text-center">Estatus</th><th class="p-3 text-center">Fecha Ejecución</th><th class="p-3 text-center">Aprobación KIM</th><th class="p-3 text-center">Hallazgos</th></tr>
                             </thead>
                             <tbody id="tablaCasosBody" class="divide-y divide-slate-200 bg-white"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- PESTAÑA 3: DEFECTOS Y DESVIACIONES -->
+                <!-- PESTAÑA 3: DEFECTOS -->
                 <div id="pestana-hallazgos" class="hidden space-y-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <h3 class="text-lg font-bold text-slate-800">Bitácora de Defectos y Desviaciones (1:N)</h3>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                            <select id="filtroTipoHallazgo" onchange="renderizarHallazgos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500">
-                                <option value="TODOS">🔍 Todos los Hallazgos</option>
-                                <option value="DEFECTO">🐞 Solo Defectos</option>
-                                <option value="DESVIACION">⚠️ Solo Desviaciones</option>
-                            </select>
-                            <button onclick="abrirModalNuevoHallazgo()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
-                                <i class="fa-solid fa-bug"></i> Registrar Hallazgo
-                            </button>
+                            <select id="filtroTipoHallazgo" onchange="renderizarHallazgos()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm"><option value="TODOS">🔍 Todos los Hallazgos</option><option value="DEFECTO">🐞 Solo Defectos</option><option value="DESVIACION">⚠️ Solo Desviaciones</option></select>
+                            <button onclick="abrirModalNuevoHallazgo()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-bug"></i> Registrar Hallazgo</button>
                         </div>
                     </div>
                     <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
-                                <tr>
-                                    <th class="p-3 w-10 text-center">#</th>
-                                    <th class="p-3">ID Manual</th>
-                                    <th class="p-3">ID TC</th>
-                                    <th class="p-3">Tipo</th>
-                                    <th class="p-3">Etapa Afectada</th>
-                                    <th class="p-3">Descripción / Detalle</th>
-                                    <th class="p-3 text-center">Fecha</th>
-                                    <th class="p-3 text-center">Severidad</th>
-                                    <th class="p-3 text-center">Estatus</th>
-                                    <th class="p-3 text-center">Acción</th>
-                                </tr>
+                                <tr><th class="p-3 w-10 text-center">#</th><th class="p-3">ID Manual</th><th class="p-3">ID TC</th><th class="p-3">Tipo</th><th class="p-3">Etapa Afectada</th><th class="p-3">Descripción / Detalle</th><th class="p-3 text-center">Fecha</th><th class="p-3 text-center">Severidad</th><th class="p-3 text-center">Estatus</th><th class="p-3 text-center">Acción</th></tr>
                             </thead>
                             <tbody id="tablaHallazgosBody" class="divide-y divide-slate-200 bg-white"></tbody>
                         </table>
@@ -383,63 +286,35 @@
                 <div id="pestana-minutas" class="hidden space-y-6">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
-                            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-book-bookmark text-amber-600"></i> Histórico de Minutas
-                            </h3>
-                            <p class="text-xs text-slate-500">Todos pueden registrar minutas y asignar tareas.</p>
+                            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-amber-600"></i> Histórico de Minutas</h3>
                         </div>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
                             <div class="relative flex-1 md:w-64">
                                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
                                 <input type="text" id="buscarMinutaInput" onkeyup="renderizarMinutas()" placeholder="Buscar..." class="w-full bg-white border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500">
                             </div>
-                            <button onclick="abrirModalNuevaMinuta()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
-                                <i class="fa-solid fa-plus"></i> Nueva Minuta
-                            </button>
+                            <button onclick="abrirModalNuevaMinuta()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-plus"></i> Nueva Minuta</button>
                         </div>
                     </div>
                     <div id="contenedorMinutasHistorial" class="space-y-4"></div>
                 </div>
 
-                <!-- PESTAÑA 5: TABLERO DE TAREAS -->
+                <!-- PESTAÑA 5: TAREAS -->
                 <div id="pestana-tareas" class="hidden space-y-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <div>
-                            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-tasks text-indigo-600"></i> Tablero de Control de Tareas
-                            </h3>
-                            <p class="text-xs text-slate-500">Solo puedes editar los estatus de tareas asignadas a ti.</p>
+                            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-tasks text-indigo-600"></i> Tablero de Control de Tareas</h3>
                         </div>
                         <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                            <select id="filtroTareaResponsable" onchange="renderizarTareas()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm">
-                                <option value="TODOS">👤 Todos los Responsables</option>
-                            </select>
-                            <select id="filtroTareaEstatus" onchange="renderizarTareas()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm">
-                                <option value="TODOS">🔍 Todos los Estatus</option>
-                                <option value="NOT_STARTED">⏳ NOT STARTED</option>
-                                <option value="IN_PROCESS">🔄 IN PROCESS</option>
-                                <option value="REALIZADO">✅ REALIZADO</option>
-                            </select>
-                            <button onclick="abrirModalNuevaTarea()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
-                                <i class="fa-solid fa-plus"></i> Nueva Tarea Manual
-                            </button>
+                            <select id="filtroTareaResponsable" onchange="renderizarTareas()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm"><option value="TODOS">👤 Todos los Responsables</option></select>
+                            <select id="filtroTareaEstatus" onchange="renderizarTareas()" class="bg-white border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-700 shadow-sm"><option value="TODOS">🔍 Todos los Estatus</option><option value="NOT_STARTED">⏳ NOT STARTED</option><option value="IN_PROCESS">🔄 IN PROCESS</option><option value="REALIZADO">✅ REALIZADO</option></select>
+                            <button onclick="abrirModalNuevaTarea()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow"><i class="fa-solid fa-plus"></i> Nueva Tarea Manual</button>
                         </div>
                     </div>
                     <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-800 text-white text-xs uppercase">
-                                <tr>
-                                    <th class="p-3 w-10 text-center">#</th>
-                                    <th class="p-3 w-28">ID Tarea</th>
-                                    <th class="p-3">Tarea Asignada</th>
-                                    <th class="p-3">Responsable</th>
-                                    <th class="p-3 text-center">Origen</th>
-                                    <th class="p-3 text-center">Prioridad</th>
-                                    <th class="p-3 text-center">Alta</th>
-                                    <th class="p-3 text-center">Compromiso</th>
-                                    <th class="p-3 text-center">Estatus</th>
-                                    <th class="p-3 text-center">Acción</th>
-                                </tr>
+                                <tr><th class="p-3 w-10 text-center">#</th><th class="p-3 w-28">ID Tarea</th><th class="p-3">Tarea Asignada</th><th class="p-3">Responsable</th><th class="p-3 text-center">Origen</th><th class="p-3 text-center">Prioridad</th><th class="p-3 text-center">Alta</th><th class="p-3 text-center">Compromiso</th><th class="p-3 text-center">Estatus</th><th class="p-3 text-center">Acción</th></tr>
                             </thead>
                             <tbody id="tablaTareasBody" class="divide-y divide-slate-200 bg-white"></tbody>
                         </table>
@@ -450,38 +325,31 @@
         </div>
     </div>
 
-    <!-- MODALES -->
-    <div id="modalHistoricoEjecucion" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl max-w-3xl w-full p-6 space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Histórico de Avance</h3>
-                <button onclick="cerrarModal('modalHistoricoEjecucion')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="overflow-y-auto max-h-72 border rounded-lg">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-800 text-white uppercase sticky top-0">
-                        <tr><th class="p-2.5">Fecha</th><th class="p-2.5 text-center">Ejecutados</th><th class="p-2.5 text-center">Faltantes</th><th class="p-2.5 text-center">PASS</th><th class="p-2.5 text-center">Pend. KIM</th><th class="p-2.5 text-center">Aprob. KIM</th></tr>
-                    </thead>
-                    <tbody id="tablaHistoricoEjecucionBody" class="divide-y divide-slate-200 bg-white font-medium"></tbody>
-                </table>
-            </div>
-            <div class="flex justify-end pt-2"><button onclick="cerrarModal('modalHistoricoEjecucion')" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Cerrar</button></div>
-        </div>
-    </div>
-    
+    <!-- ========================================================================= -->
+    <!-- 5. VENTANAS EMERGENTES (MODALES)                                          -->
+    <!-- ========================================================================= -->
+    <div id="modalHistoricoEjecucion" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl max-w-3xl w-full p-6 space-y-4"><div class="flex justify-between items-center border-b pb-2"><h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Histórico de Avance</h3><button onclick="cerrarModal('modalHistoricoEjecucion')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button></div><div class="overflow-y-auto max-h-72 border rounded-lg"><table class="w-full text-left text-xs"><thead class="bg-slate-800 text-white uppercase sticky top-0"><tr><th class="p-2.5">Fecha</th><th class="p-2.5 text-center">Ejecutados</th><th class="p-2.5 text-center">Faltantes</th><th class="p-2.5 text-center">PASS</th><th class="p-2.5 text-center">Pend. KIM</th><th class="p-2.5 text-center">Aprob. KIM</th></tr></thead><tbody id="tablaHistoricoEjecucionBody" class="divide-y divide-slate-200 bg-white font-medium"></tbody></table></div><div class="flex justify-end pt-2"><button onclick="cerrarModal('modalHistoricoEjecucion')" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Cerrar</button></div></div></div>
     <div id="modalAgregarIntegrante" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4"><h3>Registrar Nuevo Integrante</h3><input type="text" id="insIntNombre" placeholder="Nombre" class="w-full border rounded-lg p-2 text-sm mb-2"><select id="insIntRol" class="w-full border rounded-lg p-2 text-sm"><option value="Tester">Tester / QA</option><option value="Líder">Líder</option><option value="Analista">Analista</option></select><div class="flex justify-end gap-2 mt-2"><button onclick="cerrarModal('modalAgregarIntegrante')" class="px-4 py-2 bg-slate-200 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoIntegrante()" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Guardar</button></div></div></div>
     <div id="modalEditarIntegrante" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4"><h3>Editar Integrante</h3><input type="hidden" id="editIntIndex"><input type="text" id="editIntNombre" class="w-full border rounded-lg p-2 text-sm mb-2"><select id="editIntRol" class="w-full border rounded-lg p-2 text-sm"><option value="Tester">Tester</option><option value="Líder">Líder</option><option value="Analista">Analista</option></select><div class="flex justify-end gap-2 mt-2"><button onclick="cerrarModal('modalEditarIntegrante')" class="px-4 py-2 bg-slate-200 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarEdicionIntegrante()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Guardar</button></div></div></div>
-    <div id="modalCaso" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4"><h3>Nuevo Caso</h3><input type="text" id="insTcId" placeholder="ID TC" class="w-full border rounded-lg p-2 text-sm mb-2"><input type="text" id="insTcNombre" placeholder="Descripción" class="w-full border rounded-lg p-2 text-sm mb-2"><input type="number" id="insTcPasos" value="1" class="w-full border rounded-lg p-2 text-sm mb-2"><select id="insTcTester" class="w-full border rounded-lg p-2 text-sm"></select><div class="flex justify-end gap-2 mt-2"><button onclick="cerrarModal('modalCaso')" class="px-4 py-2 bg-slate-200 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoCaso()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Guardar</button></div></div></div>
-    <div id="modalCargaMasiva" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4"><h3>Carga Masiva</h3><textarea id="txtAreaCargaMasiva" rows="6" class="w-full border rounded-lg p-2 text-xs"></textarea><select id="insCargaMasivaTester" class="w-full border rounded-lg p-2 text-sm"></select><div class="flex justify-end gap-2 mt-2"><button onclick="cerrarModal('modalCargaMasiva')" class="px-4 py-2 bg-slate-200 rounded-lg text-xs font-bold">Cancelar</button><button onclick="procesarCargaMasiva()" class="px-4 py-2 bg-purple-600 text-white rounded-lg text-xs font-bold">Cargar</button></div></div></div>
+    
+    <div id="modalCaso" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4"><h3>Nuevo Caso[cite: 1]</h3><input type="text" id="insTcId" placeholder="ID TC" class="w-full border rounded-lg p-2 text-sm mb-2"><input type="text" id="insTcNombre" placeholder="Descripción" class="w-full border rounded-lg p-2 text-sm mb-2"><input type="number" id="insTcPasos" value="1" class="w-full border rounded-lg p-2 text-sm mb-2"><select id="insTcTester" class="w-full border rounded-lg p-2 text-sm"></select><div class="flex justify-end gap-2 mt-2"><button onclick="cerrarModal('modalCaso')" class="px-4 py-2 bg-slate-200 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoCaso()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Guardar</button></div></div></div>
+    
+    <div id="modalCargaMasiva" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4"><h3>Carga Masiva[cite: 1]</h3><textarea id="txtAreaCargaMasiva" rows="6" class="w-full border rounded-lg p-2 text-xs"></textarea><select id="insCargaMasivaTester" class="w-full border rounded-lg p-2 text-sm"></select><div class="flex justify-end gap-2 mt-2"><button onclick="cerrarModal('modalCargaMasiva')" class="px-4 py-2 bg-slate-200 rounded-lg text-xs font-bold">Cancelar</button><button onclick="procesarCargaMasiva()" class="px-4 py-2 bg-purple-600 text-white rounded-lg text-xs font-bold">Cargar</button></div></div></div>
+    
     <div id="modalHallazgo" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4"><h3>Asociar Defecto/Desviación</h3><input type="text" id="insHalIdManual" placeholder="ID Defecto" class="w-full border rounded p-2 text-sm"><select id="insHalTc" class="w-full border rounded p-2 text-sm"></select><select id="insHalTipo" class="w-full border rounded p-2 text-sm"><option value="DEFECTO">Defecto</option><option value="DESVIACION">Desviación</option></select><select id="insHalEtapa" class="w-full border rounded p-2 text-sm"><option value="Ejecución">Ejecución</option><option value="Objetivo / Alcance">Objetivo / Alcance</option></select><input type="date" id="insHalFecha" class="w-full border rounded p-2 text-sm"><textarea id="insHalDesc" class="w-full border rounded p-2 text-sm"></textarea><select id="insHalSeveridad" class="w-full border rounded p-2 text-sm"><option value="ALTA">Alta</option><option value="MEDIA">Media</option><option value="BAJA">Baja</option></select><div class="flex justify-end gap-2"><button onclick="cerrarModal('modalHallazgo')" class="px-4 py-2 bg-slate-200 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevoHallazgo()" class="px-4 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold">Registrar</button></div></div></div>
-    <div id="modalMinuta" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto"><h3>Registrar Minuta</h3><input type="date" id="insMinutaFecha" class="border rounded p-2 text-sm w-full"><input type="text" id="insMinutaObjetivo" placeholder="Objetivo" class="border rounded p-2 text-sm w-full"><div class="flex justify-between"><span>Puntos y Tareas</span><button onclick="agregarPuntoMinutaInput('', false, '', '')" class="text-xs bg-slate-200 font-bold px-2 py-1 rounded">+ Punto</button></div><div id="contenedorPuntosMinutaModal" class="space-y-3 p-2 border bg-slate-50"></div><div class="flex justify-end gap-2"><button onclick="cerrarModal('modalMinuta')" class="px-4 py-2 bg-slate-200 text-xs font-bold rounded">Cancelar</button><button onclick="guardarNuevaMinuta()" class="px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded">Guardar</button></div></div></div>
+    
+    <div id="modalMinuta" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto"><h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-amber-600"></i> Registrar Minuta[cite: 1]</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Fecha:</label><input type="date" id="insMinutaFecha" class="w-full border rounded-lg p-2 text-sm"></div><div><label class="block text-xs font-bold text-slate-600 mb-1">Título:</label><input type="text" id="insMinutaObjetivo" class="w-full border rounded-lg p-2 text-sm"></div></div><div><div class="flex justify-between items-center mb-2"><label class="block text-xs font-bold text-slate-700">Puntos Discutidos:</label><button onclick="agregarPuntoMinutaInput('', false, '', '')" class="text-xs bg-slate-100 font-bold px-2.5 py-1 rounded border border-slate-300"><i class="fa-solid fa-plus text-amber-600"></i> Agregar Punto</button></div><div id="contenedorPuntosMinutaModal" class="space-y-3 p-2 border rounded-lg bg-slate-50"></div></div><div class="flex justify-end gap-2 pt-2"><button onclick="cerrarModal('modalMinuta')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancelar</button><button onclick="guardarNuevaMinuta()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold">Guardar Minuta</button></div></div></div>
+    
     <div id="modalTarea" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50"><div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4"><h3>Registrar Tarea</h3><input type="text" id="insTareaId" class="w-full border rounded p-2 text-sm bg-slate-100" readonly><textarea id="insTareaDesc" class="w-full border rounded p-2 text-sm"></textarea><select id="insTareaResp" class="w-full border rounded p-2 text-sm"></select><select id="insTareaPrio" class="w-full border rounded p-2 text-sm"><option value="ALTA">Alta</option><option value="MEDIA">Media</option></select><input type="date" id="insTareaFechaAlta" class="w-full border rounded p-2 text-sm"><input type="date" id="insTareaFecha" class="w-full border rounded p-2 text-sm"><div class="flex justify-end gap-2"><button onclick="cerrarModal('modalTarea')" class="px-4 py-2 bg-slate-200 text-xs font-bold rounded">Cancelar</button><button onclick="guardarNuevaTarea()" class="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded">Crear Tarea</button></div></div></div>
 
-    <!-- LOGICA EN JAVASCRIPT: AUTENTICACIÓN Y ROLES -->
+    <!-- ========================================================================= -->
+    <!-- LOGICA EN JAVASCRIPT: MOTOR DEL SISTEMA                                   -->
+    <!-- ========================================================================= -->
     <script>
-        // === 1. CONFIGURACIÓN DE FIREBASE ACTUALIZADA ===
+        // === 1. CONFIGURACIÓN EXACTA DE FIREBASE ===
+        // Aquí van las llaves que le dicen a la página a qué base de datos conectarse
         const firebaseConfig = {
-            apiKey: "AIzaSyB-_1nc3wZ0zve2g4ZWczojFwU-b_8ugPM",
+            apiKey: "AIzaSyB-_lnc3wZ0zve2g4ZWczojFwU-b_8ugPM",
             authDomain: "qa-tracker-cc2ca.firebaseapp.com",
             databaseURL: "https://qa-tracker-cc2ca-default-rtdb.firebaseio.com",
             projectId: "qa-tracker-cc2ca",
@@ -494,7 +362,7 @@
         let db = null;
         let firebaseActivo = false;
         
-        // DIRECTORIO DE ROLES Y USUARIOS POR CORREO
+        // DICCIONARIO DE ROLES: Define quién manda (Admin) y quién ejecuta (Tester)
         const directorioUsuarios = {
             "kimberly@empresa.com": { nombre: "Kimberly Meza", rol: "Admin" },
             "natanael@empresa.com": { nombre: "Natanael Vega", rol: "Admin" },
@@ -503,37 +371,38 @@
             "nestor@empresa.com":  { nombre: "Néstor Castillo", rol: "Analista" }
         };
 
-        // VARIABLE GLOBAL DEL USUARIO LOGUEADO
-        let usuarioSesion = { nombre: "Local", rol: "Admin", email: "local@local" }; 
+        // Variable para guardar los datos de quien está usando la compu en este momento
+        let usuarioSesion = { nombre: "Desconocido", rol: "Tester", email: "" }; 
 
+        // Conecta con Google Firebase
         try {
             firebase.initializeApp(firebaseConfig);
             db = firebase.database();
             firebaseActivo = true;
         } catch (e) {
-            console.log("Error al cargar Firebase:", e);
+            console.log("Error al conectar Firebase:", e);
         }
 
-        // CONTROL DE SESIÓN
+        // === 2. GESTIÓN DE SESIÓN (LOGIN) ===
         if (firebaseActivo) {
+            // Este observador vigila si el usuario ya se había logueado antes
             firebase.auth().onAuthStateChanged(user => {
                 if (user) {
                     const email = user.email.toLowerCase();
                     const infoUser = directorioUsuarios[email];
                     
+                    // Asigna el rol dependiendo del correo
                     if (infoUser) {
                         usuarioSesion = { nombre: infoUser.nombre, rol: infoUser.rol, email: email };
                     } else {
-                        // Si se registró alguien que no está en el diccionario, se le da acceso básico
                         usuarioSesion = { nombre: email.split('@')[0], rol: "Tester", email: email };
                     }
 
-                    // Actualizar UI del usuario
+                    // Pone el nombre en el encabezado
                     document.getElementById('txtUserLogged').innerText = usuarioSesion.nombre;
                     document.getElementById('txtUserRole').innerText = `Rol: ${usuarioSesion.rol}`;
-                    
 
-                    // Aplicar restricciones visuales globales a Admins
+                    // RESTRICCIONES VISUALES: Oculta botones a Testers (como Carga Masiva)
                     if (usuarioSesion.rol !== 'Admin') {
                         document.querySelectorAll('.permiso-admin').forEach(el => el.classList.add('hidden', 'bloqueado'));
                         document.getElementById('btnEditTitle').classList.add('hidden');
@@ -541,52 +410,52 @@
                         document.querySelectorAll('.permiso-admin').forEach(el => el.classList.remove('hidden', 'bloqueado'));
                     }
 
-                    // Ocultar login y mostrar dashboard
+                    // Oculta el Login y muestra la App
                     document.getElementById('modalLogin').classList.add('hidden');
                     document.getElementById('appPrincipal').classList.remove('hidden');
 
-                    // Cargar BD
+                    // Descarga los datos de la Nube
                     cargarDatosDesdeFirebase();
                 } else {
-                    // Mostrar pantalla de Login
                     document.getElementById('appPrincipal').classList.add('hidden');
                     document.getElementById('modalLogin').classList.remove('hidden');
                 }
             });
         }
 
-       function iniciarSesion() {
+        function iniciarSesion() {
             const email = document.getElementById('inEmail').value.trim();
             const pass = document.getElementById('inPass').value;
             const msjError = document.getElementById('loginError');
+            const recordar = document.getElementById('chkRecordar').checked;
             
-            if(!firebaseActivo) {
-                msjError.innerText = "Firebase no está conectado.";
-                msjError.classList.remove('hidden');
-                return;
-            }
-
+            if(!firebaseActivo) return;
             msjError.innerText = "Cargando...";
             msjError.classList.remove('hidden');
 
-            firebase.auth().signInWithEmailAndPassword(email, pass)
+            const persistencia = recordar ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
+
+            firebase.auth().setPersistence(persistencia)
+                .then(() => { return firebase.auth().signInWithEmailAndPassword(email, pass); })
                 .catch(error => {
-                    // AQUÍ LE PEDIMOS A FIREBASE SU ERROR REAL
-                    console.error("Error completo de Firebase:", error);
-                    msjError.innerText = "Error: " + error.code + " - " + error.message;
-                    msjError.classList.remove('hidden');
+                    let msj = "Error de sesión.";
+                    if(error.code === 'auth/invalid-credential') msj = "Correo o contraseña incorrectos.";
+                    msjError.innerText = msj;
                 });
         }
 
         function cerrarSesion() {
-            if (firebaseActivo) {
-                firebase.auth().signOut();
-            }
+            if (firebaseActivo) firebase.auth().signOut();
         }
 
-        // ==============================================
-        // DATA GLOBAL DEL DASHBOARD
-        // ==============================================
+        function togglePassword() {
+            const input = document.getElementById('inPass');
+            const icono = document.getElementById('iconoOjo');
+            if (input.type === 'password') { input.type = 'text'; icono.classList.replace('fa-eye', 'fa-eye-slash'); } 
+            else { input.type = 'password'; icono.classList.replace('fa-eye-slash', 'fa-eye'); }
+        }
+
+        // === 3. DATOS GLOBALES (Aquí viven todas las variables) ===
         let tituloProyecto = "QA Testing Executive Tracker";
         let fechaEntregaDev = "";
         let fechaInicioPruebas = "";
@@ -606,8 +475,7 @@
         let tareasDaily = [];
 
         function normalizarTexto(txt) {
-            if (!txt) return "";
-            return txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s*\([^)]*\)/g, "").trim();
+            if (!txt) return ""; return txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
         }
 
         function actualizarTituloProyecto(val) {
@@ -653,6 +521,7 @@
             renderizarTareas();
         }
 
+        // === 4. MATEMÁTICAS Y KPIS DE AVANCE ===
         function calcularKPIs() {
             const total = casosPrueba.length;
             const notExec = casosPrueba.filter(c => c.estatus === "NOT_EXECUTED").length;
@@ -690,12 +559,8 @@
 
             const totalDefectosCount = hallazgos.filter(h => h.tipo === "DEFECTO").length;
             const totalDesviacionesCount = hallazgos.filter(h => h.tipo === "DESVIACION").length;
-            const tcsConDefectoSet = new Set(hallazgos.filter(h => h.tipo === "DEFECTO").map(h => h.tcId));
-            const tcsConDesviacionSet = new Set(hallazgos.filter(h => h.tipo === "DESVIACION").map(h => h.tcId));
             document.getElementById("txtTotalDefectosCount").innerText = totalDefectosCount;
             document.getElementById("txtTotalDesviacionesCount").innerText = totalDesviacionesCount;
-            document.getElementById("txtTcsConDefectoCount").innerText = tcsConDefectoSet.size;
-            document.getElementById("txtTcsConDesviacionCount").innerText = tcsConDesviacionSet.size;
 
             if (total > 0) {
                 document.getElementById("barPass").style.width = ((pass / total) * 100) + "%";
@@ -707,9 +572,10 @@
             }
         }
 
+        // === 5. DIBUJADO DE LAS TABLAS (RENDERIZADO) ===
+        
         function renderizarTesters() {
-            const tbody = document.getElementById("tablaTestersBody");
-            tbody.innerHTML = "";
+            const tbody = document.getElementById("tablaTestersBody"); tbody.innerHTML = "";
             const soloTesters = involucradosGlobales.filter(i => i && i.nombre && i.nombre !== "TODOS" && i.rol === "Tester" && !i.nombre.toLowerCase().includes("kimberly"));
             
             soloTesters.forEach((invInfo, idx) => {
@@ -722,142 +588,216 @@
                 const fail = asignados.filter(c => c.estatus === "FAIL").length;
                 const help = asignados.filter(c => c.estatus === "HELP").length;
                 const kim = asignados.filter(c => c.estatus === "KIM").length;
-
-                const ejec = totalT - notExec;
                 const pct = totalT > 0 ? ((pass + fail + help + kim) / totalT) * 100 : 0.0;
 
                 const esAdmin = usuarioSesion.rol === 'Admin';
-                const divAcciones = esAdmin ? `
-                    <button onclick="abrirModalEditarIntegrante(${idx})" class="text-blue-600 hover:text-blue-800 text-xs px-2 py-1"><i class="fa-solid fa-pen"></i></button>
-                    <button onclick="eliminarIntegrante('${invInfo.nombre}')" class="text-rose-600 hover:text-rose-800 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
-                ` : `<span class="text-xs text-slate-400">Lectura</span>`;
+                const divAcciones = esAdmin ? `<button onclick="eliminarIntegrante('${invInfo.nombre}')" class="text-rose-600 px-2 py-1"><i class="fa-solid fa-trash"></i></button>` : `<span class="text-xs text-slate-400">Lectura</span>`;
 
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-slate-700">${invInfo.nombre} <span class="text-[10px] text-slate-400">(${invInfo.rol})</span></td>
-                    <td class="p-3 text-center font-bold">${totalT}</td>
-                    <td class="p-3 text-center text-amber-700">${notExec}</td>
-                    <td class="p-3 text-center text-blue-700">${inProc}</td>
-                    <td class="p-3 text-center text-emerald-700">${pass}</td>
-                    <td class="p-3 text-center text-rose-700">${fail}</td>
-                    <td class="p-3 text-center text-orange-700">${help}</td>
-                    <td class="p-3 text-center text-purple-700">${kim}</td>
-                    <td class="p-3 text-center font-bold text-indigo-700">${pct.toFixed(1)}%</td>
-                    <td class="p-3 text-center flex justify-center gap-1">${divAcciones}</td>
-                `;
-                tbody.appendChild(tr);
+                tbody.innerHTML += `<tr><td class="p-3 font-bold text-slate-700">${invInfo.nombre}</td><td class="p-3 text-center font-bold">${totalT}</td><td class="p-3 text-center text-amber-700">${notExec}</td><td class="p-3 text-center text-blue-700">${inProc}</td><td class="p-3 text-center text-emerald-700">${pass}</td><td class="p-3 text-center text-rose-700">${fail}</td><td class="p-3 text-center text-orange-700">${help}</td><td class="p-3 text-center text-purple-700">${kim}</td><td class="p-3 text-center font-bold text-indigo-700">${pct.toFixed(1)}%</td><td class="p-3 text-center">${divAcciones}</td></tr>`;
             });
         }
 
         function renderizarCasos() {
-            const tbody = document.getElementById("tablaCasosBody");
-            tbody.innerHTML = "";
-            const filtroTester = document.getElementById("filtroTesterCaso").value;
-            const filtroEstatus = document.getElementById("filtroEstatusCaso").value;
+            const tbody = document.getElementById("tablaCasosBody"); tbody.innerHTML = "";
+            const fTest = document.getElementById("filtroTesterCaso").value;
+            const fEst = document.getElementById("filtroEstatusCaso").value;
 
-            casosPrueba.forEach((c, index) => {
-                let pasaTester = (filtroTester === "TODOS" || c.tester === filtroTester);
-                let pasaEstatus = (filtroEstatus === "TODOS" || c.estatus === filtroEstatus);
-
-                if (pasaTester && pasaEstatus) {
+            casosPrueba.forEach((c, i) => {
+                if ((fTest === "TODOS" || c.tester === fTest) && (fEst === "TODOS" || c.estatus === fEst)) {
+                    // Validar si puedes editar
                     const isOwnerOrAdmin = (usuarioSesion.rol === 'Admin' || normalizarTexto(c.tester).includes(normalizarTexto(usuarioSesion.nombre)));
                     const disabledStr = isOwnerOrAdmin ? '' : 'disabled title="No tienes permiso"';
                     const disabledColor = isOwnerOrAdmin ? 'bg-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed';
 
-                    const esPass = (c.estatus === 'PASS');
-                    const kimInputAttr = esPass && isOwnerOrAdmin ? '' : 'disabled';
-
-                    const numDef = hallazgos.filter(h => h.tcId === c.id && h.tipo === "DEFECTO").length;
-                    const badgeHallazgo = numDef > 0 ? `<span class="text-rose-600 font-bold text-xs"><i class="fa-solid fa-bug"></i> ${numDef}</span>` : `<span class="text-slate-400 text-xs">0</span>`;
-
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td class="p-3 text-center font-mono text-xs text-slate-400">${index + 1}</td>
-                        <td class="p-3 font-bold font-mono text-slate-700">${c.id}</td>
-                        <td class="p-3 text-slate-800 text-xs">${c.nombre}</td>
-                        <td class="p-3 text-center"><input type="number" value="${c.pasos}" ${disabledStr} onchange="actualizarPasos('${c.id}', this.value)" class="w-12 text-center border rounded p-1 text-xs ${disabledColor}"></td>
+                    tbody.innerHTML += `<tr>
+                        <td class="p-3 text-center text-xs text-slate-400">${i + 1}</td>
+                        <td class="p-3 font-bold text-slate-700">${c.id}</td>
+                        <td class="p-3 text-xs">${c.nombre}</td>
+                        <td class="p-3 text-center"><input type="number" value="${c.pasos}" ${disabledStr} onchange="actualizarPasos('${c.id}', this.value)" class="w-12 border rounded p-1 text-xs ${disabledColor}"></td>
                         <td class="p-3 text-center"><select onchange="actualizarTesterCaso('${c.id}', this.value)" ${disabledStr} class="text-[10px] rounded p-1 border ${disabledColor}">${generarOpcionesTestersMatriz(c.tester)}</select></td>
-                        <td class="p-3 text-center">
-                            <select onchange="actualizarEstatusCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border ${disabledColor}">
-                                <option value="NOT_EXECUTED" ${c.estatus === 'NOT_EXECUTED' ? 'selected' : ''}>NOT EXECUTED</option>
-                                <option value="IN_PROCESS" ${c.estatus === 'IN_PROCESS' ? 'selected' : ''}>IN PROCESS</option>
-                                <option value="PASS" ${c.estatus === 'PASS' ? 'selected' : ''}>PASS</option>
-                                <option value="FAIL" ${c.estatus === 'FAIL' ? 'selected' : ''}>FAIL</option>
-                                <option value="HELP" ${c.estatus === 'HELP' ? 'selected' : ''}>HELP</option>
-                                <option value="KIM" ${c.estatus === 'KIM' ? 'selected' : ''}>KIM</option>
-                            </select>
-                        </td>
+                        <td class="p-3 text-center"><select onchange="actualizarEstatusCaso('${c.id}', this.value)" ${disabledStr} class="text-xs font-bold rounded p-1 border ${disabledColor}"><option value="NOT_EXECUTED" ${c.estatus === 'NOT_EXECUTED' ? 'selected' : ''}>NOT EXECUTED</option><option value="IN_PROCESS" ${c.estatus === 'IN_PROCESS' ? 'selected' : ''}>IN PROCESS</option><option value="PASS" ${c.estatus === 'PASS' ? 'selected' : ''}>PASS</option><option value="FAIL" ${c.estatus === 'FAIL' ? 'selected' : ''}>FAIL</option><option value="HELP" ${c.estatus === 'HELP' ? 'selected' : ''}>HELP</option><option value="KIM" ${c.estatus === 'KIM' ? 'selected' : ''}>KIM</option></select></td>
                         <td class="p-3 text-center"><input type="date" value="${c.fechaEjecucion || ''}" ${disabledStr} onchange="actualizarFecha('${c.id}', 'fechaEjecucion', this.value)" class="text-xs border rounded p-1 ${disabledColor}"></td>
-                        <td class="p-3 text-center"><input type="date" value="${c.fechaKim || ''}" ${kimInputAttr} onchange="actualizarFecha('${c.id}', 'fechaKim', this.value)" class="text-xs border rounded p-1 ${esPass&&isOwnerOrAdmin?'bg-white':'bg-slate-100'}"></td>
-                        <td class="p-3 text-center">${badgeHallazgo}</td>
-                    `;
-                    tbody.appendChild(tr);
+                        <td class="p-3 text-center"><input type="date" value="${c.fechaKim || ''}" ${c.estatus === 'PASS' && isOwnerOrAdmin ? '' : 'disabled'} onchange="actualizarFecha('${c.id}', 'fechaKim', this.value)" class="text-xs border rounded p-1"></td>
+                        <td class="p-3 text-center">-</td>
+                    </tr>`;
                 }
             });
         }
 
-        function renderizarTareas() {
-            const tbody = document.getElementById("tablaTareasBody");
-            tbody.innerHTML = "";
-            const fResp = document.getElementById("filtroTareaResponsable").value;
-            const fEst = document.getElementById("filtroTareaEstatus").value;
+        // === 6. LAS FUNCIONES RESTAURADAS PARA CREAR CASOS Y MINUTAS (LO QUE SE HABÍA PERDIDO) ===
 
-            tareasDaily.forEach((t, i) => {
-                if ((fResp === "TODOS" || t.resp === fResp) && (fEst === "TODOS" || t.estatus === fEst)) {
-                    const isOwnerOrAdmin = (usuarioSesion.rol === 'Admin' || normalizarTexto(t.resp).includes(normalizarTexto(usuarioSesion.nombre)));
-                    const disStr = isOwnerOrAdmin ? '' : 'disabled';
-                    const bgCol = isOwnerOrAdmin ? 'bg-white' : 'bg-slate-100';
+        function abrirModalNuevoCaso() {
+            const sel = document.getElementById("insTcTester"); sel.innerHTML = "";
+            testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; });
+            document.getElementById("modalCaso").classList.remove("hidden");
+        }
+        
+        // Función restaurada de tu código original[cite: 1]
+        function guardarNuevoCaso() {
+            const id = document.getElementById("insTcId").value.trim();
+            const nombre = document.getElementById("insTcNombre").value.trim();
+            const pasos = parseInt(document.getElementById("insTcPasos").value) || 1;
+            const tester = document.getElementById("insTcTester").value;
 
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td class="p-2 text-center text-xs text-slate-400">${i+1}</td>
-                        <td class="p-2 text-xs font-bold text-indigo-700">${t.id}</td>
-                        <td class="p-2 text-xs">${t.desc}</td>
-                        <td class="p-2 text-xs">${t.resp}</td>
-                        <td class="p-2 text-xs text-center">${t.origen}</td>
-                        <td class="p-2 text-center"><select onchange="actualizarPrioTarea('${t.id}', this.value)" ${disStr} class="text-xs border rounded p-1 ${bgCol}"><option value="ALTA" ${t.prio==='ALTA'?'selected':''}>ALTA</option><option value="MEDIA" ${t.prio==='MEDIA'?'selected':''}>MEDIA</option></select></td>
-                        <td class="p-2 text-xs text-center text-slate-500">${t.fechaAlta || ''}</td>
-                        <td class="p-2 text-center"><input type="date" value="${t.fecha}" onchange="actualizarFechaTarea('${t.id}', this.value)" ${disStr} class="text-xs border rounded p-1 ${bgCol}"></td>
-                        <td class="p-2 text-center"><select onchange="actualizarEstatusTarea('${t.id}', this.value)" ${disStr} class="text-xs border rounded p-1 font-bold ${bgCol}"><option value="NOT_STARTED" ${t.estatus==='NOT_STARTED'?'selected':''}>NOT_STARTED</option><option value="IN_PROCESS" ${t.estatus==='IN_PROCESS'?'selected':''}>IN_PROCESS</option><option value="REALIZADO" ${t.estatus==='REALIZADO'?'selected':''}>REALIZADO</option></select></td>
-                        <td class="p-2 text-center">${isOwnerOrAdmin ? `<button onclick="eliminarTarea('${t.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button>` : `<i class="fa-solid fa-lock text-slate-300"></i>`}</td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-            });
+            if (id && nombre) {
+                casosPrueba.push({ id, nombre, pasos, tester, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" });
+                cerrarModal("modalCaso");
+                guardarDatosEnNubeOEnLocal();
+                actualizarTodo();
+            }
         }
 
-        // FUNCIONES DE SOPORTE QUE NO CAMBIAN
+        function abrirModalCargaMasiva() {
+            const sel = document.getElementById("insCargaMasivaTester"); sel.innerHTML = "";
+            testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; });
+            document.getElementById("modalCargaMasiva").classList.remove("hidden");
+        }
+
+        // Función de carga masiva restaurada[cite: 1]
+        function procesarCargaMasiva() {
+            const texto = document.getElementById("txtAreaCargaMasiva").value.trim();
+            const testerDefecto = document.getElementById("insCargaMasivaTester").value;
+
+            if (!texto) { alert("Por favor pega la lista de casos."); return; }
+            const lineas = texto.split("\n"); let cargados = 0;
+
+            lineas.forEach(linea => {
+                if (linea.trim()) {
+                    let partes = linea.split(",");
+                    let id = partes[0] ? partes[0].trim() : "";
+                    let nombre = partes[1] ? partes[1].trim() : "Caso sin nombre";
+                    let pasos = partes[2] ? (parseInt(partes[2].trim()) || 1) : 1;
+
+                    if (id && !casosPrueba.some(c => c.id === id)) {
+                        casosPrueba.push({ id: id, nombre: nombre, pasos: pasos, tester: testerDefecto, estatus: "NOT_EXECUTED", fechaEjecucion: "", fechaKim: "" });
+                        cargados++;
+                    }
+                }
+            });
+
+            alert(`¡Se cargaron exitosamente ${cargados} casos de prueba a la matriz!`);
+            document.getElementById("txtAreaCargaMasiva").value = "";
+            cerrarModal("modalCargaMasiva"); guardarDatosEnNubeOEnLocal(); actualizarTodo();
+        }
+
+        function abrirModalNuevaMinuta() {
+            document.getElementById("insMinutaFecha").value = new Date().toISOString().split('T')[0];
+            document.getElementById("insMinutaObjetivo").value = "";
+            document.getElementById("contenedorPuntosMinutaModal").innerHTML = "";
+            agregarPuntoMinutaInput("", false, "", ""); // Restaura los campos de la minuta
+            document.getElementById("modalMinuta").classList.remove("hidden");
+        }
+
+        // Función dinámica para agregar líneas a las minutas[cite: 1]
+        function agregarPuntoMinutaInput(texto, esTarea, resp, fechaCompromiso) {
+            const cont = document.getElementById("contenedorPuntosMinutaModal");
+            const div = document.createElement("div");
+            div.className = "p-2.5 bg-white border border-slate-200 rounded-lg space-y-2 fila-punto-minuta shadow-sm";
+            
+            let opcionesInvolucrados = '<option value="">-- Seleccionar Responsable --</option>';
+            involucradosGlobales.forEach(t => {
+                if(t && t.nombre !== "undefined") {
+                    const tag = t.nombre === "TODOS" ? "TODOS (Todo el equipo)" : `${t.nombre} (${t.rol || 'Integrante'})`;
+                    opcionesInvolucrados += `<option value="${tag}" ${tag === resp ? 'selected' : ''}>${tag}</option>`;
+                }
+            });
+
+            div.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-circle-dot text-amber-500 text-xs"></i>
+                    <input type="text" value="${texto}" placeholder="Punto, acuerdo o actividad..." class="inp-texto-punto w-full border rounded p-1.5 text-xs">
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-rose-600"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="flex items-center gap-3 pl-5">
+                    <label class="text-[11px] font-bold text-indigo-700 cursor-pointer">
+                        <input type="checkbox" ${esTarea ? 'checked' : ''} onchange="toggleSelectTesterMinuta(this)" class="inp-check-tarea rounded"> ⚡ Convertir en Tarea
+                    </label>
+                    <div class="box-tarea-detalles ${esTarea ? '' : 'hidden'} flex gap-2">
+                        <select class="inp-select-resp text-xs border rounded p-1">${opcionesInvolucrados}</select>
+                        <input type="date" value="${fechaCompromiso || new Date().toISOString().split('T')[0]}" class="inp-fecha-comp-minuta text-xs border rounded p-1">
+                    </div>
+                </div>`;
+            cont.appendChild(div);
+        }
+
+        function toggleSelectTesterMinuta(chk) {
+            const box = chk.parentElement.parentElement.querySelector('.box-tarea-detalles');
+            if(chk.checked) box.classList.remove('hidden'); else box.classList.add('hidden');
+        }
+
+        // Función para guardar minuta y sincronizar con Tareas[cite: 1]
+        function guardarNuevaMinuta() {
+            const fechaAlta = document.getElementById("insMinutaFecha").value;
+            let objetivo = document.getElementById("insMinutaObjetivo").value.trim();
+            if (!objetivo) objetivo = `Daily del ${fechaAlta}`;
+
+            const filas = document.querySelectorAll(".fila-punto-minuta");
+            const puntos = []; let tareasNuevasCount = 0;
+
+            filas.forEach(f => {
+                const txt = f.querySelector(".inp-texto-punto").value.trim();
+                const esTarea = f.querySelector(".inp-check-tarea").checked;
+                const resp = f.querySelector(".inp-select-resp").value;
+                const fechaComp = f.querySelector(".inp-fecha-comp-minuta").value || fechaAlta;
+
+                if (txt) {
+                    puntos.push({ texto: txt, esTarea: esTarea, resp: esTarea ? resp : "" });
+                    if (esTarea && resp) {
+                        tareasDaily.push({ id: `TASK-${tareasDaily.length + 1}`, desc: txt, resp: resp, prio: "MEDIA", fechaAlta: fechaAlta, fecha: fechaComp, estatus: "NOT_STARTED", origen: "Minuta" });
+                        tareasNuevasCount++;
+                    }
+                }
+            });
+
+            if (!fechaAlta || puntos.length === 0) { alert("Completa la fecha y los puntos."); return; }
+            minutasLista.unshift({ fecha: fechaAlta, objetivo, puntos });
+            cerrarModal("modalMinuta");
+            if (tareasNuevasCount > 0) alert(`Minuta guardada. ${tareasNuevasCount} tarea(s) sincronizada(s).`);
+            guardarDatosEnNubeOEnLocal(); actualizarTodo();
+        }
+
+        function renderizarMinutas() {
+            const cont = document.getElementById("contenedorMinutasHistorial"); cont.innerHTML = "";
+            minutasLista.forEach((m, idx) => {
+                let puntosHTML = "";
+                m.puntos.forEach(p => {
+                    const txt = typeof p === 'object' ? p.texto : p;
+                    const esTarea = typeof p === 'object' && p.esTarea;
+                    puntosHTML += `<li class="flex justify-between text-xs bg-slate-50 p-2 border"><span class="font-medium">${txt}</span> ${esTarea ? `<span class="bg-indigo-100 text-indigo-800 font-bold px-2 rounded">Tarea asignada</span>` : ''}</li>`;
+                });
+                cont.innerHTML += `<div class="bg-white p-5 rounded-xl border mb-3"><div class="flex justify-between border-b pb-2"><h4 class="font-bold text-sm">${m.fecha} - ${m.objetivo}</h4><button onclick="eliminarMinuta(${idx})" class="text-rose-600"><i class="fa-solid fa-trash"></i></button></div><ul>${puntosHTML}</ul></div>`;
+            });
+        }
+        function eliminarMinuta(index) { if (confirm("¿Borrar minuta?")) { minutasLista.splice(index, 1); guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
+
+        // Resto de funciones auxiliares
+        function poblarFiltroTesters() { const sel = document.getElementById("filtroTesterCaso"); if(!sel) return; sel.innerHTML = '<option value="TODOS">👤 Todos</option>'; testers.forEach(t => { if(t && t !== "undefined") sel.innerHTML += `<option value="${t}">${t}</option>`; }); }
+        function poblarFiltrosTareas() { const sel = document.getElementById("filtroTareaResponsable"); if(!sel) return; sel.innerHTML = '<option value="TODOS">👤 Todos</option>'; involucradosGlobales.forEach(r => { if(r.nombre && r.nombre !== "undefined") sel.innerHTML += `<option value="${r.nombre}">${r.nombre}</option>`; }); }
         function forzarRefreshTablaTesters() { actualizarTodo(); }
-        function generarOpcionesTestersMatriz(tAct) { let opt=""; testers.forEach(t=>{ if(t!=="undefined"){ opt+=`<option value="${t}" ${t===tAct?'selected':''}>${t}</option>`; }}); return opt; }
+        function generarOpcionesTestersMatriz(tAct) { let opt=""; testers.forEach(t=>{ if(t!=="undefined") opt+=`<option value="${t}" ${t===tAct?'selected':''}>${t}</option>`; }); return opt; }
+        function actualizarPasos(id, cant) { const c=casosPrueba.find(c=>c.id===id); if(c) c.pasos=parseInt(cant)||1; guardarDatosEnNubeOEnLocal(); }
         function actualizarTesterCaso(id, nt) { const c=casosPrueba.find(c=>c.id===id); if(c){ c.tester=nt; guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
         function actualizarFecha(id, cmp, val) { const c=casosPrueba.find(c=>c.id===id); if(c){ c[cmp]=val; guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
+        function actualizarEstatusCaso(id, ne) { const c = casosPrueba.find(c => c.id === id); if (c) { c.estatus = ne; if (ne !== "NOT_EXECUTED" && !c.fechaEjecucion) c.fechaEjecucion = new Date().toISOString().split('T')[0]; if (ne === "PASS") { if (!c.fechaKim) c.fechaKim = new Date().toISOString().split('T')[0]; } else c.fechaKim = ""; guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
+        function renderizarTareas() { const tb = document.getElementById("tablaTareasBody"); tb.innerHTML = ""; tareasDaily.forEach((t, i) => { const adminOwner = (usuarioSesion.rol === 'Admin' || t.resp.includes(usuarioSesion.nombre)); tb.innerHTML += `<tr><td class="p-2 text-center text-xs">${i+1}</td><td class="p-2 font-bold">${t.id}</td><td class="p-2 text-xs">${t.desc}</td><td class="p-2 text-xs">${t.resp}</td><td class="p-2 text-center text-xs">${t.origen}</td><td class="p-2 text-center"><select onchange="actualizarPrioTarea('${t.id}', this.value)" ${adminOwner?'':'disabled'} class="text-xs border p-1"><option value="ALTA" ${t.prio==='ALTA'?'selected':''}>ALTA</option><option value="MEDIA" ${t.prio==='MEDIA'?'selected':''}>MEDIA</option></select></td><td class="p-2 text-center text-xs">${t.fechaAlta||''}</td><td class="p-2 text-center"><input type="date" value="${t.fecha}" onchange="actualizarFechaTarea('${t.id}', this.value)" ${adminOwner?'':'disabled'} class="text-xs border p-1"></td><td class="p-2 text-center"><select onchange="actualizarEstatusTarea('${t.id}', this.value)" ${adminOwner?'':'disabled'} class="text-xs font-bold border p-1"><option value="NOT_STARTED" ${t.estatus==='NOT_STARTED'?'selected':''}>NOT STARTED</option><option value="IN_PROCESS" ${t.estatus==='IN_PROCESS'?'selected':''}>IN PROCESS</option><option value="REALIZADO" ${t.estatus==='REALIZADO'?'selected':''}>REALIZADO</option></select></td><td class="p-2 text-center">${adminOwner?`<button onclick="eliminarTarea('${t.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button>`:''}</td></tr>`; }); }
         function actualizarEstatusTarea(id, ne) { const t=tareasDaily.find(t=>t.id===id); if(t){ t.estatus=ne; guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
         function actualizarPrioTarea(id, np) { const t=tareasDaily.find(t=>t.id===id); if(t){ t.prio=np; guardarDatosEnNubeOEnLocal(); } }
         function actualizarFechaTarea(id, nf) { const t=tareasDaily.find(t=>t.id===id); if(t){ t.fecha=nf; guardarDatosEnNubeOEnLocal(); } }
         function eliminarTarea(id) { if(confirm("¿Eliminar tarea?")){ tareasDaily=tareasDaily.filter(t=>t.id!==id); guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
-        function actualizarEstatusCaso(id, nuevoEstatus) { const caso = casosPrueba.find(c => c.id === id); if (caso) { caso.estatus = nuevoEstatus; if (nuevoEstatus !== "NOT_EXECUTED" && !caso.fechaEjecucion) caso.fechaEjecucion = new Date().toISOString().split('T')[0]; if (nuevoEstatus === "PASS") { if (!caso.fechaKim) caso.fechaKim = new Date().toISOString().split('T')[0]; } else { caso.fechaKim = ""; } guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
+        function abrirModalNuevaTarea() { document.getElementById("insTareaId").value = "TASK-" + (tareasDaily.length + 1); const sel = document.getElementById("insTareaResp"); sel.innerHTML = ""; involucradosGlobales.forEach(r => { if(r.nombre !== "TODOS") sel.innerHTML += `<option value="${r.nombre}">${r.nombre}</option>`; }); document.getElementById("modalTarea").classList.remove("hidden"); }
+        function guardarNuevaTarea() { tareasDaily.push({ id: document.getElementById("insTareaId").value, desc: document.getElementById("insTareaDesc").value, resp: document.getElementById("insTareaResp").value, origen: "Manual", prio: document.getElementById("insTareaPrio").value, fechaAlta: document.getElementById("insTareaFechaAlta").value, fecha: document.getElementById("insTareaFecha").value, estatus: "NOT_STARTED" }); cerrarModal("modalTarea"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
+        function abrirModalNuevoHallazgo() { const sel = document.getElementById("insHalTc"); sel.innerHTML = ""; casosPrueba.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.id}</option>`; }); document.getElementById("modalHallazgo").classList.remove("hidden"); }
+        function guardarNuevoHallazgo() { const id = document.getElementById("insHalIdManual").value; const tcId = document.getElementById("insHalTc").value; hallazgos.push({ id, tcId, tipo: document.getElementById("insHalTipo").value, etapa: document.getElementById("insHalEtapa").value, desc: document.getElementById("insHalDesc").value, fecha: document.getElementById("insHalFecha").value, severidad: document.getElementById("insHalSeveridad").value, estatus: "ABIERTO" }); cerrarModal("modalHallazgo"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
+        function renderizarHallazgos() { const tbody = document.getElementById("tablaHallazgosBody"); tbody.innerHTML = ""; hallazgos.forEach((h, i) => { tbody.innerHTML += `<tr><td class="p-2 text-center text-xs">${i+1}</td><td class="p-2 font-bold">${h.id}</td><td class="p-2">${h.tcId}</td><td class="p-2">${h.tipo}</td><td class="p-2">${h.etapa}</td><td class="p-2 text-xs">${h.desc}</td><td class="p-2 text-center text-xs">${h.fecha}</td><td class="p-2 text-center">${h.severidad}</td><td class="p-2 text-center">${h.estatus}</td><td class="p-2 text-center"><button onclick="eliminarHallazgo('${h.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button></td></tr>`; }); }
+        function eliminarHallazgo(id) { if(confirm("¿Eliminar hallazgo?")) { hallazgos = hallazgos.filter(h => h.id !== id); guardarDatosEnNubeOEnLocal(); actualizarTodo(); } }
         function abrirModalHistoricoEjecucion() { document.getElementById("modalHistoricoEjecucion").classList.remove("hidden"); }
         function cerrarModal(id) { document.getElementById(id).classList.add("hidden"); }
-        function abrirModalNuevoCaso() { document.getElementById("modalCaso").classList.remove("hidden"); }
-        function guardarNuevoCaso() { const id = document.getElementById("insTcId").value; casosPrueba.push({id, nombre:document.getElementById("insTcNombre").value, pasos:1, tester: testers[0], estatus: "NOT_EXECUTED"}); cerrarModal("modalCaso"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
-        function abrirModalCargaMasiva() { document.getElementById("modalCargaMasiva").classList.remove("hidden"); }
-        function procesarCargaMasiva() { cerrarModal("modalCargaMasiva"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
-        function abrirModalNuevoHallazgo() { document.getElementById("modalHallazgo").classList.remove("hidden"); }
-        function guardarNuevoHallazgo() { cerrarModal("modalHallazgo"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
-        function renderizarHallazgos() { const tbody = document.getElementById("tablaHallazgosBody"); tbody.innerHTML = ""; }
-        function abrirModalNuevaMinuta() { document.getElementById("modalMinuta").classList.remove("hidden"); }
-        function guardarNuevaMinuta() { cerrarModal("modalMinuta"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
-        function renderizarMinutas() { document.getElementById("contenedorMinutasHistorial").innerHTML = ""; }
-        function agregarPuntoMinutaInput() {}
-        function abrirModalNuevaTarea() { document.getElementById("modalTarea").classList.remove("hidden"); }
-        function guardarNuevaTarea() { cerrarModal("modalTarea"); guardarDatosEnNubeOEnLocal(); actualizarTodo(); }
         function exportarReporteGeneralCSV() { alert("Exportado"); }
 
+        // === 7. GUARDA Y CARGA EN FIREBASE ===
         function guardarDatosEnNubeOEnLocal() {
             const dataState = { tituloProyecto, fechaEntregaDev, fechaInicioPruebas, fechaFinPruebas, casosPrueba, hallazgos, testers, involucradosGlobales, minutasLista, tareasDaily };
-            if (firebaseActivo && db) {
-                db.ref("qa_tracker_data").set(dataState);
-            }
+            if (firebaseActivo && db) db.ref("qa_tracker_data").set(dataState);
         }
 
         function cargarDatosDesdeFirebase() {
